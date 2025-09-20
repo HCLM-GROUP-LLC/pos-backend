@@ -6,7 +6,7 @@
 
 -- 设置默认存储引擎和字符集
 SET default_storage_engine = InnoDB;
-SET NAMES utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- =================================
 -- 1. 商家与门店管理模块（Square风格）
@@ -29,8 +29,10 @@ CREATE TABLE merchants (
     is_deleted BOOLEAN DEFAULT FALSE,
     
     INDEX idx_merchants_email (email),
-    INDEX idx_merchants_status (status, is_deleted)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='商家表（Square风格，UUID主键）';
+    INDEX idx_merchants_status (status, is_deleted),
+    INDEX idx_merchants_created_at (created_at),
+    INDEX idx_merchants_updated_at (updated_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商家表（Square风格，UUID主键）';
 
 -- 1.2 商家银行账户表 (merchant_bank_accounts) - 独立管理银行账户
 CREATE TABLE merchant_bank_accounts (
@@ -54,7 +56,7 @@ CREATE TABLE merchant_bank_accounts (
     INDEX idx_bank_accounts_merchant (merchant_id, is_deleted),
     INDEX idx_bank_accounts_primary (merchant_id, is_primary, is_deleted),
     INDEX idx_bank_accounts_status (status, is_verified, is_deleted)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='商家银行账户表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商家银行账户表';
 
 -- 1.3 门店表 (stores) - 使用UUID主键
 CREATE TABLE stores (
@@ -76,7 +78,7 @@ CREATE TABLE stores (
     FOREIGN KEY (merchant_id) REFERENCES merchants(id),
     INDEX idx_stores_merchant (merchant_id, is_deleted),
     INDEX idx_stores_status (status, is_deleted)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='门店表（UUID主键）';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='门店表（UUID主键）';
 
 -- 1.4 用户表 (users) - 门店员工，使用UUID外键
 CREATE TABLE users (
@@ -108,7 +110,7 @@ CREATE TABLE users (
     INDEX idx_users_login (email, password_hash, is_deleted),
     INDEX idx_users_pin_login (pin_hash, store_id, is_deleted),
     INDEX idx_users_store_status (store_id, status, is_deleted, hire_date)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户表（门店员工，UUID外键）';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户表（门店员工，UUID外键）';
 
 -- 1.3 角色表 (roles) - 权限角色
 CREATE TABLE roles (
@@ -125,7 +127,7 @@ CREATE TABLE roles (
     
     UNIQUE KEY uk_roles_code (role_code),
     INDEX idx_roles_active (is_active, is_deleted)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='角色表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='角色表';
 
 -- 1.4 权限表 (permissions) - 细粒度权限
 CREATE TABLE permissions (
@@ -145,7 +147,7 @@ CREATE TABLE permissions (
     UNIQUE KEY uk_permissions_resource_action (resource, action),
     INDEX idx_permissions_resource (resource),
     INDEX idx_permissions_resource_action (resource, action, permission_code)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='权限表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='权限表';
 
 -- 1.5 用户角色关联表 (user_roles)
 CREATE TABLE user_roles (
@@ -159,7 +161,7 @@ CREATE TABLE user_roles (
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (role_id) REFERENCES roles(role_id),
     INDEX idx_user_roles_active (user_id, role_id, is_active)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户角色关联表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户角色关联表';
 
 -- 1.6 角色权限关联表 (role_permissions)
 CREATE TABLE role_permissions (
@@ -172,7 +174,7 @@ CREATE TABLE role_permissions (
     FOREIGN KEY (role_id) REFERENCES roles(role_id),
     FOREIGN KEY (permission_id) REFERENCES permissions(permission_id),
     INDEX idx_role_permissions_lookup (role_id, permission_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='角色权限关联表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='角色权限关联表';
 
 -- =================================
 -- 2. 商品与库存管理模块
@@ -195,7 +197,7 @@ CREATE TABLE categories (
     FOREIGN KEY (store_id) REFERENCES stores(id),
     INDEX idx_categories_store (store_id, is_active, is_deleted),
     INDEX idx_categories_order (display_order)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='商品分类表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商品分类表';
 
 -- 2.2 商品表 (products)
 CREATE TABLE products (
@@ -221,7 +223,7 @@ CREATE TABLE products (
     INDEX idx_products_pos_list (store_id, category_id, is_active, is_deleted, product_name, price),
     INDEX idx_products_sync (store_id, updated_at, is_deleted),
     FULLTEXT INDEX idx_products_search (product_name, description)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='商品表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商品表';
 
 -- 2.3 库存表 (inventory)
 CREATE TABLE inventory (
@@ -243,7 +245,7 @@ CREATE TABLE inventory (
     INDEX idx_inventory_stock_level (current_stock, min_stock),
     INDEX idx_inventory_alert (current_stock, min_stock, product_id),
     INDEX idx_inventory_cost (product_id, cost_price, current_stock)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='库存表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='库存表';
 
 -- =================================
 -- 3. 订单与支付管理模块
@@ -270,7 +272,7 @@ CREATE TABLE customers (
     INDEX idx_customers_email (email),
     INDEX idx_customers_contact (store_id, phone, email, is_deleted),
     INDEX idx_customers_membership (store_id, membership_level, points_balance, is_deleted)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='客户表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='客户表';
 
 -- 3.2 订单表 (orders)
 CREATE TABLE orders (
@@ -307,7 +309,7 @@ CREATE TABLE orders (
     INDEX idx_orders_status_processing (status, payment_status, store_id, updated_at),
     INDEX idx_orders_user_history (user_id, created_at, status),
     INDEX idx_orders_customer_history (customer_id, created_at DESC)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='订单表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='订单表';
 
 -- 3.3 订单明细表 (order_items)
 CREATE TABLE order_items (
@@ -331,7 +333,7 @@ CREATE TABLE order_items (
     INDEX idx_order_items_product (product_id),
     INDEX idx_order_items_detail (order_id, product_id, quantity, unit_price, subtotal, is_deleted),
     INDEX idx_order_items_product_stats (product_id, created_at, quantity)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='订单明细表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='订单明细表';
 
 -- 3.4 支付表 (payments)
 CREATE TABLE payments (
@@ -357,7 +359,7 @@ CREATE TABLE payments (
     INDEX idx_payments_status_time (status, processed_at, order_id),
     INDEX idx_payments_transaction_lookup (transaction_id, status, amount),
     INDEX idx_payments_refund (order_id, status, amount)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='支付表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='支付表';
 
 -- 3.5 优惠券表 (coupons)
 CREATE TABLE coupons (
@@ -382,7 +384,7 @@ CREATE TABLE coupons (
     UNIQUE KEY uk_coupons_code (coupon_code),
     INDEX idx_coupons_store (store_id, is_active, is_deleted),
     INDEX idx_coupons_validity (valid_from, valid_until)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='优惠券表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='优惠券表';
 
 -- 3.6 订单优惠券关联表 (order_coupons)
 CREATE TABLE order_coupons (
@@ -395,7 +397,7 @@ CREATE TABLE order_coupons (
     PRIMARY KEY (order_id, coupon_id),
     FOREIGN KEY (order_id) REFERENCES orders(order_id),
     FOREIGN KEY (coupon_id) REFERENCES coupons(coupon_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='订单优惠券关联表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='订单优惠券关联表';
 
 -- =================================
 -- 4. 考勤与会话管理模块
@@ -428,7 +430,7 @@ CREATE TABLE attendance (
     INDEX idx_attendance_monthly (user_id, clock_in_month, total_hours),
     INDEX idx_attendance_store_daily (store_id, clock_in_date, clock_in_time),
     INDEX idx_attendance_incomplete (user_id, clock_in_time)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='考勤表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='考勤表';
 
 -- 4.2 用户会话表 (user_sessions)
 CREATE TABLE user_sessions (
@@ -454,7 +456,7 @@ CREATE TABLE user_sessions (
     INDEX idx_sessions_access_token (access_token),
     INDEX idx_sessions_expires (access_token_expires_at, refresh_token_expires_at),
     INDEX idx_sessions_activity (last_activity_at, status, is_deleted)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户会话表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户会话表';
 
 -- 4.3 交班记录表 (closings)
 CREATE TABLE closings (
@@ -477,7 +479,7 @@ CREATE TABLE closings (
     INDEX idx_closings_store_date (store_id, closing_date),
     INDEX idx_closings_user (user_id),
     INDEX idx_closings_sync (sync_status)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='交班记录表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='交班记录表';
 
 -- 4.4 收据记录表 (receipts)
 CREATE TABLE receipts (
@@ -496,7 +498,7 @@ CREATE TABLE receipts (
     FOREIGN KEY (order_id) REFERENCES orders(order_id),
     INDEX idx_receipts_order (order_id),
     INDEX idx_receipts_status (status, sent_at)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='收据记录表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='收据记录表';
 
 -- =================================
 -- 5. 系统管理与配置模块
@@ -525,11 +527,9 @@ CREATE TABLE devices (
     INDEX idx_devices_mac (mac_address),
     INDEX idx_devices_status_monitoring (store_id, status, last_online, device_type),
     INDEX idx_devices_mac_lookup (mac_address)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='设备表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='设备表';
 
--- 添加会话表与设备表的外键约束
-ALTER TABLE user_sessions ADD CONSTRAINT fk_sessions_device 
-FOREIGN KEY (device_id) REFERENCES devices(device_id);
+-- 添加会话表与设备表的外键约束 (将在设备表创建后添加)
 
 -- 5.2 设备码表 (device_codes) - Square风格激活码
 CREATE TABLE device_codes (
@@ -560,7 +560,11 @@ CREATE TABLE device_codes (
     INDEX idx_device_codes_attempts (activation_attempts, status),
     INDEX idx_device_codes_issued (issued_at, status),
     UNIQUE KEY uk_device_codes_code (device_code)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='设备激活码表，Square风格即时激活';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='设备激活码表，Square风格即时激活';
+
+-- 添加会话表与设备表的外键约束
+ALTER TABLE user_sessions ADD CONSTRAINT fk_sessions_device 
+FOREIGN KEY (device_id) REFERENCES devices(device_id);
 
 -- 5.3 税务规则表 (tax_rules)
 CREATE TABLE tax_rules (
@@ -582,7 +586,7 @@ CREATE TABLE tax_rules (
     FOREIGN KEY (store_id) REFERENCES stores(id),
     INDEX idx_tax_rules_store (store_id, is_active, is_deleted),
     INDEX idx_tax_rules_effective (effective_from, effective_until)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='税务规则表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='税务规则表';
 
 -- 5.3 通知表 (notifications)
 CREATE TABLE notifications (
@@ -604,7 +608,7 @@ CREATE TABLE notifications (
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     INDEX idx_notifications_user (user_id, is_read, created_at),
     INDEX idx_notifications_store (store_id, type, created_at)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='通知表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='通知表';
 
 -- =================================
 -- 6. 报表与汇总模块
@@ -631,7 +635,7 @@ CREATE TABLE daily_sales_reports (
     UNIQUE KEY uk_daily_reports_store_date (store_id, report_date),
     INDEX idx_daily_reports_date (report_date),
     INDEX idx_daily_reports_store (store_id, report_date)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='日销售汇总表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='日销售汇总表';
 
 -- =================================
 -- 7. 性能监控和备份表
@@ -755,13 +759,20 @@ CREATE TRIGGER trg_inventory_deduction
 AFTER INSERT ON order_items
 FOR EACH ROW
 BEGIN
+    DECLARE new_stock INT DEFAULT 0;
+    
     UPDATE inventory 
     SET current_stock = current_stock - NEW.quantity,
         updated_at = CURRENT_TIMESTAMP,
         updated_by = NEW.created_by
     WHERE product_id = NEW.product_id;
     
-    IF (SELECT current_stock FROM inventory WHERE product_id = NEW.product_id) < 0 THEN
+    -- 获取更新后的库存值
+    SELECT current_stock INTO new_stock 
+    FROM inventory 
+    WHERE product_id = NEW.product_id;
+    
+    IF new_stock < 0 THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = '商品库存不足';
     END IF;
 END//
@@ -823,10 +834,11 @@ BEGIN
     WHERE store_id = p_store_id AND report_date = p_report_date;
     
     INSERT INTO daily_sales_reports (
-        store_id, report_date, total_sales_amount, total_orders, 
+        report_id, store_id, report_date, total_sales_amount, total_orders, 
         average_order_value, total_tips, top_product_id, created_by
     )
     SELECT 
+        UUID() as report_id,
         p_store_id,
         p_report_date,
         IFNULL(SUM(o.total_amount), 0) as total_sales_amount,
@@ -859,7 +871,7 @@ CREATE PROCEDURE sp_check_inventory_alerts(
 )
 BEGIN
     SELECT 
-        p.id as product_id,
+        p.product_id,
         p.product_name,
         i.current_stock,
         i.min_stock,
@@ -871,7 +883,8 @@ BEGIN
       AND i.current_stock <= i.min_stock
       AND p.is_active = TRUE
       AND p.is_deleted = FALSE
-    ORDER BY (i.current_stock / NULLIF(i.min_stock, 0)) ASC;
+    ORDER BY IF(i.min_stock = 0, 0, (i.current_stock / i.min_stock)),
+        i.current_stock;
 END//
 
 -- 用户权限检查存储过程
@@ -1126,7 +1139,7 @@ INSERT INTO stores (id, merchant_id, store_name, address, timezone, status, tax_
 
 -- 示例管理员用户
 INSERT INTO users (user_id, merchant_id, store_id, username, email, password_hash, pin_hash, first_name, last_name, role, status, created_by, salary, hire_date) VALUES
-('USR-174000000001', 'MRC-174000000001', 'LOC-174000000001', 'admin', 'admin@trip7cafe.com', '$2a$10$rMgr4YOhVNcXP7Qhp8jQHe7vKbQZ8tXkF2VyLjKrX3nP9sWqR1tGu', '$2a$10$abcdef1234567890', 'Admin', 'User', 'OWNER', 'ACTIVE', 'MRC-174000000001', 50000.00, '2024-01-01');
+('USR-174000000001', 'MRC-174000000001', 'LOC-174000000001', 'admin', 'admin@trip7cafe.com', '$2a$10$rMgr4YOhVNcXP7Qhp8jQHe7vKbQZ8tXkF2VyLjKrX3nP9sWqR1tGu', '$2a$10$N9qo8uLOickgx2ZMRZoMye', 'Admin', 'User', 'OWNER', 'ACTIVE', 'MRC-174000000001', 50000.00, '2024-01-01');
 
 -- 分配超级管理员角色
 INSERT INTO user_roles (user_id, role_id, assigned_by) VALUES ('USR-174000000001', 'ROL-174000000001', 'MRC-174000000001');
@@ -1284,9 +1297,6 @@ DO
 BEGIN
     DECLARE done INT DEFAULT FALSE;
     DECLARE v_store_id CHAR(36);
-    DECLARE v_product_name VARCHAR(200);
-    DECLARE v_current_stock INT;
-    DECLARE v_min_stock INT;
     DECLARE store_cursor CURSOR FOR 
         SELECT id FROM stores WHERE status = 'ACTIVE' AND is_deleted = FALSE;
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
@@ -1298,13 +1308,14 @@ BEGIN
             LEAVE store_loop;
         END IF;
         
-        INSERT INTO notifications (store_id, title, message, type, created_by)
+        INSERT INTO notifications (notification_id, store_id, title, message, type, created_by)
         SELECT 
+            UUID(),
             v_store_id,
             '库存预警',
             CONCAT('商品 "', p.product_name, '" 库存不足，当前库存：', i.current_stock, '，最低库存：', i.min_stock),
             'INVENTORY_ALERT',
-            1
+            'MRC-174000000001'
         FROM inventory i
         JOIN products p ON i.product_id = p.product_id
         WHERE p.store_id = v_store_id
@@ -1326,7 +1337,7 @@ BEGIN
     WHERE (access_token_expires_at < NOW() - INTERVAL 1 DAY)
        OR (refresh_token_expires_at < NOW() - INTERVAL 7 DAY)
        OR (status = 'INACTIVE' AND updated_at < NOW() - INTERVAL 1 DAY);
-END//
+END;
 
 -- 清理已读通知 (保留30天)
 CREATE EVENT IF NOT EXISTS ev_cleanup_old_notifications
@@ -1337,7 +1348,7 @@ BEGIN
     DELETE FROM notifications 
     WHERE is_read = TRUE 
       AND read_at < NOW() - INTERVAL 30 DAY;
-END//
+END;
 
 -- 数据库连接数监控
 CREATE EVENT IF NOT EXISTS ev_monitor_connections
@@ -1355,15 +1366,16 @@ BEGIN
     SELECT @@max_connections INTO max_connections_limit;
     
     IF current_connections > max_connections_limit * 0.8 THEN
-        INSERT INTO system_alerts (alert_type, alert_level, alert_message, alert_data)
+        INSERT INTO system_alerts (alert_id, alert_type, alert_level, alert_message, alert_data)
         VALUES (
+            UUID(),
             'HIGH_CONNECTIONS', 
             'WARNING',
             CONCAT('数据库连接数过高: ', current_connections, '/', max_connections_limit),
             JSON_OBJECT('current_connections', current_connections, 'max_connections', max_connections_limit)
         );
     END IF;
-END//
+END;
 
 -- 每周统计信息更新
 CREATE EVENT IF NOT EXISTS ev_weekly_stats_update
@@ -1376,7 +1388,7 @@ BEGIN
     
     INSERT INTO performance_metrics (metric_id, metric_name, metric_value, measured_at)
     SELECT 
-        CONCAT('MET-', UNIX_TIMESTAMP(NOW()), '-001'),
+        UUID(),
         'avg_order_processing_time',
         AVG(TIMESTAMPDIFF(SECOND, created_at, updated_at)),
         NOW()
@@ -1386,13 +1398,13 @@ BEGIN
       
     INSERT INTO performance_metrics (metric_id, metric_name, metric_value, measured_at)
     SELECT 
-        CONCAT('MET-', UNIX_TIMESTAMP(NOW()), '-002'),
+        UUID(),
         'daily_order_count',
         COUNT(*) / 7.0,
         NOW()
     FROM orders 
     WHERE created_at >= CURDATE() - INTERVAL 7 DAY;
-END//
+END;
 
 DELIMITER ;
 
@@ -1402,16 +1414,16 @@ DELIMITER ;
 
 -- 创建只读用户 (用于报表查询)
 CREATE USER IF NOT EXISTS 'pos_readonly'@'%' IDENTIFIED BY 'ReadOnly@2024!';
-GRANT SELECT ON pos_system.* TO 'pos_readonly'@'%';
+GRANT SELECT ON *.* TO 'pos_readonly'@'%';
 GRANT SELECT ON performance_schema.* TO 'pos_readonly'@'%';
 
 -- 创建备份用户
 CREATE USER IF NOT EXISTS 'pos_backup'@'localhost' IDENTIFIED BY 'Backup@2024!';
-GRANT SELECT, LOCK TABLES, SHOW VIEW, EVENT, TRIGGER ON pos_system.* TO 'pos_backup'@'localhost';
+GRANT SELECT, LOCK TABLES, SHOW VIEW, EVENT, TRIGGER ON *.* TO 'pos_backup'@'localhost';
 
 -- 创建应用用户 (限制权限)
 CREATE USER IF NOT EXISTS 'pos_app'@'%' IDENTIFIED BY 'PosApp@2024!';
-GRANT SELECT, INSERT, UPDATE, DELETE ON pos_system.* TO 'pos_app'@'%';
-GRANT EXECUTE ON pos_system.* TO 'pos_app'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON *.* TO 'pos_app'@'%';
+GRANT EXECUTE ON *.* TO 'pos_app'@'%';
 
 -- 完成POS系统数据库初始化

@@ -1,11 +1,14 @@
 package com.example.pos_backend.exception;
 
+import java.io.Serial;
+
 /**
  * 设备码未找到异常
  * 当根据ID或设备码查找设备码记录时，如果设备码不存在则抛出此异常
  */
 public class DeviceCodeNotFoundException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**
