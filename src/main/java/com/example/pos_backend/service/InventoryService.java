@@ -7,6 +7,7 @@ import com.example.pos_backend.repository.InventoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Service
@@ -22,7 +23,7 @@ public class InventoryService {
         inventory.setCurrentStock(dto.getCurrentStock());
         inventory.setMinStock(dto.getMinStock());
         inventory.setMaxStock(dto.getMaxStock());
-        inventory.setCostPrice(dto.getCostPrice());
+        inventory.setCostPrice(dto.getCostPrice() != null ? BigDecimal.valueOf(dto.getCostPrice()) : null);
         inventory.setCreatedBy(dto.getCreatedBy());
         inventory.setIsDeleted(false);
 

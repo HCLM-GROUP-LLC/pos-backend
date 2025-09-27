@@ -14,7 +14,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "user_sessions", schema = "posdb")
+@Table(name = "user_sessions", schema = "pos_db")
 public class UserSession {
     @Id
     @Column(name = "session_id", nullable = false, columnDefinition = "CHAR(36)")
@@ -35,10 +35,10 @@ public class UserSession {
     @Column(name = "refresh_token", length = 500)
     private String refreshToken;
 
-    @Column(name = "access_token_expires_at")
+    @Column(name = "access_token_expires_at", columnDefinition = "TIMESTAMP")
     private Instant accessTokenExpiresAt;
 
-    @Column(name = "refresh_token_expires_at")
+    @Column(name = "refresh_token_expires_at", columnDefinition = "TIMESTAMP")
     private Instant refreshTokenExpiresAt;
 
     @Size(max = 45)
@@ -54,24 +54,24 @@ public class UserSession {
     @Column(name = "status", length = 50)
     private String status;
 
-    @Column(name = "last_activity_at")
+    @Column(name = "last_activity_at", columnDefinition = "TIMESTAMP")
     private Instant lastActivityAt;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "created_at")
+    @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Instant createdAt;
 
     @Column(name = "created_by", columnDefinition = "CHAR(36)")
     private String createdBy;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private Instant updatedAt;
 
     @Column(name = "updated_by", columnDefinition = "CHAR(36)")
     private String updatedBy;
 
     @ColumnDefault("0")
-    @Column(name = "is_deleted")
+    @Column(name = "is_deleted", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private Boolean isDeleted;
 }

@@ -14,11 +14,15 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "devices", schema = "posdb")
+@Table(name = "devices", schema = "pos_db")
 public class Device {
     @Id
     @Column(name = "device_id", nullable = false, columnDefinition = "CHAR(36)")
-    private String id;
+    private String deviceId;
+
+    @NotNull
+    @Column(name = "store_id", nullable = false, columnDefinition = "CHAR(36)")
+    private String storeId;
 
     @Size(max = 100)
     @NotNull
@@ -38,7 +42,7 @@ public class Device {
     @Column(name = "ip_address", length = 15)
     private String ipAddress;
 
-    @Column(name = "last_online")
+    @Column(name = "last_online", columnDefinition = "TIMESTAMP")
     private Instant lastOnline;
 
     @ColumnDefault("'OFFLINE'")
@@ -46,15 +50,15 @@ public class Device {
     private String status;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "registered_at")
+    @Column(name = "registered_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Instant registeredAt;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "created_at")
+    @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Instant createdAt;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private Instant updatedAt;
 
     @Column(name = "created_by", columnDefinition = "CHAR(36)")
@@ -64,7 +68,7 @@ public class Device {
     private String updatedBy;
 
     @ColumnDefault("0")
-    @Column(name = "is_deleted")
+    @Column(name = "is_deleted", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private Boolean isDeleted;
 
 }

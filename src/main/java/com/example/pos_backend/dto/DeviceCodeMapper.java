@@ -69,7 +69,7 @@ public class DeviceCodeMapper {
         }
 
         return DeviceCodeResponseDTO.builder()
-                .id(deviceCode.getId())
+                .id(deviceCode.getDeviceCodeId())
                 .deviceCode(deviceCode.getDeviceCode())
                 .deviceId(deviceCode.getDeviceId())
                 .deviceFingerprint(deviceCode.getDeviceFingerprint())

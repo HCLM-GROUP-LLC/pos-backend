@@ -1,6 +1,7 @@
 package com.example.pos_backend.dto;
 
 import lombok.*;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Data
@@ -13,6 +14,6 @@ public class InventoryResponseDTO {
     private Integer currentStock;
     private Integer minStock;
     private Integer maxStock;
-    private Double costPrice;
+    private BigDecimal costPrice;
     private Boolean isDeleted;
 }

@@ -6,8 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * 用户响应 DTO
@@ -18,36 +18,17 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserResponseDTO {
-
-    private Long id;
-
-    private Long orgId;
-
-    private Long storeId;
-
+    private String userId;
     private String username;
-
     private String email;
-
     private String firstName;
-
     private String lastName;
-
-    private String role;
-
+    private String roleId;
+    private String roleName;
     private String status;
-
     private BigDecimal salary;
-
     private LocalDate hireDate;
+    private LocalDateTime lastLoginAt;
 
-    private Instant lastLoginAt;
-
-    private Instant createdAt;
-
-    private Instant updatedAt;
-
-    private Long createdBy;
-
-    private Long updatedBy;
+    // Lombok @Data annotation automatically generates getters, setters, equals, hashCode, and toString
 }

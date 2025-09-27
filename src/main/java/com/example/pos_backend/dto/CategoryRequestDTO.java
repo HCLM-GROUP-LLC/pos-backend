@@ -19,6 +19,7 @@ public class CategoryRequestDTO {
 
     private String description;
     private Integer displayOrder;
+    @Builder.Default
     private Boolean isActive = true;
     @NotNull(message = "创建人不能为空")
     private UUID createdBy;

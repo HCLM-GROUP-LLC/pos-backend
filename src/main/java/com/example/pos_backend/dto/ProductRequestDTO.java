@@ -33,6 +33,7 @@ public class ProductRequestDTO {
 
     private String imageUrl;
 
+    @Builder.Default
     private Boolean isActive = true;
 
     @NotNull(message = "创建人不能为空")

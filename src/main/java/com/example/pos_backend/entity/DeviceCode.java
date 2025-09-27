@@ -14,11 +14,11 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "device_codes", schema = "posdb")
+@Table(name = "device_codes", schema = "pos_db")
 public class DeviceCode {
     @Id
     @Column(name = "device_code_id", nullable = false, columnDefinition = "CHAR(36)")
-    private String id;
+    private String deviceCodeId;
 
     @Size(max = 12)
     @NotNull
@@ -47,21 +47,21 @@ public class DeviceCode {
     private String status;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "issued_at")
+    @Column(name = "issued_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Instant issuedAt;
 
-    @Column(name = "expired_at")
+    @Column(name = "expired_at", columnDefinition = "TIMESTAMP")
     private Instant expiredAt;
 
-    @Column(name = "bound_at")
+    @Column(name = "bound_at", columnDefinition = "TIMESTAMP")
     private Instant boundAt;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "created_at")
+    @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Instant createdAt;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private Instant updatedAt;
 
     @Column(name = "created_by", columnDefinition = "CHAR(36)")
@@ -71,6 +71,6 @@ public class DeviceCode {
     private String updatedBy;
 
     @ColumnDefault("0")
-    @Column(name = "is_deleted")
+    @Column(name = "is_deleted", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private Boolean isDeleted;
 }
