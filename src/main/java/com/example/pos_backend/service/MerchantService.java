@@ -1,5 +1,8 @@
 package com.example.pos_backend.service;
 
+import com.example.pos_backend.common.ClientTypeEnum;
+import com.example.pos_backend.common.SaTokenUtil;
+import com.example.pos_backend.common.UserTypeEnum;
 import com.example.pos_backend.dto.*;
 import com.example.pos_backend.entity.Merchant;
 import com.example.pos_backend.entity.Store;
@@ -10,6 +13,7 @@ import com.example.pos_backend.repository.UserSessionRepository;
 import com.example.pos_backend.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.usertype.UserType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,24 +34,13 @@ public class MerchantService {
 
     private final MerchantRepository merchantRepository;
     private final StoreRepository storeRepository;
-    private final UserSessionRepository userSessionRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
     private static final Random RANDOM = new Random();
-
-    /**
-     * 商家注册 - 自动登录版本
-     */
-    @Transactional
-    public MerchantLoginResponseDTO registerMerchant(MerchantRequestDTO requestDTO) {
-        return registerMerchant(requestDTO, null, null);
-    }
-
     /**
      * 商家注册 - 带设备信息的自动登录版本
      */
     @Transactional
-    public MerchantLoginResponseDTO registerMerchant(MerchantRequestDTO requestDTO, String ipAddress, String userAgent) {
+    public void registerMerchant(MerchantRequestDTO requestDTO, String ipAddress, String userAgent) {
         // 1. 验证邮箱是否已存在
         if (merchantRepository.existsByEmailAndIsDeleted(requestDTO.getEmail(), false)) {
             throw new BusinessException("邮箱已存在: " + requestDTO.getEmail());
@@ -74,7 +67,7 @@ public class MerchantService {
         log.info("Created default store: {} with ID: {}", savedStore.getStoreName(), savedStore.getId());
 
         // 5. 自动登录 - 生成令牌和会话
-        return performLogin(savedMerchant, savedStore, ipAddress, userAgent);
+        performLogin(savedMerchant, savedStore, ipAddress, userAgent, ClientTypeEnum.WEB, UserTypeEnum.MERCHANT);
     }
 
     /**
@@ -181,18 +174,10 @@ public class MerchantService {
     }
 
     /**
-     * 商家认证（登录）- OAuth2版本
-     */
-    @Transactional
-    public MerchantLoginResponseDTO authenticateMerchant(String email, String password) {
-        return authenticateMerchant(email, password, null, null);
-    }
-
-    /**
      * 商家认证（登录）- 带设备信息的OAuth2版本
      */
     @Transactional
-    public MerchantLoginResponseDTO authenticateMerchant(String email, String password, String ipAddress, String userAgent) {
+    public void authenticateMerchant(String email, String password, String ipAddress, String userAgent) {
         Merchant merchant = merchantRepository.findByEmailAndIsDeleted(email, false)
                 .orElseThrow(() -> new BusinessException("邮箱或密码错误"));
 
@@ -208,56 +193,14 @@ public class MerchantService {
         Store defaultStore = storeRepository.findDefaultStoreByMerchantId(merchant.getId()).orElse(null);
 
         log.info("Merchant authenticated: {} with ID: {}", merchant.getBusinessName(), merchant.getId());
-        return performLogin(merchant, defaultStore, ipAddress, userAgent);
+        performLogin(merchant, defaultStore, ipAddress, userAgent, ClientTypeEnum.WEB, UserTypeEnum.MERCHANT);
     }
 
     /**
      * 执行登录流程 - 生成令牌和创建会话
      */
-    private MerchantLoginResponseDTO performLogin(Merchant merchant, Store store, String ipAddress, String userAgent) {
-        Instant now = Instant.now();
-        
-        // 1. 生成JWT令牌
-        String accessToken = jwtService.generateAccessToken(merchant.getId(), merchant.getEmail(), merchant.getBusinessName());
-        String refreshToken = jwtService.generateRefreshToken(merchant.getId());
-        String sessionId = jwtService.generateSessionId();
-
-        // 2. 计算过期时间
-        Long accessTokenExpiration = jwtService.getAccessTokenExpiration();
-        Long refreshTokenExpiration = jwtService.getRefreshTokenExpiration();
-        Instant accessTokenExpiresAt = now.plusSeconds(accessTokenExpiration);
-        Instant refreshTokenExpiresAt = now.plusSeconds(refreshTokenExpiration);
-
-        // 3. 创建用户会话记录
-        UserSession session = UserSession.builder()
-                .sessionId(sessionId)
-                .userId(merchant.getId()) // 商家ID作为用户ID
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .accessTokenExpiresAt(accessTokenExpiresAt)
-                .refreshTokenExpiresAt(refreshTokenExpiresAt)
-                .ipAddress(ipAddress)
-                .userAgent(userAgent)
-                .status("ACTIVE")
-                .lastActivityAt(now)
-                .createdAt(now)
-                .createdBy(merchant.getId())
-                .isDeleted(false)
-                .build();
-
-        userSessionRepository.save(session);
-        log.info("Created session: {} for merchant: {}", sessionId, merchant.getId());
-
-        // 4. 返回OAuth2风格的响应
-        return MerchantMapper.toLoginResponseDTO(
-                merchant, 
-                store, 
-                accessToken, 
-                refreshToken,
-                accessTokenExpiration,
-                refreshTokenExpiration,
-                sessionId
-        );
+    private void performLogin(Merchant merchant, Store store, String ipAddress, String userAgent, ClientTypeEnum clientType, UserTypeEnum userType) {
+        SaTokenUtil.login(merchant.getId(), clientType, userType);
     }
 
     /**

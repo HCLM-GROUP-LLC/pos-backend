@@ -1,5 +1,6 @@
 package com.example.pos_backend.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.example.pos_backend.dto.UserRequestDTO;
 import com.example.pos_backend.dto.UserResponseDTO;
 import com.example.pos_backend.service.UserService;
@@ -7,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@SaCheckLogin //登录校验
 @RestController
 @RequestMapping("/api/users")
 public class UserController {

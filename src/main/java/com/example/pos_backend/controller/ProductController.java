@@ -1,5 +1,6 @@
 package com.example.pos_backend.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.example.pos_backend.dto.ProductRequestDTO;
 import com.example.pos_backend.dto.ProductResponseDTO;
 import com.example.pos_backend.service.ProductService;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
-
+@SaCheckLogin //登录校验
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor

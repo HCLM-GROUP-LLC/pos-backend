@@ -1,0 +1,29 @@
+package com.example.pos_backend.common;
+
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.util.StringUtils;
+
+/**
+ * pos系统公用工具类
+ *
+ * @author hanhua
+ * @since 2025/10/03
+ */
+public class PosUtil {
+    /**
+     * 获取客户端真实IP地址
+     */
+    public static String getClientIpAddress(HttpServletRequest request) {
+        String xForwardedFor = request.getHeader("X-Forwarded-For");
+        if (StringUtils.hasText(xForwardedFor) && !"unknown".equalsIgnoreCase(xForwardedFor)) {
+            return xForwardedFor.split(",")[0].trim();
+        }
+
+        String xRealIp = request.getHeader("X-Real-IP");
+        if (StringUtils.hasText(xRealIp) && !"unknown".equalsIgnoreCase(xRealIp)) {
+            return xRealIp;
+        }
+
+        return request.getRemoteAddr();
+    }
+}
