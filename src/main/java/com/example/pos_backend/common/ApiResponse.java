@@ -1,5 +1,6 @@
 package com.example.pos_backend.common;
 
+import com.example.pos_backend.constants.GlobalConstants;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -60,7 +61,7 @@ public class ApiResponse<T> {
      */
     public static <T> ApiResponse<T> success(T data) {
         return ApiResponse.<T>builder()
-                .code(200)
+                .code(GlobalConstants.ResponseCode.SUCCESS)
                 .success(true)
                 .message("操作成功")
                 .data(data)
@@ -78,7 +79,7 @@ public class ApiResponse<T> {
      */
     public static <T> ApiResponse<T> success(T data, String message) {
         return ApiResponse.<T>builder()
-                .code(200)
+                .code(GlobalConstants.ResponseCode.SUCCESS)
                 .success(true)
                 .message(message)
                 .data(data)
@@ -95,7 +96,7 @@ public class ApiResponse<T> {
      */
     public static <T> ApiResponse<T> success(String message) {
         return ApiResponse.<T>builder()
-                .code(200)
+                .code(GlobalConstants.ResponseCode.SUCCESS)
                 .success(true)
                 .message(message)
                 .data(null)
@@ -183,7 +184,7 @@ public class ApiResponse<T> {
      */
     public static <T> ApiResponse<T> updated(T data) {
         return ApiResponse.<T>builder()
-                .code(200)
+                .code(GlobalConstants.ResponseCode.SUCCESS)
                 .success(true)
                 .message("更新成功")
                 .data(data)
@@ -199,7 +200,7 @@ public class ApiResponse<T> {
      */
     public static <T> ApiResponse<T> deleted() {
         return ApiResponse.<T>builder()
-                .code(200)
+                .code(GlobalConstants.ResponseCode.SUCCESS)
                 .success(true)
                 .message("删除成功")
                 .data(null)

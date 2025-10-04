@@ -1,19 +1,20 @@
 package com.example.pos_backend.service;
 
 import com.example.pos_backend.common.ClientTypeEnum;
+import com.example.pos_backend.common.RandomUtil;
 import com.example.pos_backend.common.SaTokenUtil;
 import com.example.pos_backend.common.UserTypeEnum;
-import com.example.pos_backend.dto.*;
+import com.example.pos_backend.dto.MerchantMapper;
+import com.example.pos_backend.dto.MerchantRequestDTO;
+import com.example.pos_backend.dto.MerchantResponseDTO;
+import com.example.pos_backend.dto.MerchantUpdateDTO;
 import com.example.pos_backend.entity.Merchant;
 import com.example.pos_backend.entity.Store;
-import com.example.pos_backend.entity.UserSession;
+import com.example.pos_backend.exception.BusinessException;
 import com.example.pos_backend.repository.MerchantRepository;
 import com.example.pos_backend.repository.StoreRepository;
-import com.example.pos_backend.repository.UserSessionRepository;
-import com.example.pos_backend.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.usertype.UserType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +37,7 @@ public class MerchantService {
     private final StoreRepository storeRepository;
     private final PasswordEncoder passwordEncoder;
     private static final Random RANDOM = new Random();
+
     /**
      * 商家注册 - 带设备信息的自动登录版本
      */
@@ -76,7 +78,7 @@ public class MerchantService {
     public MerchantResponseDTO getMerchantById(String merchantId) {
         Merchant merchant = merchantRepository.findById(merchantId)
                 .orElseThrow(() -> new BusinessException("商家不存在: " + merchantId));
-        
+
         if (merchant.getIsDeleted()) {
             throw new BusinessException("商家已被删除: " + merchantId);
         }
@@ -126,9 +128,9 @@ public class MerchantService {
         }
 
         // 检查邮箱是否被其他商家使用
-        if (updateDTO.getEmail() != null && 
-            !updateDTO.getEmail().equals(merchant.getEmail()) &&
-            merchantRepository.existsByEmailAndIdNot(updateDTO.getEmail(), merchantId)) {
+        if (updateDTO.getEmail() != null &&
+                !updateDTO.getEmail().equals(merchant.getEmail()) &&
+                merchantRepository.existsByEmailAndIdNot(updateDTO.getEmail(), merchantId)) {
             throw new BusinessException("邮箱已被其他商家使用: " + updateDTO.getEmail());
         }
 
@@ -230,17 +232,13 @@ public class MerchantService {
      * 生成商家ID - Square风格
      */
     private String generateMerchantId() {
-        long timestamp = System.currentTimeMillis();
-        int randomNum = RANDOM.nextInt(1000);
-        return String.format("MRC-%d-%03d", timestamp, randomNum);
+        return RandomUtil.squareStyle("MRC");
     }
 
     /**
      * 生成门店ID - Square风格
      */
     private String generateLocationId() {
-        long timestamp = System.currentTimeMillis();
-        int randomNum = RANDOM.nextInt(1000);
-        return String.format("LOC-%d-%03d", timestamp, randomNum);
+        return RandomUtil.squareStyle("LOC");
     }
 }

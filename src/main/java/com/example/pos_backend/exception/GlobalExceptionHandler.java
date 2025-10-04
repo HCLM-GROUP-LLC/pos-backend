@@ -85,37 +85,16 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 处理参数校验异常（@Valid 注解触发）
-     */
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Object>> handleMethodArgumentNotValidException(
-            MethodArgumentNotValidException ex, WebRequest request) {
-        log.error("参数校验异常: {}", ex.getMessage());
-
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach(error -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-
-        ApiResponse<Object> response = ApiResponse.<Object>builder()
-                .success(false)
-                .message(GlobalConstants.ResponseMessage.VALIDATION_ERROR)
-                .data(errors)
-                .timestamp(Instant.now())
-                .build();
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-    }
-
-    /**
      * 处理绑定异常
      */
     @ExceptionHandler(BindException.class)
     public ResponseEntity<ApiResponse<Object>> handleBindException(
             BindException ex, WebRequest request) {
-        log.error("绑定异常: {}", ex.getMessage());
+        if (ex instanceof MethodArgumentNotValidException argumentNotValidException) {
+            log.error("参数校验异常: {}", argumentNotValidException.getMessage());
+        } else {
+            log.error("绑定异常: {}", ex.getMessage());
+        }
 
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach(error -> {
@@ -125,6 +104,7 @@ public class GlobalExceptionHandler {
         });
 
         ApiResponse<Object> response = ApiResponse.<Object>builder()
+                .code(GlobalConstants.ResponseCode.BAD_REQUEST)//400,方便前端显示错误信息
                 .success(false)
                 .message(GlobalConstants.ResponseMessage.VALIDATION_ERROR)
                 .data(errors)

@@ -2,6 +2,9 @@ server:
     port: 8080
 
 spring:
+    messages:
+        basename: i18n/messages
+        encoding: UTF-8
     datasource:
         url: jdbc:mysql://localhost:3306/pos_db?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Shanghai
         username: root
@@ -19,6 +22,10 @@ spring:
         properties:
             hibernate:
                 format_sql: true
+    data:
+        redis:
+            host: localhost
+            port: 6379
 
 logging:
     level:

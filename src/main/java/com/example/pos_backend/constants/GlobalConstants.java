@@ -41,13 +41,30 @@ public class GlobalConstants {
         public static final int LONG_TEXT = 255;
         public static final int DESCRIPTION = 500;
         public static final int CONTENT = 2000;
-        
+
         // 特定字段长度
         public static final int USERNAME = 50;
         public static final int EMAIL = 100;
         public static final int PASSWORD = 255;
         public static final int PHONE = 20;
         public static final int NAME = 50;
+    }
+
+    /**
+     * 响应代码
+     *
+     * @author hanhua
+     * @since 2025/10/04
+     */
+    public interface ResponseCode {
+        /**
+         * 成功
+         */
+        int SUCCESS = 200;
+        /**
+         * 错误请求,参数校验错误
+         */
+        int BAD_REQUEST = 400;
     }
 
     /**
