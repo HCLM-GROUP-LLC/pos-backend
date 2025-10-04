@@ -92,11 +92,23 @@
             <artifactId>sa-token-spring-boot3-starter</artifactId>
             <version>1.44.0</version>
         </dependency>
-        <!-- redisson 用于操作redis 缓存 -->
+        <!-- Sa-Token 整合 redisson -->
         <dependency>
-            <groupId>org.redisson</groupId>
-            <artifactId>redisson-spring-boot-starter</artifactId>
-            <version>3.52.0</version>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-redisson-spring-boot-starter</artifactId>
+            <version>1.44.0</version>
+        </dependency>
+        <!-- Sa-Token 整合 Fastjson2 -->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-fastjson2</artifactId>
+            <version>1.44.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.alibaba.fastjson2</groupId>
+                    <artifactId>fastjson2</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!--  json序列化工具 优化json序列化与反序列化速度 -->
         <dependency>

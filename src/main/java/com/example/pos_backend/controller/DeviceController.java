@@ -1,5 +1,6 @@
 package com.example.pos_backend.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.example.pos_backend.common.ApiResponse;
 import com.example.pos_backend.dto.request.DeviceIDGenRequestDTO;
 import com.example.pos_backend.service.DeviceService;
@@ -22,6 +23,7 @@ import java.util.Set;
  * @author hanhua
  * @since 2025/10/03
  */
+@SaCheckLogin // 需要登录
 @Tag(name = "设备控制器", description = "设备控制器")
 @Validated // 开启数据验证
 @Slf4j
