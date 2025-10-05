@@ -82,4 +82,13 @@ public class RandomUtil {
     public static String lettersAndNumbers(int length) {
         return getRandomString(length, UPPER_CASE_LETTERS + LOWER_CASE_LETTERS + NUMBERS);
     }
+
+    /**
+     * uuid
+     *
+     * @return {@link String }
+     */
+    public static String uuid() {
+        return java.util.UUID.randomUUID().toString();
+    }
 }

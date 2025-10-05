@@ -52,8 +52,7 @@ CREATE TABLE merchant_bank_accounts (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     updated_by CHAR(36) COMMENT '更新人UUID',
     is_deleted BOOLEAN DEFAULT FALSE,
-    
-    FOREIGN KEY (merchant_id) REFERENCES merchants(id),
+
     INDEX idx_bank_accounts_merchant (merchant_id, is_deleted),
     INDEX idx_bank_accounts_primary (merchant_id, is_primary, is_deleted),
     INDEX idx_bank_accounts_status (status, is_verified, is_deleted)
@@ -75,8 +74,7 @@ CREATE TABLE stores (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     updated_by CHAR(36) COMMENT '更新人UUID',
     is_deleted BOOLEAN DEFAULT FALSE,
-    
-    FOREIGN KEY (merchant_id) REFERENCES merchants(id),
+
     INDEX idx_stores_merchant (merchant_id, is_deleted),
     INDEX idx_stores_status (status, is_deleted)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='门店表（UUID主键）';
@@ -117,9 +115,7 @@ CREATE TABLE role_permissions (
     permission_id CHAR(36) NOT NULL COMMENT '权限ID',
     granted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '授权时间',
 
-    PRIMARY KEY (role_id, permission_id),
-    FOREIGN KEY (role_id) REFERENCES roles(role_id),
-    FOREIGN KEY (permission_id) REFERENCES permissions(permission_id)
+    PRIMARY KEY (role_id, permission_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='角色权限关联表';
 
 -- 1.6 用户表 (users) - 门店员工 [MOVED AFTER ROLES]
@@ -142,9 +138,6 @@ CREATE TABLE users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     is_deleted BOOLEAN DEFAULT FALSE,
 
-    FOREIGN KEY (merchant_id) REFERENCES merchants(id),
-    FOREIGN KEY (store_id) REFERENCES stores(id),
-    FOREIGN KEY (role_id) REFERENCES roles(role_id),
     UNIQUE INDEX idx_users_username (merchant_id, username),
     UNIQUE INDEX idx_users_email (merchant_id, email),
     INDEX idx_users_store (store_id),
@@ -170,8 +163,7 @@ CREATE TABLE categories (
     created_by CHAR(36) COMMENT '创建人UUID',
     updated_by CHAR(36) COMMENT '更新人UUID',
     is_deleted BOOLEAN DEFAULT FALSE COMMENT '软删除标识',
-    
-    FOREIGN KEY (store_id) REFERENCES stores(id),
+
     INDEX idx_categories_store (store_id, is_active, is_deleted),
     INDEX idx_categories_order (display_order)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='商品分类表';
@@ -192,10 +184,7 @@ CREATE TABLE products (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     updated_by CHAR(36) DEFAULT NULL COMMENT '更新人UUID',
     is_deleted BOOLEAN DEFAULT FALSE,
-    
-    FOREIGN KEY (merchant_id) REFERENCES merchants(id),
-    FOREIGN KEY (store_id) REFERENCES stores(id),
-    FOREIGN KEY (category_id) REFERENCES categories(category_id),
+
     INDEX idx_products_store (merchant_id, store_id),
     INDEX idx_products_pos_list (store_id, category_id, is_active, is_deleted, product_name, price),
     INDEX idx_products_sync (store_id, updated_at, is_deleted),
@@ -216,8 +205,7 @@ CREATE TABLE inventory (
     created_by CHAR(36) COMMENT '创建人UUID',
     updated_by CHAR(36) COMMENT '更新人UUID',
     is_deleted BOOLEAN DEFAULT FALSE COMMENT '软删除标识',
-    
-    FOREIGN KEY (product_id) REFERENCES products(product_id),
+
     UNIQUE KEY uk_inventory_product (product_id),
     INDEX idx_inventory_stock_level (current_stock, min_stock),
     INDEX idx_inventory_alert (current_stock, min_stock, product_id),
@@ -244,10 +232,6 @@ CREATE TABLE menu_categories (
      INDEX idx_org_store (org_id, store_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='菜单分类表';
 
--- 添加menu_categories表的store外键约束（延迟添加以避免字符集冲突）
-SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE CONSTRAINT_NAME = 'fk_menu_categories_store' AND TABLE_SCHEMA = DATABASE()) = 0, 
-    'ALTER TABLE menu_categories ADD CONSTRAINT fk_menu_categories_store FOREIGN KEY (store_id) REFERENCES stores(id)', 'SELECT 1');
-PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
 --  菜单项表 (menu_items)
 CREATE TABLE menu_items (
@@ -267,14 +251,9 @@ CREATE TABLE menu_items (
     updated_by CHAR(36) COMMENT '更新人UUID',
     is_deleted BOOLEAN DEFAULT FALSE COMMENT '是否删除标记',
 
-    FOREIGN KEY (category_id) REFERENCES menu_categories(id),
     INDEX idx_org_store_cat (org_id, store_id, category_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='菜单项表';
 
--- 添加menu_items表的store外键约束（延迟添加以避免字符集冲突）
-SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE CONSTRAINT_NAME = 'fk_menu_items_store' AND TABLE_SCHEMA = DATABASE()) = 0, 
-    'ALTER TABLE menu_items ADD CONSTRAINT fk_menu_items_store FOREIGN KEY (store_id) REFERENCES stores(id)', 'SELECT 1');
-PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
 -- =================================
 -- 3. 订单与支付管理模块
@@ -302,10 +281,6 @@ CREATE TABLE customers (
     INDEX idx_customers_membership (store_id, membership_level, points_balance, is_deleted)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='客户表';
 
--- 添加customers表的store外键约束（延迟添加以避免字符集冲突）
-SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE CONSTRAINT_NAME = 'fk_customers_store' AND TABLE_SCHEMA = DATABASE()) = 0, 
-    'ALTER TABLE customers ADD CONSTRAINT fk_customers_store FOREIGN KEY (store_id) REFERENCES stores(id)', 'SELECT 1');
-PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
 -- 3.2 订单表 (orders)
 CREATE TABLE orders (
@@ -329,11 +304,7 @@ CREATE TABLE orders (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     updated_by CHAR(36) DEFAULT NULL COMMENT '更新人UUID',
     is_deleted BOOLEAN DEFAULT FALSE,
-    
-    FOREIGN KEY (merchant_id) REFERENCES merchants(id),
-    FOREIGN KEY (store_id) REFERENCES stores(id),
-    FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
+
     UNIQUE KEY uk_orders_number (order_number),
     UNIQUE KEY uk_orders_idempotency (idempotency_key),
     INDEX idx_orders_store (merchant_id, store_id),
@@ -359,9 +330,7 @@ CREATE TABLE order_items (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     updated_by CHAR(36) DEFAULT NULL COMMENT '更新人UUID',
     is_deleted BOOLEAN DEFAULT FALSE,
-    
-    FOREIGN KEY (order_id) REFERENCES orders(order_id),
-    FOREIGN KEY (product_id) REFERENCES products(product_id),
+
     INDEX idx_order_items_order (order_id),
     INDEX idx_order_items_product (product_id),
     INDEX idx_order_items_detail (order_id, product_id, quantity, unit_price, subtotal, is_deleted),
@@ -383,8 +352,7 @@ CREATE TABLE payments (
     created_by CHAR(36) COMMENT '创建人UUID',
     updated_by CHAR(36) COMMENT '更新人UUID',
     is_deleted BOOLEAN DEFAULT FALSE COMMENT '软删除标识',
-    
-    FOREIGN KEY (order_id) REFERENCES orders(order_id),
+
     UNIQUE KEY uk_payments_idempotency (idempotency_key),
     INDEX idx_payments_order (order_id),
     INDEX idx_payments_status (status, processed_at),
@@ -412,8 +380,7 @@ CREATE TABLE coupons (
     created_by CHAR(36) COMMENT '创建人UUID',
     updated_by CHAR(36) COMMENT '更新人UUID',
     is_deleted BOOLEAN DEFAULT FALSE COMMENT '软删除标识',
-    
-    FOREIGN KEY (store_id) REFERENCES stores(id),
+
     UNIQUE KEY uk_coupons_code (coupon_code),
     INDEX idx_coupons_store (store_id, is_active, is_deleted),
     INDEX idx_coupons_validity (valid_from, valid_until)
@@ -427,9 +394,7 @@ CREATE TABLE order_coupons (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '使用时间',
     created_by CHAR(36) COMMENT '操作人UUID',
     
-    PRIMARY KEY (order_id, coupon_id),
-    FOREIGN KEY (order_id) REFERENCES orders(order_id),
-    FOREIGN KEY (coupon_id) REFERENCES coupons(coupon_id)
+    PRIMARY KEY (order_id, coupon_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='订单优惠券关联表';
 
 -- =================================
@@ -453,9 +418,7 @@ CREATE TABLE attendance (
     created_by CHAR(36) COMMENT '创建人UUID',
     updated_by CHAR(36) COMMENT '更新人UUID',
     is_deleted BOOLEAN DEFAULT FALSE COMMENT '软删除标识',
-    
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (store_id) REFERENCES stores(id),
+
     UNIQUE KEY uk_attendance_idempotency (idempotency_key),
     INDEX idx_attendance_user_date (user_id, clock_in_time),
     INDEX idx_attendance_store_date (store_id, clock_in_time),
@@ -483,8 +446,7 @@ CREATE TABLE user_sessions (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     updated_by CHAR(36) COMMENT '更新人UUID',
     is_deleted BOOLEAN DEFAULT FALSE COMMENT '软删除标识',
-    
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
+
     INDEX idx_sessions_user (user_id, status, is_deleted),
     INDEX idx_sessions_access_token (access_token),
     INDEX idx_sessions_expires (access_token_expires_at, refresh_token_expires_at),
@@ -506,9 +468,7 @@ CREATE TABLE closings (
     created_by CHAR(36) COMMENT '创建人UUID',
     updated_by CHAR(36) COMMENT '更新人UUID',
     is_deleted BOOLEAN DEFAULT FALSE COMMENT '软删除标识',
-    
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (store_id) REFERENCES stores(id),
+
     INDEX idx_closings_store_date (store_id, closing_date),
     INDEX idx_closings_user (user_id),
     INDEX idx_closings_sync (sync_status)
@@ -527,8 +487,7 @@ CREATE TABLE receipts (
     created_by CHAR(36) COMMENT '创建人UUID',
     updated_by CHAR(36) COMMENT '更新人UUID',
     is_deleted BOOLEAN DEFAULT FALSE COMMENT '软删除标识',
-    
-    FOREIGN KEY (order_id) REFERENCES orders(order_id),
+
     INDEX idx_receipts_order (order_id),
     INDEX idx_receipts_status (status, sent_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='收据记录表';
@@ -553,8 +512,7 @@ CREATE TABLE devices (
     created_by CHAR(36) COMMENT '创建人UUID',
     updated_by CHAR(36) COMMENT '更新人UUID',
     is_deleted BOOLEAN DEFAULT FALSE COMMENT '软删除标识',
-    
-    FOREIGN KEY (store_id) REFERENCES stores(id),
+
     INDEX idx_devices_store (store_id, is_deleted),
     INDEX idx_devices_status (status, last_online),
     INDEX idx_devices_mac (mac_address),
@@ -562,10 +520,6 @@ CREATE TABLE devices (
     INDEX idx_devices_mac_lookup (mac_address)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='设备表';
 
--- 添加会话表与设备表的外键约束（如果不存在）
-SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE CONSTRAINT_NAME = 'fk_sessions_device' AND TABLE_SCHEMA = DATABASE()) = 0, 
-    'ALTER TABLE user_sessions ADD CONSTRAINT fk_sessions_device FOREIGN KEY (device_id) REFERENCES devices(device_id)', 'SELECT 1');
-PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
 -- 5.2 设备码表 (device_codes) - Square风格激活码
 CREATE TABLE device_codes (
@@ -594,10 +548,6 @@ CREATE TABLE device_codes (
     UNIQUE KEY uk_device_codes_code (device_code)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='设备激活码表，Square风格即时激活';
 
--- 添加device_codes表的设备外键约束（延迟添加以避免字符集冲突）
-SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE CONSTRAINT_NAME = 'fk_device_codes_device' AND TABLE_SCHEMA = DATABASE()) = 0, 
-    'ALTER TABLE device_codes ADD CONSTRAINT fk_device_codes_device FOREIGN KEY (device_id) REFERENCES devices(device_id)', 'SELECT 1');
-PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
 -- 5.3 税务规则表 (tax_rules)
 CREATE TABLE tax_rules (
@@ -615,8 +565,7 @@ CREATE TABLE tax_rules (
     created_by CHAR(36) COMMENT '创建人UUID',
     updated_by CHAR(36) COMMENT '更新人UUID',
     is_deleted BOOLEAN DEFAULT FALSE COMMENT '软删除标识',
-    
-    FOREIGN KEY (store_id) REFERENCES stores(id),
+
     INDEX idx_tax_rules_store (store_id, is_active, is_deleted),
     INDEX idx_tax_rules_effective (effective_from, effective_until)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='税务规则表';
@@ -636,9 +585,7 @@ CREATE TABLE notifications (
     updated_by CHAR(36) COMMENT '更新人UUID',
     read_at TIMESTAMP COMMENT '阅读时间',
     is_deleted BOOLEAN DEFAULT FALSE COMMENT '软删除标识',
-    
-    FOREIGN KEY (store_id) REFERENCES stores(id),
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
+
     INDEX idx_notifications_user (user_id, is_read, created_at),
     INDEX idx_notifications_store (store_id, type, created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='通知表';
@@ -662,9 +609,7 @@ CREATE TABLE daily_sales_reports (
     created_by CHAR(36) COMMENT '创建人UUID',
     updated_by CHAR(36) COMMENT '更新人UUID',
     is_deleted BOOLEAN DEFAULT FALSE COMMENT '软删除标识',
-    
-    FOREIGN KEY (store_id) REFERENCES stores(id),
-    FOREIGN KEY (top_product_id) REFERENCES products(product_id),
+
     UNIQUE KEY uk_daily_reports_store_date (store_id, report_date),
     INDEX idx_daily_reports_date (report_date),
     INDEX idx_daily_reports_store (store_id, report_date)
@@ -950,8 +895,7 @@ CREATE PROCEDURE sp_check_user_permission(
 )
 BEGIN
     DECLARE permission_count INT DEFAULT 0;
-    
-    -- Check if user's role has the requested permission using foreign key
+
     SELECT COUNT(*) INTO permission_count
     FROM users u
     JOIN roles r ON u.role_id = r.role_id

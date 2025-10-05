@@ -1,8 +1,11 @@
 package com.example.pos_backend.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.annotation.SaIgnore;
 import com.example.pos_backend.common.ApiResponse;
+import com.example.pos_backend.dto.request.DeviceAddRequestDTO;
 import com.example.pos_backend.dto.request.DeviceIDGenRequestDTO;
+import com.example.pos_backend.dto.response.DeviceAddResponse;
 import com.example.pos_backend.service.DeviceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -44,5 +47,19 @@ public class DeviceController {
     public ApiResponse<Set<String>> genCodes(@RequestBody @Valid DeviceIDGenRequestDTO request) {
         return ApiResponse.success(deviceService.genCodes(request));
     }
+
+    /**
+     * 添加设备
+     *
+     * @param request 请求
+     * @return {@link ApiResponse }<{@link Void }>
+     */
+    @SaIgnore // 忽略登录
+    @Operation(summary = "添加设备")
+    @PostMapping("/")
+    public ApiResponse<DeviceAddResponse> add(@RequestBody @Valid DeviceAddRequestDTO request) {
+        return ApiResponse.success(deviceService.addDevice(request));
+    }
+
 
 }

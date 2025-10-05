@@ -17,6 +17,13 @@ import java.util.Optional;
  */
 @Repository
 public interface DeviceRepository extends JpaRepository<Device, String>, JpaSpecificationExecutor<Device> {
+    /**
+     * 按设备id查找
+     *
+     * @param id id
+     * @return {@link Optional }<{@link Device }>
+     */
+    Optional<Device> findByDeviceId(String id);
 
     /**
      * 根据设备名称查找设备
@@ -104,9 +111,9 @@ public interface DeviceRepository extends JpaRepository<Device, String>, JpaSpec
      * 根据设备类型和时间范围查找设备
      */
     @Query("SELECT d FROM Device d WHERE d.deviceType = :deviceType AND d.createdAt BETWEEN :startTime AND :endTime AND d.isDeleted = false")
-    List<Device> findByDeviceTypeAndCreatedAtBetween(@Param("deviceType") String deviceType, 
-                                                    @Param("startTime") Instant startTime, 
-                                                    @Param("endTime") Instant endTime);
+    List<Device> findByDeviceTypeAndCreatedAtBetween(@Param("deviceType") String deviceType,
+                                                     @Param("startTime") Instant startTime,
+                                                     @Param("endTime") Instant endTime);
 
     /**
      * 统计指定状态的设备数量

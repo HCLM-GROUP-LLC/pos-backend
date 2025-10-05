@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class DeviceCodeCache {
     /**
-     * 商店id
+     * 门店id
      */
     private String storeId;
 }
