@@ -1,6 +1,7 @@
 package com.hclm.merchant.service;
 
 import com.hclm.merchant.pojo.request.MerchantLoginRequest;
+import com.hclm.merchant.pojo.response.AuthResponse;
 import com.hclm.satoken.SaTokenUtil;
 import com.hclm.web.BusinessException;
 import com.hclm.web.entity.Merchant;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class MerchantService {
     private final MerchantRepository merchantRepository;
 
-    public void login(MerchantLoginRequest request) {
+    public AuthResponse login(MerchantLoginRequest request) {
         Merchant merchant = merchantRepository.findByEmailAndIsDeleted(request.getEmail(), false)
                 .orElseThrow(() -> new BusinessException(ResponseCode.EMAIL_PASSWORD_ERROR));
 
@@ -28,5 +29,6 @@ public class MerchantService {
             throw new BusinessException(ResponseCode.MERCHANT_DISABLED);
         }
         SaTokenUtil.login(merchant.getId());
+        return new AuthResponse(SaTokenUtil.getTokenName(), SaTokenUtil.getTokenValue());
     }
 }

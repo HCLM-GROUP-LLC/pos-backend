@@ -13,3 +13,10 @@
 ## [POS系统数据库迁移文件](./pos-doc/V1__create_pos_system.sql)
 
 ## [代码规范](./pos-doc/代码规范.md)
+
+## 模块说明
+
+| 名称                  | 说明                                                   |
+|---------------------|------------------------------------------------------|
+| pos-common          | 公共模块                                                 |
+| pos-satoken-starter | [安全验证模块](./pos-common/pos-satoken-starter/README.md) |

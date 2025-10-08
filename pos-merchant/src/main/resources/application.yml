@@ -28,3 +28,4 @@ logging:
 sa-token:
     token-name: pos-merchant-token # Token 名称 会自动添加到响应头中 存入cookie中
     timeout: 2592000 # Token 超时时间（秒）- 30天
+    is-log: true
