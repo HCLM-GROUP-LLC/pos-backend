@@ -6,12 +6,15 @@ import com.hclm.redis.cache.DeviceCodeCache;
 import com.hclm.web.repository.DeviceRepository;
 import com.hclm.web.utils.RandomUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class DeviceManagerService {
@@ -33,5 +36,16 @@ public class DeviceManagerService {
             }
         }
         return codes;
+    }
+
+    /**
+     * 删除设备
+     *
+     * @param deviceId 设备id
+     */
+    @Transactional
+    public void deleteDevice(String deviceId) {
+        int num = deviceRepository.softDeleteById(deviceId);
+        log.info("删除设备：{}，结果：{}", deviceId, num);
     }
 }

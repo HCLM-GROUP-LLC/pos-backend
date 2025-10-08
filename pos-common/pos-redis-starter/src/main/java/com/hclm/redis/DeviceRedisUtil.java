@@ -39,6 +39,15 @@ public class DeviceRedisUtil {
      * @param code 代码
      */
     public static void set(String code, DeviceCodeCache cache) {
-        RedisUtil.set(PREFIX + code, cache, Duration.ofMinutes(5));// 有效期5分钟
+        RedisUtil.set(PREFIX + code, cache, Duration.ofDays(1));// 一天的有效期
+    }
+
+    /**
+     * 删除
+     *
+     * @param code 代码
+     */
+    public static void delete(String code) {
+        RedisUtil.delete(PREFIX + code);
     }
 }

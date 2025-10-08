@@ -1,5 +1,6 @@
 package com.hclm.web.utils;
 
+import com.hclm.web.constant.IdPrefixConstant;
 import org.springframework.lang.NonNull;
 
 import java.security.SecureRandom;
@@ -90,5 +91,26 @@ public class RandomUtil {
      */
     public static String uuid() {
         return java.util.UUID.randomUUID().toString();
+    }
+
+    /**
+     * 生成商家ID - Square风格
+     */
+    public static String generateMerchantId() {
+        return RandomUtil.squareStyle(IdPrefixConstant.MERCHANT);
+    }
+
+    /**
+     * 生成门店ID - Square风格
+     */
+    public static String generateLocationId() {
+        return RandomUtil.squareStyle(IdPrefixConstant.LOCATION);
+    }
+
+    /**
+     * 获取设备ID - Square风格
+     */
+    public static String generateDeviceId() {
+        return RandomUtil.squareStyle(IdPrefixConstant.DEVICE);
     }
 }

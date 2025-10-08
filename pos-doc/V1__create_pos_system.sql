@@ -30,7 +30,7 @@ CREATE TABLE merchants (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     updated_by CHAR(36) COMMENT '更新人UUID',
     is_deleted BOOLEAN DEFAULT FALSE,
-    
+
     INDEX idx_merchants_email (email),
     INDEX idx_merchants_status (status, is_deleted)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='商家表（Square风格，UUID主键）';
@@ -67,7 +67,7 @@ CREATE TABLE stores (
     timezone VARCHAR(64) DEFAULT 'UTC' COMMENT '时区',
     status VARCHAR(50) DEFAULT 'ACTIVE' COMMENT '门店状态',
     tax_rate DECIMAL(5,4) DEFAULT 0.0000 COMMENT '默认税率',
-    currency VARCHAR(3) DEFAULT 'USD' COMMENT '币种', 
+    currency VARCHAR(3) DEFAULT 'USD' COMMENT '币种',
     business_hours JSON COMMENT '营业时间配置',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     created_by CHAR(36) COMMENT '创建人UUID',
@@ -273,7 +273,7 @@ CREATE TABLE customers (
     created_by CHAR(36) COMMENT '创建人UUID',
     updated_by CHAR(36) COMMENT '更新人UUID',
     is_deleted BOOLEAN DEFAULT FALSE COMMENT '软删除标识',
-    
+
     INDEX idx_customers_store (store_id, is_deleted),
     INDEX idx_customers_phone (phone),
     INDEX idx_customers_email (email),
@@ -393,7 +393,7 @@ CREATE TABLE order_coupons (
     discount_applied DECIMAL(10,2) NOT NULL COMMENT '实际折扣金额',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '使用时间',
     created_by CHAR(36) COMMENT '操作人UUID',
-    
+
     PRIMARY KEY (order_id, coupon_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='订单优惠券关联表';
 
@@ -497,27 +497,24 @@ CREATE TABLE receipts (
 -- =================================
 
 -- 5.1 设备表 (devices)
-CREATE TABLE devices (
-    device_id CHAR(36) NOT NULL PRIMARY KEY COMMENT '设备主键（UUID）',
-    store_id CHAR(36) NOT NULL COMMENT '所属店铺',
-    device_name VARCHAR(100) NOT NULL COMMENT '设备名称',
-    device_type VARCHAR(50) NOT NULL COMMENT '设备类型',
-    mac_address VARCHAR(17) COMMENT 'MAC地址',
-    ip_address VARCHAR(15) COMMENT 'IP地址',
-    last_online TIMESTAMP COMMENT '最后在线时间',
-    status VARCHAR(20) NOT NULL DEFAULT 'OFFLINE' COMMENT '设备状态',
-    registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '注册时间',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    created_by CHAR(36) COMMENT '创建人UUID',
-    updated_by CHAR(36) COMMENT '更新人UUID',
-    is_deleted BOOLEAN DEFAULT FALSE COMMENT '软删除标识',
-
-    INDEX idx_devices_store (store_id, is_deleted),
-    INDEX idx_devices_status (status, last_online),
-    INDEX idx_devices_mac (mac_address),
-    INDEX idx_devices_status_monitoring (store_id, status, last_online, device_type),
-    INDEX idx_devices_mac_lookup (mac_address)
+CREATE TABLE `devices` (
+    `device_id`     char(36)     NOT NULL COMMENT '设备主键（UUID）',
+    `store_id`      char(36)     NOT NULL COMMENT '所属店铺',
+    `device_name`   varchar(100) NOT NULL COMMENT '设备名称',
+    `device_type`   varchar(50)  NOT NULL COMMENT '设备类型',
+    `mac_address`   varchar(17)           DEFAULT NULL COMMENT 'MAC地址',
+    `ip_address`    varchar(15)           DEFAULT NULL COMMENT 'IP地址',
+    `last_online`   timestamp NULL DEFAULT NULL COMMENT '最后在线时间',
+    `status`        varchar(20)  NOT NULL DEFAULT 'OFFLINE' COMMENT '设备状态',
+    `registered_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '注册时间',
+    `last_login_at` timestamp NULL DEFAULT NULL COMMENT '最后一次登录时间',
+    `is_deleted`    tinyint(1) DEFAULT '0' COMMENT '软删除标识',
+    PRIMARY KEY (`device_id`),
+    KEY `is_deleted` (`is_deleted`) USING BTREE,
+    KEY `ip_address` (`ip_address`),
+    KEY `mac_address` (`mac_address`),
+    KEY `last_login_at` (`last_login_at`),
+    KEY `registered_at` (`registered_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='设备表';
 
 
@@ -538,7 +535,7 @@ CREATE TABLE device_codes (
     created_by CHAR(36) COMMENT '创建人UUID',
     updated_by CHAR(36) COMMENT '更新人UUID',
     is_deleted BOOLEAN DEFAULT FALSE COMMENT '软删除标识',
-    
+
     INDEX idx_device_codes_code (device_code),
     INDEX idx_device_codes_device (device_id, status),
     INDEX idx_device_codes_status (status, expired_at),
@@ -626,7 +623,7 @@ CREATE TABLE performance_metrics (
     metric_value DECIMAL(15,4) NOT NULL,
     store_id CHAR(36),
     measured_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
+
     INDEX idx_performance_metrics_name_time (metric_name, measured_at),
     INDEX idx_performance_metrics_store (store_id, measured_at)
 ) ENGINE=InnoDB COMMENT='性能指标监控表';
@@ -642,7 +639,7 @@ CREATE TABLE backup_history (
     status ENUM('RUNNING', 'COMPLETED', 'FAILED') DEFAULT 'RUNNING',
     error_message TEXT,
     created_by BIGINT,
-    
+
     INDEX idx_backup_history_time (start_time DESC),
     INDEX idx_backup_history_type (backup_type, status)
 ) ENGINE=InnoDB COMMENT='备份历史记录表';
@@ -658,7 +655,7 @@ CREATE TABLE system_alerts (
     resolved_at TIMESTAMP NULL,
     resolved_by BIGINT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
+
     INDEX idx_system_alerts_type_level (alert_type, alert_level, created_at),
     INDEX idx_system_alerts_resolved (resolved, created_at)
 ) ENGINE=InnoDB COMMENT='系统告警记录表';
@@ -668,21 +665,21 @@ CREATE TABLE system_alerts (
 -- =================================
 
 -- 店铺营业时间虚拟列（使用动态SQL检查是否存在）
-SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'stores' AND COLUMN_NAME = 'monday_open') = 0, 
+SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'stores' AND COLUMN_NAME = 'monday_open') = 0,
     'ALTER TABLE stores ADD COLUMN monday_open TIME GENERATED ALWAYS AS (STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(business_hours, ''$.monday.open'')), ''%H:%i'')) VIRTUAL', 'SELECT 1');
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
-SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'stores' AND COLUMN_NAME = 'monday_close') = 0, 
+SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'stores' AND COLUMN_NAME = 'monday_close') = 0,
     'ALTER TABLE stores ADD COLUMN monday_close TIME GENERATED ALWAYS AS (STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(business_hours, ''$.monday.close'')), ''%H:%i'')) VIRTUAL', 'SELECT 1');
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
 -- 创建索引（使用动态SQL检查是否存在）
-SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'stores' AND INDEX_NAME = 'idx_stores_monday_hours') = 0, 
+SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'stores' AND INDEX_NAME = 'idx_stores_monday_hours') = 0,
     'CREATE INDEX idx_stores_monday_hours ON stores(monday_open, monday_close)', 'SELECT 1');
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
 -- 使用虚拟列建索引，而非表达式索引
-SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'stores' AND INDEX_NAME = 'idx_stores_monday_open') = 0, 
+SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'stores' AND INDEX_NAME = 'idx_stores_monday_open') = 0,
     'CREATE INDEX idx_stores_monday_open ON stores(monday_open)', 'SELECT 1');
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
@@ -692,50 +689,50 @@ PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
 -- 价格约束
 -- 产品价格约束（如果约束已存在则跳过）
-SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME = 'chk_products_price_positive' AND TABLE_SCHEMA = DATABASE()) = 0, 
+SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME = 'chk_products_price_positive' AND TABLE_SCHEMA = DATABASE()) = 0,
     'ALTER TABLE products ADD CONSTRAINT chk_products_price_positive CHECK (price > 0)', 'SELECT 1');
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
 -- 订单项价格约束
-SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME = 'chk_order_items_price_positive' AND TABLE_SCHEMA = DATABASE()) = 0, 
+SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME = 'chk_order_items_price_positive' AND TABLE_SCHEMA = DATABASE()) = 0,
     'ALTER TABLE order_items ADD CONSTRAINT chk_order_items_price_positive CHECK (unit_price > 0 AND subtotal >= 0)', 'SELECT 1');
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
 -- 支付金额约束
-SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME = 'chk_payments_amount_positive' AND TABLE_SCHEMA = DATABASE()) = 0, 
+SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME = 'chk_payments_amount_positive' AND TABLE_SCHEMA = DATABASE()) = 0,
     'ALTER TABLE payments ADD CONSTRAINT chk_payments_amount_positive CHECK (amount > 0)', 'SELECT 1');
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
 -- 库存约束
-SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME = 'chk_inventory_stock_non_negative' AND TABLE_SCHEMA = DATABASE()) = 0, 
+SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME = 'chk_inventory_stock_non_negative' AND TABLE_SCHEMA = DATABASE()) = 0,
     'ALTER TABLE inventory ADD CONSTRAINT chk_inventory_stock_non_negative CHECK (current_stock >= 0)', 'SELECT 1');
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
-SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME = 'chk_inventory_thresholds' AND TABLE_SCHEMA = DATABASE()) = 0, 
+SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME = 'chk_inventory_thresholds' AND TABLE_SCHEMA = DATABASE()) = 0,
     'ALTER TABLE inventory ADD CONSTRAINT chk_inventory_thresholds CHECK (min_stock >= 0 AND max_stock >= min_stock)', 'SELECT 1');
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
 -- 税率约束
-SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME = 'chk_tax_rate_range' AND TABLE_SCHEMA = DATABASE()) = 0, 
+SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME = 'chk_tax_rate_range' AND TABLE_SCHEMA = DATABASE()) = 0,
     'ALTER TABLE tax_rules ADD CONSTRAINT chk_tax_rate_range CHECK (tax_rate >= 0 AND tax_rate <= 1)', 'SELECT 1');
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
-SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME = 'chk_store_tax_rate_range' AND TABLE_SCHEMA = DATABASE()) = 0, 
+SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME = 'chk_store_tax_rate_range' AND TABLE_SCHEMA = DATABASE()) = 0,
     'ALTER TABLE stores ADD CONSTRAINT chk_store_tax_rate_range CHECK (tax_rate >= 0 AND tax_rate <= 1)', 'SELECT 1');
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
 -- 优惠券约束
-SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME = 'chk_coupon_discount' AND TABLE_SCHEMA = DATABASE()) = 0, 
+SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME = 'chk_coupon_discount' AND TABLE_SCHEMA = DATABASE()) = 0,
     'ALTER TABLE coupons ADD CONSTRAINT chk_coupon_discount CHECK ((discount_type = ''FIXED_AMOUNT'' AND discount_value > 0) OR (discount_type = ''PERCENTAGE'' AND discount_value > 0 AND discount_value <= 100))', 'SELECT 1');
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
 -- 考勤时间约束
-SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME = 'chk_attendance_time_order' AND TABLE_SCHEMA = DATABASE()) = 0, 
+SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME = 'chk_attendance_time_order' AND TABLE_SCHEMA = DATABASE()) = 0,
     'ALTER TABLE attendance ADD CONSTRAINT chk_attendance_time_order CHECK (clock_out_time IS NULL OR clock_out_time >= clock_in_time)', 'SELECT 1');
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
 -- 会话过期时间约束
-SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME = 'chk_session_expires' AND TABLE_SCHEMA = DATABASE()) = 0, 
+SET @sql = IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME = 'chk_session_expires' AND TABLE_SCHEMA = DATABASE()) = 0,
     'ALTER TABLE user_sessions ADD CONSTRAINT chk_session_expires CHECK ((access_token_expires_at IS NULL OR access_token_expires_at > created_at) AND (refresh_token_expires_at IS NULL OR refresh_token_expires_at > created_at))', 'SELECT 1');
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
@@ -751,11 +748,11 @@ BEFORE UPDATE ON orders
 FOR EACH ROW
 BEGIN
     DECLARE calculated_total DECIMAL(10,2);
-    
+
     SELECT IFNULL(SUM(subtotal), 0) INTO calculated_total
-    FROM order_items 
+    FROM order_items
     WHERE order_id = NEW.order_id AND is_deleted = FALSE;
-    
+
     IF ABS(calculated_total - (NEW.total_amount - NEW.tax_amount - NEW.tip_amount + NEW.discount_amount)) > calculated_total * 0.05 THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = '订单总金额与订单项金额不一致';
     END IF;
@@ -766,12 +763,12 @@ CREATE TRIGGER trg_inventory_deduction
 AFTER INSERT ON order_items
 FOR EACH ROW
 BEGIN
-    UPDATE inventory 
+    UPDATE inventory
     SET current_stock = current_stock - NEW.quantity,
         updated_at = CURRENT_TIMESTAMP,
         updated_by = NEW.created_by
     WHERE product_id = NEW.product_id;
-    
+
     IF (SELECT current_stock FROM inventory WHERE product_id = NEW.product_id) < 0 THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = '商品库存不足';
     END IF;
@@ -782,12 +779,12 @@ CREATE TRIGGER trg_coupon_usage_update
 AFTER INSERT ON order_coupons
 FOR EACH ROW
 BEGIN
-    UPDATE coupons 
+    UPDATE coupons
     SET used_count = used_count + 1,
         updated_at = CURRENT_TIMESTAMP,
         updated_by = NEW.created_by
     WHERE coupon_id = NEW.coupon_id;
-    
+
     IF EXISTS (
         SELECT 1 FROM coupons 
         WHERE coupon_id = NEW.coupon_id 
@@ -827,17 +824,17 @@ BEGIN
         ROLLBACK;
         RESIGNAL;
     END;
-    
+
     START TRANSACTION;
-    
-    DELETE FROM daily_sales_reports 
+
+    DELETE FROM daily_sales_reports
     WHERE store_id = p_store_id AND report_date = p_report_date;
-    
+
     INSERT INTO daily_sales_reports (
-        report_id, store_id, report_date, total_sales_amount, total_orders, 
+        report_id, store_id, report_date, total_sales_amount, total_orders,
         average_order_value, total_tips, top_product_id, created_by
     )
-    SELECT 
+    SELECT
         UUID(),
         p_store_id,
         p_report_date,
@@ -845,23 +842,23 @@ BEGIN
         COUNT(o.order_id) as total_orders,
         IFNULL(AVG(o.total_amount), 0) as average_order_value,
         IFNULL(SUM(o.tip_amount), 0) as total_tips,
-        (SELECT oi.product_id 
-         FROM order_items oi 
-         JOIN orders o2 ON oi.order_id = o2.order_id 
-         WHERE o2.store_id = p_store_id 
+        (SELECT oi.product_id
+         FROM order_items oi
+         JOIN orders o2 ON oi.order_id = o2.order_id
+         WHERE o2.store_id = p_store_id
            AND DATE(o2.created_at) = p_report_date
            AND o2.status = 'COMPLETED'
            AND oi.is_deleted = FALSE
-         GROUP BY oi.product_id 
-         ORDER BY SUM(oi.quantity) DESC 
+         GROUP BY oi.product_id
+         ORDER BY SUM(oi.quantity) DESC
          LIMIT 1) as top_product_id,
         'USR-174000000001' as created_by
     FROM orders o
-    WHERE o.store_id = p_store_id 
+    WHERE o.store_id = p_store_id
       AND DATE(o.created_at) = p_report_date
       AND o.status = 'COMPLETED'
       AND o.is_deleted = FALSE;
-    
+
     COMMIT;
 END//
 
@@ -870,7 +867,7 @@ CREATE PROCEDURE sp_check_inventory_alerts(
     IN p_store_id CHAR(36)
 )
 BEGIN
-    SELECT 
+    SELECT
         p.product_id as product_id,
         p.product_name,
         i.current_stock,
@@ -908,7 +905,7 @@ BEGIN
       AND r.is_active = TRUE
       AND r.is_deleted = FALSE
       AND p.is_deleted = FALSE;
-    
+
     SET p_has_permission = (permission_count > 0);
 END//
 
@@ -920,7 +917,7 @@ DELIMITER ;
 
 -- 用户权限视图
 CREATE VIEW v_user_permissions AS
-SELECT 
+SELECT
     u.user_id,
     u.store_id,
     u.email,
@@ -940,7 +937,7 @@ WHERE u.is_deleted = FALSE
 
 -- 商品库存视图
 CREATE VIEW v_product_inventory AS
-SELECT 
+SELECT
     p.product_id,
     p.store_id,
     p.product_name,
@@ -950,7 +947,7 @@ SELECT
     i.min_stock,
     i.max_stock,
     i.cost_price,
-    CASE 
+    CASE
         WHEN i.current_stock <= i.min_stock THEN 'LOW_STOCK'
         WHEN i.current_stock >= i.max_stock THEN 'OVERSTOCK'
         ELSE 'NORMAL'
@@ -966,7 +963,7 @@ WHERE p.is_deleted = FALSE
 
 -- 订单详情视图
 CREATE VIEW v_order_details AS
-SELECT 
+SELECT
     o.order_id,
     o.store_id,
     o.order_number,
@@ -984,13 +981,13 @@ LEFT JOIN users u ON o.user_id = u.user_id
 LEFT JOIN customers c ON o.customer_id = c.customer_id
 LEFT JOIN order_items oi ON o.order_id = oi.order_id AND oi.is_deleted = FALSE
 WHERE o.is_deleted = FALSE
-GROUP BY o.order_id, o.store_id, o.order_number, o.total_amount, 
-         o.status, o.payment_status, o.created_at, 
+GROUP BY o.order_id, o.store_id, o.order_number, o.total_amount,
+         o.status, o.payment_status, o.created_at,
          u.first_name, u.last_name, c.customer_name, c.phone;
 
 -- 慢查询监控视图
 CREATE VIEW v_slow_queries AS
-SELECT 
+SELECT
     DIGEST_TEXT as query_text,
     COUNT_STAR as exec_count,
     AVG_TIMER_WAIT/1000000000000 as avg_time_sec,
@@ -1006,7 +1003,7 @@ LIMIT 20;
 
 -- 表空间使用情况视图
 CREATE VIEW v_table_space_usage AS
-SELECT 
+SELECT
     TABLE_SCHEMA as database_name,
     TABLE_NAME as table_name,
     ROUND(((DATA_LENGTH + INDEX_LENGTH) / 1024 / 1024), 2) as size_mb,
@@ -1019,7 +1016,7 @@ ORDER BY (DATA_LENGTH + INDEX_LENGTH) DESC;
 
 -- 索引使用情况视图
 CREATE VIEW v_index_usage AS
-SELECT 
+SELECT
     OBJECT_SCHEMA as database_name,
     OBJECT_NAME as table_name,
     INDEX_NAME as index_name,
@@ -1196,7 +1193,7 @@ INSERT INTO merchant_bank_accounts (id, merchant_id, account_number, routing_num
 
 -- 示例门店数据
 INSERT INTO stores (id, merchant_id, store_name, address, timezone, status, tax_rate, currency, business_hours, created_by) VALUES
-('LOC-174000000001', 'MRC-174000000001', '新宿店', '東京都新宿区1-2-3', 'Asia/Tokyo', 'ACTIVE', 0.0875, 'USD', 
+('LOC-174000000001', 'MRC-174000000001', '新宿店', '東京都新宿区1-2-3', 'Asia/Tokyo', 'ACTIVE', 0.0875, 'USD',
 '{"monday": {"open": "07:00", "close": "22:00"}, "tuesday": {"open": "07:00", "close": "22:00"}, "wednesday": {"open": "07:00", "close": "22:00"}, "thursday": {"open": "07:00", "close": "22:00"}, "friday": {"open": "07:00", "close": "23:00"}, "saturday": {"open": "08:00", "close": "23:00"}, "sunday": {"open": "08:00", "close": "21:00"}}', 'MRC-174000000001');
 
 -- 示例管理员用户
@@ -1303,12 +1300,12 @@ SET GLOBAL log_queries_not_using_indexes = ON;
 SET GLOBAL min_examined_row_limit = 1000;
 
 -- 性能模式配置
-UPDATE performance_schema.setup_instruments 
-SET ENABLED = 'YES', TIMED = 'YES' 
+UPDATE performance_schema.setup_instruments
+SET ENABLED = 'YES', TIMED = 'YES'
 WHERE NAME LIKE 'statement/sql/%';
 
-UPDATE performance_schema.setup_consumers 
-SET ENABLED = 'YES' 
+UPDATE performance_schema.setup_consumers
+SET ENABLED = 'YES'
 WHERE NAME IN (
     'events_statements_current',
     'events_statements_history',
@@ -1338,17 +1335,17 @@ DO
 BEGIN
     DECLARE done INT DEFAULT FALSE;
     DECLARE v_store_id CHAR(36);
-    DECLARE store_cursor CURSOR FOR 
+    DECLARE store_cursor CURSOR FOR
         SELECT id FROM stores WHERE status = 'ACTIVE' AND is_deleted = FALSE;
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
-    
+
     OPEN store_cursor;
     store_loop: LOOP
         FETCH store_cursor INTO v_store_id;
         IF done THEN
             LEAVE store_loop;
         END IF;
-        
+
         CALL sp_generate_daily_sales_report(v_store_id, CURDATE() - INTERVAL 1 DAY);
     END LOOP;
     CLOSE store_cursor;
@@ -1362,19 +1359,19 @@ DO
 BEGIN
     DECLARE done INT DEFAULT FALSE;
     DECLARE v_store_id CHAR(36);
-    DECLARE store_cursor CURSOR FOR 
+    DECLARE store_cursor CURSOR FOR
         SELECT id FROM stores WHERE status = 'ACTIVE' AND is_deleted = FALSE;
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
-    
+
     OPEN store_cursor;
     store_loop: LOOP
         FETCH store_cursor INTO v_store_id;
         IF done THEN
             LEAVE store_loop;
         END IF;
-        
+
         INSERT INTO notifications (notification_id, store_id, title, message, type, created_by)
-        SELECT 
+        SELECT
             UUID(),
             v_store_id,
             '库存预警',
@@ -1398,7 +1395,7 @@ ON SCHEDULE EVERY 1 HOUR
 STARTS CURRENT_TIMESTAMP
 DO
 BEGIN
-    DELETE FROM user_sessions 
+    DELETE FROM user_sessions
     WHERE (access_token_expires_at < NOW() - INTERVAL 1 DAY)
        OR (refresh_token_expires_at < NOW() - INTERVAL 7 DAY)
        OR (status = 'INACTIVE' AND updated_at < NOW() - INTERVAL 1 DAY);
@@ -1410,8 +1407,8 @@ ON SCHEDULE EVERY 1 DAY
 STARTS TIMESTAMP(CURDATE() + INTERVAL 1 DAY, '04:00:00')
 DO
 BEGIN
-    DELETE FROM notifications 
-    WHERE is_read = TRUE 
+    DELETE FROM notifications
+    WHERE is_read = TRUE
       AND read_at < NOW() - INTERVAL 30 DAY;
 END//
 
@@ -1423,13 +1420,13 @@ DO
 BEGIN
     DECLARE current_connections INT;
     DECLARE max_connections_limit INT;
-    
-    SELECT VARIABLE_VALUE INTO current_connections 
-    FROM performance_schema.global_status 
+
+    SELECT VARIABLE_VALUE INTO current_connections
+    FROM performance_schema.global_status
     WHERE VARIABLE_NAME = 'Threads_connected';
-    
+
     SELECT @@max_connections INTO max_connections_limit;
-    
+
     IF current_connections > max_connections_limit * 0.8 THEN
         INSERT INTO system_alerts (alert_id, alert_type, alert_level, alert_message, alert_data)
         VALUES (
@@ -1448,26 +1445,26 @@ ON SCHEDULE EVERY 1 WEEK
 STARTS (CURDATE() + INTERVAL (7 - WEEKDAY(CURDATE())) DAY + INTERVAL 3 HOUR)
 DO
 BEGIN
-    ANALYZE TABLE stores, users, products, categories, inventory, 
+    ANALYZE TABLE stores, users, products, categories, inventory,
                  orders, order_items, payments, customers, coupons;
-    
+
     INSERT INTO performance_metrics (metric_id, metric_name, metric_value, measured_at)
-    SELECT 
+    SELECT
         CONCAT('MET-', UNIX_TIMESTAMP(NOW()), '-001'),
         'avg_order_processing_time',
         AVG(TIMESTAMPDIFF(SECOND, created_at, updated_at)),
         NOW()
-    FROM orders 
+    FROM orders
     WHERE created_at >= CURDATE() - INTERVAL 7 DAY
       AND status = 'COMPLETED';
-      
+
     INSERT INTO performance_metrics (metric_id, metric_name, metric_value, measured_at)
-    SELECT 
+    SELECT
         CONCAT('MET-', UNIX_TIMESTAMP(NOW()), '-002'),
         'daily_order_count',
         COUNT(*) / 7.0,
         NOW()
-    FROM orders 
+    FROM orders
     WHERE created_at >= CURDATE() - INTERVAL 7 DAY;
 END//
 

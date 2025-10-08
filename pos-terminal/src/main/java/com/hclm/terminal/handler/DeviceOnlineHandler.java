@@ -23,14 +23,25 @@ public class DeviceOnlineHandler extends TextWebSocketHandler {
         return parts[parts.length - 1];
     }
 
+    /**
+     * 连接建立后
+     *
+     * @param session 会话
+     */
     @Override
     public void afterConnectionEstablished(@NonNull WebSocketSession session) {
         String deviceId = extractDeviceIdFromUri(session);
         log.info("设备上线: {}", deviceId);
         // 连接建立时自动触发在线状态刷新
-        deviceService.online(deviceId);
+        deviceService.login(deviceId);
     }
 
+    /**
+     * 处理文本消息
+     *
+     * @param session 会话
+     * @param message 信息
+     */
     @Override
     public void handleTextMessage(@NonNull WebSocketSession session, @NonNull TextMessage message) {
         String deviceId = extractDeviceIdFromUri(session);
@@ -39,6 +50,12 @@ public class DeviceOnlineHandler extends TextWebSocketHandler {
         deviceService.online(deviceId);
     }
 
+    /**
+     * 连接关闭后
+     *
+     * @param session 会话
+     * @param status  状态
+     */
     @Override
     public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus status) {
         String deviceId = extractDeviceIdFromUri(session);

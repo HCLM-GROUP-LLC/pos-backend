@@ -1,39 +1,35 @@
 package com.hclm.web.entity;
 
+import com.hclm.web.constant.TableNameConstant;
+import com.hclm.web.enums.DeviceStatusEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.Instant;
 
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
+@SQLRestriction("is_deleted = false or is_deleted is null") // 添加逻辑删除限制
+@Data
 @Entity
-@Table(name = "devices", schema = "pos_db")
+@Table(name = TableNameConstant.DEVICES)
 public class Device {
     @Id
     @Column(name = "device_id", nullable = false, columnDefinition = "CHAR(36)")
     private String deviceId;
 
-    @NotNull
     @Column(name = "store_id", nullable = false, columnDefinition = "CHAR(36)")
     private String storeId;
 
     @Size(max = 100)
-    @NotNull
     @Column(name = "device_name", nullable = false, length = 100)
     private String deviceName;
 
     @Size(max = 50)
-    @NotNull
     @Column(name = "device_type", nullable = false, length = 50)
     private String deviceType;
 
@@ -50,28 +46,22 @@ public class Device {
 
     @ColumnDefault("'OFFLINE'")
     @Column(name = "status", nullable = false, length = 20)
-    private String status;
+    private String status = DeviceStatusEnum.OFFLINE.getCode();
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "registered_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Instant registeredAt;
 
+    /**
+     * 上次登录于
+     */
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private Instant createdAt;
+    @Column(name = "last_login_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private Instant lastLoginAt;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "updated_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-    private Instant updatedAt;
-
-    @Column(name = "created_by", columnDefinition = "CHAR(36)")
-    private String createdBy;
-
-    @Column(name = "updated_by", columnDefinition = "CHAR(36)")
-    private String updatedBy;
 
     @ColumnDefault("0")
     @Column(name = "is_deleted", columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private Boolean isDeleted;
+    private Boolean isDeleted = false;
 
 }

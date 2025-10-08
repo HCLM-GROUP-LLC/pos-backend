@@ -123,4 +123,13 @@ public class RedisUtil {
     public static <T> T get(String key, Class<T> valueClass) {
         return getBucket(key, valueClass).get();
     }
+
+    /**
+     * 删除
+     *
+     * @param key 钥匙
+     */
+    public static void delete(String key) {
+        client.getBucket(key).delete();
+    }
 }

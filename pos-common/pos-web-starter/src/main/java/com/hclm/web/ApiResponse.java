@@ -1,6 +1,5 @@
 package com.hclm.web;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hclm.web.enums.ResponseCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -41,7 +40,6 @@ public class ApiResponse<T> {
      * 响应时间戳
      */
     @Schema(description = "响应时间戳")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
     private Instant timestamp;
 
     /**

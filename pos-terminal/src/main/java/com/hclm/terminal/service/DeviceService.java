@@ -14,6 +14,7 @@ import com.hclm.web.repository.DeviceRepository;
 import com.hclm.web.utils.RandomUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 
@@ -32,22 +33,27 @@ public class DeviceService {
      *
      * @param request 请求
      */
+    @Transactional
     public DeviceAddResponse addDevice(DeviceAddRequest request) {
         DeviceCodeCache cache = DeviceRedisUtil.get(request.getCode());
         if (cache == null) {
             throw new BusinessException(ResponseCode.DEVICECODE_NOTFOUND);
         }
+        // 删除缓存
+        DeviceRedisUtil.delete(request.getCode());
+        // 插入数据库
         Device device = DeviceMapper.INSTANCE.toEntity(request);
-        device.setDeviceId(RandomUtil.uuid());
+        device.setDeviceId(RandomUtil.generateDeviceId());
         device.setStoreId(cache.getStoreId());// 设置门店id
-        device.setLastOnline(Instant.now());// 设置最后在线时间
         device.setRegisteredAt(Instant.now());// 设置注册时间
         device.setDeviceType(ClientTypeEnum.IOS.getCode());
-        device.setStatus(DeviceStatusEnum.ONLINE.getCode());
         deviceRepository.save(device);// 保存设备
-        // 设备上线
-        online(device.getDeviceId());
         return DeviceMapper.INSTANCE.toAddResponse(device);
+    }
+
+    @Transactional
+    public void login(String deviceId) {
+        deviceRepository.updateStatusAndLastLoginAt(deviceId, DeviceStatusEnum.ONLINE.getCode(), Instant.now());//更新数据
     }
 
     /**
@@ -55,11 +61,9 @@ public class DeviceService {
      *
      * @param deviceId 设备id
      */
+    @Transactional
     public void online(String deviceId) {
-        Device device = findByDeviceId(deviceId);
-        device.setStatus(DeviceStatusEnum.ONLINE.getCode());
-        device.setLastOnline(Instant.now());// 设置最后在线时间
-        deviceRepository.save(device);//更新数据
+        deviceRepository.updateStatusAndLastOnline(deviceId, DeviceStatusEnum.ONLINE.getCode(), Instant.now());//更新数据
     }
 
     /**
@@ -67,9 +71,8 @@ public class DeviceService {
      *
      * @param deviceId 设备id
      */
+    @Transactional
     public void offline(String deviceId) {
-        Device device = findByDeviceId(deviceId);
-        device.setStatus(DeviceStatusEnum.OFFLINE.getCode());
-        deviceRepository.save(device);//更新数据
+        deviceRepository.updateStatus(deviceId, DeviceStatusEnum.OFFLINE.getCode());//更新数据
     }
 }
