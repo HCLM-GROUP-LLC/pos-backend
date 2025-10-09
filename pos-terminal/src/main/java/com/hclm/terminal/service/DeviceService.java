@@ -14,6 +14,7 @@ import com.hclm.web.repository.DeviceRepository;
 import com.hclm.web.utils.RandomUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,9 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class DeviceService {
     private final DeviceRepository deviceRepository;
 
-    private Device findByDeviceId(String deviceId) {
+    @NonNull
+    public Device findByDeviceId(String deviceId) {
         return deviceRepository.findByDeviceId(deviceId)
-                .orElseThrow(() -> new BusinessException(ResponseCode.DEVICECODE_NOTFOUND));
+                .orElseThrow(() -> new BusinessException(ResponseCode.DEVICE_ID_NOT_FOUND));
     }
 
     /**
@@ -46,14 +48,14 @@ public class DeviceService {
         device.setDeviceId(RandomUtil.generateDeviceId());
         device.setStoreId(cache.getStoreId());// 设置门店id
         device.setRegisteredAt(System.currentTimeMillis());// 设置注册时间
-        device.setDeviceType(ClientTypeEnum.IOS.getCode());
+        device.setDeviceType(ClientTypeEnum.IOS.name());
         deviceRepository.save(device);// 保存设备
         return DeviceMapper.INSTANCE.toAddResponse(device);
     }
 
     @Transactional
     public void login(String deviceId) {
-        int num = deviceRepository.updateStatusAndLastLoginAt(deviceId, DeviceStatusEnum.ONLINE.getCode(), System.currentTimeMillis());//更新数据
+        int num = deviceRepository.updateStatusAndLastLoginAt(deviceId, DeviceStatusEnum.ONLINE.name(), System.currentTimeMillis());//更新数据
         log.info("设备登录：{}，结果：{}", deviceId, num);
     }
 
@@ -64,7 +66,7 @@ public class DeviceService {
      */
     @Transactional
     public void online(String deviceId) {
-        int num = deviceRepository.updateStatusAndLastOnline(deviceId, DeviceStatusEnum.ONLINE.getCode(), System.currentTimeMillis());//更新数据
+        int num = deviceRepository.updateStatusAndLastOnline(deviceId, DeviceStatusEnum.ONLINE.name(), System.currentTimeMillis());//更新数据
         log.info("设备上线：{}，结果：{}", deviceId, num);
     }
 
@@ -75,6 +77,6 @@ public class DeviceService {
      */
     @Transactional
     public void offline(String deviceId) {
-        deviceRepository.updateStatus(deviceId, DeviceStatusEnum.OFFLINE.getCode());//更新数据
+        deviceRepository.updateStatus(deviceId, DeviceStatusEnum.OFFLINE.name());//更新数据
     }
 }

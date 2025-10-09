@@ -9,13 +9,15 @@ spring:
         driver-class-name: com.mysql.cj.jdbc.Driver
     jpa:
         hibernate:
-            ddl-auto: validate
+            ddl-auto: none
         show-sql: true
         properties:
             hibernate:
                 format_sql: true
                 dialect: org.hibernate.dialect.MySQL8Dialect
                 time-zone: UTC
+                hbm2ddl:
+                    auto: none
     jackson:
         time-zone: UTC
         date-format: yyyy-MM-dd'T'HH:mm:ss.SSS'Z'

@@ -1,12 +1,12 @@
 package com.hclm.web.enums;
 
 /**
- * 商户状态枚举
+ * 员工satus枚举
  *
  * @author hanhua
  * @since 2025/10/09
  */
-public enum MerchantStatusEnum {
+public enum EmployeesSatusEnum {
     /**
      * 禁用
      */

@@ -25,7 +25,7 @@ public class MerchantService {
             throw new BusinessException(ResponseCode.EMAIL_PASSWORD_ERROR);
         }
 
-        if (!MerchantStatusEnum.ENABLED.getCode().equals(merchant.getStatus())) {
+        if (!MerchantStatusEnum.ACTIVE.name().equals(merchant.getStatus())) {
             throw new BusinessException(ResponseCode.MERCHANT_DISABLED);
         }
         SaTokenUtil.login(merchant.getId());

@@ -34,7 +34,13 @@ public enum ResponseCode {
      */
     EMAIL_PASSWORD_ERROR(10001, "email.password.error"),
     MERCHANT_DISABLED(10002, "merchant.disabled"),
-    DEVICECODE_NOTFOUND(10003, "devicecode.notFound");
+    DEVICECODE_NOTFOUND(10003, "devicecode.notFound"),
+    EMPLOYEES_PASSCODE_NOT_FOUND(10004, "employees.passcode.notFound"),
+    /**
+     * 未找到设备id
+     */
+    DEVICE_ID_NOT_FOUND(10005, "deviceid.notFound"),
+    EMPLOYEES_NOT_FOUND(10006, "employees.notFound");
     /**
      * 代码
      */

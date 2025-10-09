@@ -47,7 +47,7 @@ public class Device {
 
     @ColumnDefault("'OFFLINE'")
     @Column(name = "status", nullable = false, length = 20)
-    private String status = DeviceStatusEnum.OFFLINE.getCode();
+    private String status = DeviceStatusEnum.OFFLINE.name();
 
     /**
      * 注册于 毫秒级时间戳
