@@ -7,8 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.lang.Nullable;
 
-import java.time.Instant;
-
 /**
  * api响应 定义json结构
  *
@@ -39,8 +37,8 @@ public class ApiResponse<T> {
     /**
      * 响应时间戳
      */
-    @Schema(description = "响应时间戳")
-    private Instant timestamp;
+    @Schema(description = "响应时间戳,毫秒级")
+    private Long timestamp;
 
     /**
      * 是成功
@@ -93,6 +91,6 @@ public class ApiResponse<T> {
      * @return {@link ApiResponse }<{@link T }>
      */
     public static <T> ApiResponse<T> build(int code, String message, T data) {
-        return new ApiResponse<>(code, message, data, Instant.now());
+        return new ApiResponse<>(code, message, data, System.currentTimeMillis());
     }
 }

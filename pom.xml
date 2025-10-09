@@ -31,6 +31,24 @@
         <module>pos-merchant</module><!--面向商家端-->
         <module>pos-terminal</module><!--终端，面向员工-->
     </modules>
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!--bean之间转换 编译期生效即可-->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
     <!-- 依赖管理，统一控制版本 -->
     <dependencyManagement>
         <dependencies>

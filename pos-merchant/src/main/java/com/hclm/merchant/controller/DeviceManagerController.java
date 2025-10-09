@@ -2,6 +2,7 @@ package com.hclm.merchant.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.hclm.merchant.pojo.request.DeviceIDGenRequest;
+import com.hclm.merchant.pojo.response.DeviceResponse;
 import com.hclm.merchant.service.DeviceManagerService;
 import com.hclm.web.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,13 +12,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Validated
 @SaCheckLogin //检查登录
 @Tag(name = "设备管理")
 @RequiredArgsConstructor
-@RequestMapping("/device")
+@RequestMapping("/devices")
 @RestController
 public class DeviceManagerController {
     private final DeviceManagerService deviceManagerService;
@@ -45,5 +47,11 @@ public class DeviceManagerController {
     public ApiResponse<Void> delete(@PathVariable String deviceId) {
         deviceManagerService.deleteDevice(deviceId);
         return ApiResponse.success();
+    }
+
+    @Operation(summary = "设备列表")
+    @GetMapping
+    public ApiResponse<List<DeviceResponse>> list() {
+        return ApiResponse.success(deviceManagerService.list());
     }
 }

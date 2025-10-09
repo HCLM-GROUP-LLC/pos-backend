@@ -1,7 +1,5 @@
 package com.hclm.web;
 
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.hclm.web.serializer.JsonInstantSerializer;
 import com.hclm.web.utils.MessageUtil;
 import com.hclm.web.utils.PwdUtil;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -11,8 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.time.Instant;
 
 /**
  * web配置
@@ -28,18 +24,6 @@ import java.time.Instant;
 })
 @Configuration
 public class WebConfiguration {
-    /**
-     * java时间模块
-     * 为 Jackson 提供 java.time 包中类的序列化和反序列化支持
-     *
-     * @return {@link JavaTimeModule }
-     */
-    @Bean
-    public JavaTimeModule javaTimeModule() {
-        JavaTimeModule javaTimeModule = new JavaTimeModule();
-        javaTimeModule.addSerializer(Instant.class, new JsonInstantSerializer());
-        return javaTimeModule;
-    }
 
     /**
      * 全局异常处理程序

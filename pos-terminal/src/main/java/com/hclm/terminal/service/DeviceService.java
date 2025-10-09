@@ -13,11 +13,11 @@ import com.hclm.web.enums.ResponseCode;
 import com.hclm.web.repository.DeviceRepository;
 import com.hclm.web.utils.RandomUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class DeviceService {
@@ -45,7 +45,7 @@ public class DeviceService {
         Device device = DeviceMapper.INSTANCE.toEntity(request);
         device.setDeviceId(RandomUtil.generateDeviceId());
         device.setStoreId(cache.getStoreId());// 设置门店id
-        device.setRegisteredAt(Instant.now());// 设置注册时间
+        device.setRegisteredAt(System.currentTimeMillis());// 设置注册时间
         device.setDeviceType(ClientTypeEnum.IOS.getCode());
         deviceRepository.save(device);// 保存设备
         return DeviceMapper.INSTANCE.toAddResponse(device);
@@ -53,7 +53,8 @@ public class DeviceService {
 
     @Transactional
     public void login(String deviceId) {
-        deviceRepository.updateStatusAndLastLoginAt(deviceId, DeviceStatusEnum.ONLINE.getCode(), Instant.now());//更新数据
+        int num = deviceRepository.updateStatusAndLastLoginAt(deviceId, DeviceStatusEnum.ONLINE.getCode(), System.currentTimeMillis());//更新数据
+        log.info("设备登录：{}，结果：{}", deviceId, num);
     }
 
     /**
@@ -63,7 +64,8 @@ public class DeviceService {
      */
     @Transactional
     public void online(String deviceId) {
-        deviceRepository.updateStatusAndLastOnline(deviceId, DeviceStatusEnum.ONLINE.getCode(), Instant.now());//更新数据
+        int num = deviceRepository.updateStatusAndLastOnline(deviceId, DeviceStatusEnum.ONLINE.getCode(), System.currentTimeMillis());//更新数据
+        log.info("设备上线：{}，结果：{}", deviceId, num);
     }
 
     /**

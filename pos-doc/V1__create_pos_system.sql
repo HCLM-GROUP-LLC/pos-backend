@@ -504,17 +504,17 @@ CREATE TABLE `devices` (
     `device_type`   varchar(50)  NOT NULL COMMENT '设备类型',
     `mac_address`   varchar(17)           DEFAULT NULL COMMENT 'MAC地址',
     `ip_address`    varchar(15)           DEFAULT NULL COMMENT 'IP地址',
-    `last_online`   timestamp NULL DEFAULT NULL COMMENT '最后在线时间',
+    `last_online`   bigint                DEFAULT NULL COMMENT '最后在线时间',
     `status`        varchar(20)  NOT NULL DEFAULT 'OFFLINE' COMMENT '设备状态',
-    `registered_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '注册时间',
-    `last_login_at` timestamp NULL DEFAULT NULL COMMENT '最后一次登录时间',
+    `registered_at` bigint                DEFAULT NULL COMMENT '注册时间',
+    `last_login_at` bigint                DEFAULT NULL COMMENT '最后一次登录时间',
     `is_deleted`    tinyint(1) DEFAULT '0' COMMENT '软删除标识',
     PRIMARY KEY (`device_id`),
-    KEY `is_deleted` (`is_deleted`) USING BTREE,
-    KEY `ip_address` (`ip_address`),
-    KEY `mac_address` (`mac_address`),
-    KEY `last_login_at` (`last_login_at`),
-    KEY `registered_at` (`registered_at`)
+    KEY             `is_deleted` (`is_deleted`) USING BTREE,
+    KEY             `ip_address` (`ip_address`),
+    KEY             `mac_address` (`mac_address`),
+    KEY             `last_login_at` (`last_login_at`),
+    KEY             `registered_at` (`registered_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='设备表';
 
 

@@ -11,8 +11,6 @@ import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.SQLRestriction;
 
-import java.time.Instant;
-
 @SQLRestriction("is_deleted = false or is_deleted is null") // 添加逻辑删除限制
 @Data
 @Entity
@@ -41,27 +39,33 @@ public class Device {
     @Column(name = "ip_address", length = 15)
     private String ipAddress;
 
-    @Column(name = "last_online", columnDefinition = "TIMESTAMP")
-    private Instant lastOnline;
+    /**
+     * 上次联机 毫秒级时间戳
+     */
+    @Column(name = "last_online")
+    private Long lastOnline;
 
     @ColumnDefault("'OFFLINE'")
     @Column(name = "status", nullable = false, length = 20)
     private String status = DeviceStatusEnum.OFFLINE.getCode();
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "registered_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private Instant registeredAt;
-
     /**
-     * 上次登录于
+     * 注册于 毫秒级时间戳
      */
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "last_login_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private Instant lastLoginAt;
+    @Column(name = "registered_at")
+    private Long registeredAt;
+
+    /**
+     * 上次登录于 毫秒级时间戳
+     */
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "last_login_at")
+    private Long lastLoginAt;
 
 
     @ColumnDefault("0")
-    @Column(name = "is_deleted", columnDefinition = "BOOLEAN DEFAULT FALSE")
+    @Column(name = "is_deleted")
     private Boolean isDeleted = false;
 
 }

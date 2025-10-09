@@ -1,6 +1,8 @@
 package com.hclm.merchant.service;
 
+import com.hclm.merchant.mapper.DeviceManagerMapper;
 import com.hclm.merchant.pojo.request.DeviceIDGenRequest;
+import com.hclm.merchant.pojo.response.DeviceResponse;
 import com.hclm.redis.DeviceRedisUtil;
 import com.hclm.redis.cache.DeviceCodeCache;
 import com.hclm.web.repository.DeviceRepository;
@@ -47,5 +49,14 @@ public class DeviceManagerService {
     public void deleteDevice(String deviceId) {
         int num = deviceRepository.softDeleteById(deviceId);
         log.info("删除设备：{}，结果：{}", deviceId, num);
+    }
+
+    /**
+     * 设备列表
+     *
+     * @return {@link List }
+     */
+    public List<DeviceResponse> list() {
+        return DeviceManagerMapper.INSTANCE.toResponses(deviceRepository.findAll());
     }
 }

@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.Instant;
 import java.util.Optional;
 
 /**
@@ -37,7 +36,7 @@ public interface DeviceRepository extends JpaRepository<Device, String>, JpaSpec
 
     @Modifying
     @Query("UPDATE Device device SET device.status = :status,device.lastLoginAt = :lastLoginAt WHERE device.deviceId = :id")
-    int updateStatusAndLastLoginAt(@Param("id") String id, @Param("status") String status, @Param("lastLoginAt") Instant lastLoginAt);
+    int updateStatusAndLastLoginAt(@Param("id") String id, @Param("status") String status, @Param("lastLoginAt") long lastLoginAt);
 
     /**
      * 更新状态和上次联机时间
@@ -47,7 +46,7 @@ public interface DeviceRepository extends JpaRepository<Device, String>, JpaSpec
      */
     @Modifying
     @Query("UPDATE Device device SET device.status = :status,device.lastOnline = :lastOnline WHERE device.deviceId = :id")
-    int updateStatusAndLastOnline(@Param("id") String id, @Param("status") String status, @Param("lastOnline") Instant lastOnline);
+    int updateStatusAndLastOnline(@Param("id") String id, @Param("status") String status, @Param("lastOnline") long lastOnline);
 
     /**
      * 按id进行软删除
