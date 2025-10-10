@@ -1,8 +1,8 @@
 package com.hclm.merchant.service;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.hclm.merchant.pojo.request.MerchantLoginRequest;
 import com.hclm.merchant.pojo.response.AuthResponse;
-import com.hclm.satoken.SaTokenUtil;
 import com.hclm.web.BusinessException;
 import com.hclm.web.entity.Merchant;
 import com.hclm.web.enums.MerchantStatusEnum;
@@ -28,7 +28,7 @@ public class MerchantService {
         if (!MerchantStatusEnum.ACTIVE.name().equals(merchant.getStatus())) {
             throw new BusinessException(ResponseCode.MERCHANT_DISABLED);
         }
-        SaTokenUtil.login(merchant.getId());
-        return new AuthResponse(SaTokenUtil.getTokenName(), SaTokenUtil.getTokenValue());
+        StpUtil.login(merchant.getId());
+        return new AuthResponse(StpUtil.getTokenName(), StpUtil.getTokenValue());
     }
 }

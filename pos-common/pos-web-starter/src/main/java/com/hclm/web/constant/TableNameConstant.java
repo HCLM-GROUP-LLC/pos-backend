@@ -11,4 +11,12 @@ public interface TableNameConstant {
      * 设备
      */
     String DEVICES = "devices";
+    /**
+     * 员工
+     */
+    String EMPLOYEES = "employees";
+    /**
+     * 员工考勤
+     */
+    String EMPLOYEES_ATTENDANCE = "attendance";
 }

@@ -1,5 +1,6 @@
 package com.hclm.web.entity;
 
+import com.hclm.web.constant.TableNameConstant;
 import com.hclm.web.enums.EmployeesSatusEnum;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -12,7 +13,7 @@ import org.hibernate.annotations.ColumnDefault;
  * @since 2025/10/09
  */
 @Entity
-@Table(name = "employees")
+@Table(name = TableNameConstant.EMPLOYEES)
 @Data
 public class Employees {
 

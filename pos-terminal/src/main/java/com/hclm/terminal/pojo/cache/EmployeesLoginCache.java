@@ -16,4 +16,8 @@ public class EmployeesLoginCache {
     private String storeId;
     private String roleId;
     private Long lastLoginAt;
+    /**
+     * 出勤id
+     */
+    private Long attendanceId;
 }

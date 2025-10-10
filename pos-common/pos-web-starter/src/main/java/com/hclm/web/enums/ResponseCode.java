@@ -40,7 +40,12 @@ public enum ResponseCode {
      * 未找到设备id
      */
     DEVICE_ID_NOT_FOUND(10005, "deviceid.notFound"),
-    EMPLOYEES_NOT_FOUND(10006, "employees.notFound");
+    EMPLOYEES_NOT_FOUND(10006, "employees.notFound"),
+    /**
+     * 员工重复登录
+     */
+    EMPLOYEES_DUPLICATE_LOGINS(10007, "employees.duplicateLogins"),
+    ;
     /**
      * 代码
      */

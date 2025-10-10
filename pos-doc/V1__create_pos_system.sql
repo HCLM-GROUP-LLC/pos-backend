@@ -401,32 +401,18 @@ CREATE TABLE order_coupons (
 -- =================================
 
 -- 4.1 考勤表 (attendance)
-CREATE TABLE attendance (
-    attendance_id CHAR(36) NOT NULL PRIMARY KEY COMMENT '考勤主键（UUID）',
-    employees_id CHAR(36) NOT NULL COMMENT '员工ID',
-    store_id CHAR(36) NOT NULL COMMENT '所属店铺',
-    clock_in_time TIMESTAMP NOT NULL COMMENT '上班打卡时间',
-    clock_out_time TIMESTAMP COMMENT '下班打卡时间',
-    total_hours DECIMAL(5,2) COMMENT '工作总时长',
-    idempotency_key VARCHAR(100) NOT NULL COMMENT '幂等性键',
-    sync_status ENUM('SYNCED', 'PENDING', 'FAILED') DEFAULT 'SYNCED' COMMENT '同步状态',
-    clock_in_month INT GENERATED ALWAYS AS (YEAR(clock_in_time) * 100 + MONTH(clock_in_time)) STORED COMMENT '打卡年月(YYYYMM)',
-    clock_in_date DATE GENERATED ALWAYS AS (DATE(clock_in_time)) STORED COMMENT '打卡日期',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    created_by CHAR(36) COMMENT '创建人UUID',
-    updated_by CHAR(36) COMMENT '更新人UUID',
-    is_deleted BOOLEAN DEFAULT FALSE COMMENT '软删除标识',
-
-    UNIQUE KEY uk_attendance_idempotency (idempotency_key),
-    INDEX idx_attendance_user_date (employees_id, clock_in_time),
-    INDEX idx_attendance_store_date (store_id, clock_in_time),
-    INDEX idx_attendance_sync (sync_status),
-    INDEX idx_attendance_monthly (employees_id, clock_in_month, total_hours),
-    INDEX idx_attendance_store_daily (store_id, clock_in_date, clock_in_time),
-    INDEX idx_attendance_incomplete (employees_id, clock_in_time)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='考勤表';
-
+CREATE TABLE `attendance`
+(
+    `attendance_id`  bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '考勤主键',
+    `employees_id`   char(36) NOT NULL COMMENT '员工ID',
+    `store_id`       char(36) NOT NULL COMMENT '所属店铺',
+    `clock_in_time`  bigint unsigned NOT NULL COMMENT '上班打卡时间,毫秒级时间戳',
+    `clock_out_time` bigint unsigned DEFAULT NULL COMMENT '下班打卡时间,毫秒级时间戳',
+    `total_time`     bigint unsigned DEFAULT NULL COMMENT '工作总时长,=clock_in_time-clock_out_time',
+    PRIMARY KEY (`attendance_id`),
+    KEY              `employees_id` (`employees_id`),
+    KEY              `store_id` (`store_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='考勤表';
 -- 4.2 用户会话表 (user_sessions)
 CREATE TABLE user_sessions (
     session_id CHAR(36) NOT NULL PRIMARY KEY COMMENT '会话主键（UUID）',
