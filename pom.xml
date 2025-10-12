@@ -25,6 +25,14 @@
         <!--插件版本-->
         <maven-compiler-plugin.version>3.9.0</maven-compiler-plugin.version>
         <spring-boot-maven-plugin.version>3.5.5</spring-boot-maven-plugin.version>
+        <!--其他属性配置-->
+        <spring.profiles.active>dev</spring.profiles.active>
+        <database.host>localhost</database.host>
+        <database.name>pos_db</database.name>
+        <database.username>root</database.username>
+        <database.password>root</database.password>
+        <redis.host>localhost</redis.host>
+        <redis.port>6379</redis.port>
     </properties>
     <modules>
         <module>pos-common</module><!--公共模块-->

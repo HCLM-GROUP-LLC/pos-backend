@@ -1,11 +1,15 @@
 server:
     port: 8080
 spring:
+    application.name: pos-merchant
+    profiles:
+        active: @spring.profiles.active@
     datasource:
-        host: localhost
-        url: jdbc:mysql://${spring.datasource.host}:3306/pos_db?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
-        username: root
-        password: root
+        host: @database.host@
+        db-name: @database.name@
+        url: jdbc:mysql://${spring.datasource.host}:3306/${spring.datasource.db-name}?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+        username: @database.username@
+        password: @database.password@
         driver-class-name: com.mysql.cj.jdbc.Driver
     jpa:
         hibernate:
@@ -23,12 +27,19 @@ spring:
         date-format: yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
     data:
         redis:
-            host: localhost
-            port: 6379
+            host: @redis.host@
+            port: @redis.port@
 
 logging:
     level:
         root: info
+    file:
+        path: ./logs
+    logback:
+        rollingpolicy:
+            max-file-size: 10MB
+            max-history: 30
+            clean-history-on-start: true
 
 # Sa-Token 配置
 sa-token:

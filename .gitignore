@@ -26,3 +26,6 @@ logs/
 out/
 .flattened-pom.xml
 *.env
+
+### maven ###
+.mvn/
