@@ -132,4 +132,25 @@ public class RedisUtil {
     public static void delete(String key) {
         client.getBucket(key).delete();
     }
+
+    /**
+     * 整数自增
+     *
+     * @param key 键
+     * @return 增加后的值
+     */
+    public static long increment(String key) {
+        return client.getAtomicLong(key).incrementAndGet();
+    }
+
+    /**
+     * 整数自增指定步长
+     *
+     * @param key   键
+     * @param delta 增量
+     * @return 增加后的值
+     */
+    public static long increment(String key, long delta) {
+        return client.getAtomicLong(key).addAndGet(delta);
+    }
 }

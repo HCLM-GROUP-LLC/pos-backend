@@ -11,7 +11,6 @@ import java.time.Duration;
  * @since 2025/10/07
  */
 public class DeviceRedisUtil {
-    private static final String PREFIX = "devicecode:";
 
     /**
      * 存在
@@ -20,7 +19,7 @@ public class DeviceRedisUtil {
      * @return boolean
      */
     public static boolean exists(String code) {
-        return RedisUtil.exists(PREFIX + code);
+        return RedisUtil.exists(RedisPrefixConstant.DEVICE_CODE + code);
     }
 
     /**
@@ -30,7 +29,7 @@ public class DeviceRedisUtil {
      * @return {@link DeviceCodeCache}
      */
     public static DeviceCodeCache get(String code) {
-        return RedisUtil.get(PREFIX + code, DeviceCodeCache.class);
+        return RedisUtil.get(RedisPrefixConstant.DEVICE_CODE + code, DeviceCodeCache.class);
     }
 
     /**
@@ -39,7 +38,7 @@ public class DeviceRedisUtil {
      * @param code 代码
      */
     public static void set(String code, DeviceCodeCache cache) {
-        RedisUtil.set(PREFIX + code, cache, Duration.ofDays(1));// 一天的有效期
+        RedisUtil.set(RedisPrefixConstant.DEVICE_CODE + code, cache, Duration.ofDays(1));// 一天的有效期
     }
 
     /**
@@ -48,6 +47,16 @@ public class DeviceRedisUtil {
      * @param code 代码
      */
     public static void delete(String code) {
-        RedisUtil.delete(PREFIX + code);
+        RedisUtil.delete(RedisPrefixConstant.DEVICE_CODE + code);
+    }
+
+    /**
+     * 获取下一个设备编号
+     *
+     * @param storeId 门店id
+     * @return {@link Integer }
+     */
+    public static Long getDeviceNumberNext(String storeId) {
+        return RedisUtil.increment(RedisPrefixConstant.STORE_DEVICE_NUMBER + storeId);
     }
 }

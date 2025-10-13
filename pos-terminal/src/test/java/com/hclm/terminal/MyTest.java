@@ -1,6 +1,7 @@
 package com.hclm.terminal;
 
 import cn.dev33.satoken.stp.StpUtil;
+import com.hclm.redis.DeviceRedisUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -20,5 +21,10 @@ public class MyTest {
     @Test
     public void logout() {
         StpUtil.kickout("USR-174000000001");
+    }
+
+    @Test
+    public void redis() {
+        System.out.println(DeviceRedisUtil.getDeviceNumberNext("STORE-174000000001"));
     }
 }

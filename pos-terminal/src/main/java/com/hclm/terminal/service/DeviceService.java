@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -45,6 +46,9 @@ public class DeviceService {
         DeviceRedisUtil.delete(request.getCode());
         // 插入数据库
         Device device = DeviceMapper.INSTANCE.toEntity(request);
+        if (!StringUtils.hasLength(device.getDeviceName())) {// 设备名称为空,自动生成名称
+            device.setDeviceName("Device" + DeviceRedisUtil.getDeviceNumberNext(cache.getStoreId()));
+        }
         device.setDeviceId(RandomUtil.generateDeviceId());
         device.setStoreId(cache.getStoreId());// 设置门店id
         device.setRegisteredAt(System.currentTimeMillis());// 设置注册时间

@@ -23,8 +23,6 @@ public class DeviceAddRequest {
     /**
      * 设备名称
      */
-    @NotNull(message = "{devicename.notNull}")
-    @NotEmpty(message = "{devicename.notNull}")
     @Schema(description = "设备名称")
     private String deviceName;
     /**
