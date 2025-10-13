@@ -79,44 +79,6 @@ CREATE TABLE stores (
     INDEX idx_stores_status (status, is_deleted)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='门店表（UUID主键）';
 
--- 1.3 角色表 (roles) - 权限角色 [MOVED BEFORE employees]
-CREATE TABLE roles (
-    role_id CHAR(36) NOT NULL PRIMARY KEY COMMENT '角色主键（UUID）',
-    role_name VARCHAR(50) NOT NULL COMMENT '角色名称',
-    role_code VARCHAR(50) NOT NULL COMMENT '角色代码',
-    description TEXT COMMENT '角色描述',
-    is_active BOOLEAN DEFAULT TRUE COMMENT '是否启用',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    is_deleted BOOLEAN DEFAULT FALSE COMMENT '软删除标识',
-
-    UNIQUE KEY uk_roles_code (role_code)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='角色表';
-
--- 1.4 权限表 (permissions) - 细粒度权限 [MOVED BEFORE employees]
-CREATE TABLE permissions (
-    permission_id CHAR(36) NOT NULL PRIMARY KEY COMMENT '权限主键（UUID）',
-    permission_name VARCHAR(100) NOT NULL COMMENT '权限名称',
-    permission_code VARCHAR(50) NOT NULL COMMENT '权限代码',
-    resource VARCHAR(50) NOT NULL COMMENT '资源标识',
-    action VARCHAR(50) NOT NULL COMMENT '操作标识',
-    description TEXT COMMENT '权限描述',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    is_deleted BOOLEAN DEFAULT FALSE COMMENT '软删除标识',
-
-    UNIQUE KEY uk_permissions_code (permission_code),
-    UNIQUE KEY uk_permissions_resource_action (resource, action)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='权限表';
-
--- 1.5 角色权限关联表 (role_permissions) [MOVED BEFORE employees]
-CREATE TABLE role_permissions (
-    role_id CHAR(36) NOT NULL COMMENT '角色ID',
-    permission_id CHAR(36) NOT NULL COMMENT '权限ID',
-    granted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '授权时间',
-
-    PRIMARY KEY (role_id, permission_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='角色权限关联表';
 
 -- 1.6 用户表 (employees) - 门店员工 [MOVED AFTER ROLES]
 CREATE TABLE `employees`
@@ -145,6 +107,36 @@ CREATE TABLE `employees`
     KEY             `is_deleted` (`is_deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='员工表';
 
+CREATE TABLE floor_plans
+(
+    floor_plan_id   BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '平面图id',
+    store_id        VARCHAR(255) COMMENT '所属门店id',
+    floor_plan_name BIGINT UNSIGNED COMMENT '平面图名称',
+    width           INT UNSIGNED COMMENT '宽度',
+    height          INT UNSIGNED COMMENT '高度',
+    tables_number   INT UNSIGNED COMMENT '桌子数量',
+    capacity        INT UNSIGNED COMMENT '容量',
+    KEY             `store_id` (`store_id`)
+) COMMENT='楼层平面图表';
+CREATE TABLE `dining_tables`
+(
+    `dining_table_id`   bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '餐桌id',
+    `store_id`          varchar(36)  DEFAULT NULL COMMENT '所属门店id',
+    `floor_plan_id`     bigint unsigned DEFAULT NULL COMMENT '所属楼层平面id',
+    `dining_table_name` varchar(255) DEFAULT NULL COMMENT '餐桌名称',
+    `capacity`          int unsigned DEFAULT NULL COMMENT '容量',
+    `used_capacity`     int unsigned DEFAULT NULL COMMENT '使用容量',
+    `shape`             varchar(50)  DEFAULT NULL COMMENT '形状',
+    `width`             int unsigned DEFAULT NULL COMMENT '宽度',
+    `height`            int unsigned DEFAULT NULL COMMENT '高度',
+    `position_x`        int unsigned DEFAULT NULL COMMENT '坐标x',
+    `position_y`        int unsigned DEFAULT NULL COMMENT '坐标y',
+    `status`            varchar(50)  DEFAULT NULL COMMENT '状态',
+    `opener`            char(36)     DEFAULT NULL COMMENT '开台服务员ID',
+    PRIMARY KEY (`dining_table_id`),
+    KEY                 `store_id` (`store_id`),
+    KEY                 `floor_plan_id` (`floor_plan_id`)
+) COMMENT='桌子表';
 -- =================================
 -- 2. 商品与库存管理模块
 -- =================================
