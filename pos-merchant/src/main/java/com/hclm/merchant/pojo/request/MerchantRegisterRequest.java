@@ -5,17 +5,16 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 /**
- * 商户登录请求
+ * 商户注册请求
  *
- * @author hanhua
- * @since 2025/10/06
+ * @author qichao
+ * @since 2025/10/14
  */
 @Data
-public class MerchantLoginRequest {
+public class MerchantRegisterRequest {
     /**
      * 邮箱
      */
-    //@Email(message = "邮箱格式不正确") 这里的验证方式改为这个是否更好
     @NotEmpty
     @Schema(description = "邮箱")
     private String email;

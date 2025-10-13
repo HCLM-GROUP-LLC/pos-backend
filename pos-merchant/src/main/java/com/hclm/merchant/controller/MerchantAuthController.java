@@ -2,6 +2,7 @@ package com.hclm.merchant.controller;
 
 import cn.dev33.satoken.annotation.SaIgnore;
 import com.hclm.merchant.pojo.request.MerchantLoginRequest;
+import com.hclm.merchant.pojo.request.MerchantRegisterRequest;
 import com.hclm.merchant.pojo.response.AuthResponse;
 import com.hclm.merchant.service.MerchantService;
 import com.hclm.web.ApiResponse;
@@ -40,5 +41,17 @@ public class MerchantAuthController {
     @PostMapping("/login")
     public ApiResponse<AuthResponse> login(@RequestBody @Valid MerchantLoginRequest request) {
         return ApiResponse.success(merchantService.login(request));
+    }
+
+    /**
+     * 注册
+     *
+     * @param request 请求
+     * @return {@link ApiResponse }<{@link Void }>
+     */
+    @Operation(summary = "注册")
+    @PostMapping("/register")
+    public ApiResponse<AuthResponse> register(@RequestBody @Valid MerchantRegisterRequest request) {
+        return ApiResponse.success(merchantService.register(request));
     }
 }
