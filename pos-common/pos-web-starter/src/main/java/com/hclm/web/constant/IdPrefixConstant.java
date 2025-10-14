@@ -14,6 +14,10 @@ public interface IdPrefixConstant {
     /**
      * 门店ID
      */
-    String LOCATION = "LOC";
+    String STORE = "LOC";
     String DEVICE = "DEV";
+    /**
+     * 员工
+     */
+    String EMPLOYEES = "USR";
 }

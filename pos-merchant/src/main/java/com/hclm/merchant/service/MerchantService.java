@@ -4,6 +4,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.hclm.merchant.pojo.request.MerchantLoginRequest;
 import com.hclm.merchant.pojo.request.MerchantRegisterRequest;
 import com.hclm.merchant.pojo.response.AuthResponse;
+import com.hclm.merchant.utils.MerchantLoginUtil;
 import com.hclm.web.BusinessException;
 import com.hclm.web.entity.Merchant;
 import com.hclm.web.enums.MerchantStatusEnum;
@@ -29,7 +30,7 @@ public class MerchantService {
         if (!MerchantStatusEnum.ACTIVE.name().equals(merchant.getStatus())) {
             throw new BusinessException(ResponseCode.MERCHANT_DISABLED);
         }
-        StpUtil.login(merchant.getId());
+        MerchantLoginUtil.login(merchant.getId());
         return new AuthResponse(StpUtil.getTokenName(), StpUtil.getTokenValue());
     }
 
@@ -38,7 +39,7 @@ public class MerchantService {
         String email = request.getEmail();
         // 2. 检查邮箱是否已被注册
         boolean isExist = merchantRepository.existsByEmailAndIsDeleted(email, false);
-        if(isExist){
+        if (isExist) {
             throw new BusinessException(ResponseCode.EMAIL_ALREADY_EXISTS);
         }
         // 3. 创建新商户
@@ -49,8 +50,8 @@ public class MerchantService {
         merchant.setIsDeleted(false);
         merchantRepository.save(merchant);
         // 4. 登录
-        StpUtil.login(merchant.getId());
+        MerchantLoginUtil.login(merchant.getId());
         // 5. 返回token
         return new AuthResponse(StpUtil.getTokenName(), StpUtil.getTokenValue());
-     }
+    }
 }

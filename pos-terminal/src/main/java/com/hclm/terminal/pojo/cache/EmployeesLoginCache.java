@@ -1,5 +1,6 @@
 package com.hclm.terminal.pojo.cache;
 
+import com.hclm.web.enums.EmployeesRoleEnum;
 import lombok.Data;
 
 /**
@@ -14,7 +15,7 @@ public class EmployeesLoginCache {
     private String employeesId;
     private String merchantId;
     private String storeId;
-    private String roleId;
+    private EmployeesRoleEnum role;
     private Long lastLoginAt;
     /**
      * 出勤id
