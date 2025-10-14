@@ -1,4 +1,4 @@
-package com.hclm.terminal.pojo.response;
+package com.hclm.merchant.pojo.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

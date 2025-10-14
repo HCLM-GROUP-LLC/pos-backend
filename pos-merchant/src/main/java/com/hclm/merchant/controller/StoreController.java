@@ -1,10 +1,10 @@
-package com.hclm.terminal.controller;
+package com.hclm.merchant.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.hclm.web.ApiResponse;
-import com.hclm.terminal.pojo.request.StoreRequest;
-import com.hclm.terminal.pojo.response.StoreResponse;
-import com.hclm.terminal.service.StoreService;
+import com.hclm.merchant.pojo.request.StoreRequest;
+import com.hclm.merchant.pojo.response.StoreResponse;
+import com.hclm.merchant.service.StoreService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

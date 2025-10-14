@@ -1,8 +1,8 @@
-package com.hclm.terminal.mapper;
+package com.hclm.merchant.mapper;
 
 import com.hclm.web.entity.Store;
-import com.hclm.terminal.pojo.request.StoreRequest;
-import com.hclm.terminal.pojo.response.StoreResponse;
+import com.hclm.merchant.pojo.request.StoreRequest;
+import com.hclm.merchant.pojo.response.StoreResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

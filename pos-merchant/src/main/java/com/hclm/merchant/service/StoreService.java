@@ -1,9 +1,9 @@
-package com.hclm.terminal.service;
+package com.hclm.merchant.service;
 
 import com.hclm.web.entity.Store;
-import com.hclm.terminal.mapper.StoreMapper;
-import com.hclm.terminal.pojo.request.StoreRequest;
-import com.hclm.terminal.pojo.response.StoreResponse;
+import com.hclm.merchant.mapper.StoreMapper;
+import com.hclm.merchant.pojo.request.StoreRequest;
+import com.hclm.merchant.pojo.response.StoreResponse;
 import com.hclm.web.repository.StoreRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
