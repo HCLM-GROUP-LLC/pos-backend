@@ -2,6 +2,7 @@ package com.hclm.merchant.service;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.hclm.merchant.pojo.request.MerchantLoginRequest;
+import com.hclm.merchant.pojo.request.MerchantRegisterRequest;
 import com.hclm.merchant.pojo.response.AuthResponse;
 import com.hclm.web.BusinessException;
 import com.hclm.web.entity.Merchant;
@@ -31,4 +32,25 @@ public class MerchantService {
         StpUtil.login(merchant.getId());
         return new AuthResponse(StpUtil.getTokenName(), StpUtil.getTokenValue());
     }
+
+    public AuthResponse register(MerchantRegisterRequest request) {
+        // 1. 获取邮箱
+        String email = request.getEmail();
+        // 2. 检查邮箱是否已被注册
+        boolean isExist = merchantRepository.existsByEmailAndIsDeleted(email, false);
+        if(isExist){
+            throw new BusinessException(ResponseCode.EMAIL_ALREADY_EXISTS);
+        }
+        // 3. 创建新商户
+        Merchant merchant = new Merchant();
+        merchant.setEmail(email);
+        merchant.setPasswordHash((request.getPassword()));
+        merchant.setStatus(MerchantStatusEnum.ACTIVE.name());
+        merchant.setIsDeleted(false);
+        merchantRepository.save(merchant);
+        // 4. 登录
+        StpUtil.login(merchant.getId());
+        // 5. 返回token
+        return new AuthResponse(StpUtil.getTokenName(), StpUtil.getTokenValue());
+     }
 }
