@@ -69,12 +69,14 @@ public class Employees {
      * 角色ID
      */
     @Column(name = "role_id")
+    @Enumerated(EnumType.STRING) // 枚举类型，使用name 存储
     private EmployeesRoleEnum roleId;
 
     /**
      * 账号状态
      */
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private EmployeesSatusEnum status = EmployeesSatusEnum.ACTIVE;
 
     /**

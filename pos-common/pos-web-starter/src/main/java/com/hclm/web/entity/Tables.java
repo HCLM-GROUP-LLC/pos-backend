@@ -46,6 +46,7 @@ public class Tables {
     /**
      * 形状
      */
+    @Enumerated(EnumType.STRING) // 枚举类型，使用name 存储
     private DiningTableShapeEnum shape;
     /**
      * 宽度
@@ -66,6 +67,7 @@ public class Tables {
     /**
      * 状态
      */
+    @Enumerated(EnumType.STRING) // 枚举类型，使用name 存储
     private DiningTableStatusEnum status;
     /**
      * 开台服务员ID（员工表ID），即桌子对应的服务员

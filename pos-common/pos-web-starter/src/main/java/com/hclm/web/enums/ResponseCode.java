@@ -36,7 +36,7 @@ public enum ResponseCode {
     MERCHANT_DISABLED(10002, "merchant.disabled"),
     DEVICECODE_NOTFOUND(10003, "devicecode.notFound"),
     EMPLOYEES_PASSCODE_NOT_FOUND(10004, "employees.passcode.notFound"),
-    EMAIL_ALREADY_EXISTS(10008, "email.already.exists" ),
+    EMAIL_ALREADY_EXISTS(10008, "email.already.exists"),
     /**
      * 未找到设备id
      */

@@ -2,10 +2,7 @@ package com.hclm.web.entity;
 
 import com.hclm.web.constant.TableNameConstant;
 import com.hclm.web.enums.DeviceStatusEnum;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
@@ -45,9 +42,10 @@ public class Device {
     @Column(name = "last_online")
     private Long lastOnline;
 
+    @Enumerated(EnumType.STRING) // 枚举类型，使用name 存储
     @ColumnDefault("'OFFLINE'")
     @Column(name = "status", nullable = false, length = 20)
-    private String status = DeviceStatusEnum.OFFLINE.name();
+    private DeviceStatusEnum status = DeviceStatusEnum.OFFLINE;
 
     /**
      * 注册于 毫秒级时间戳
