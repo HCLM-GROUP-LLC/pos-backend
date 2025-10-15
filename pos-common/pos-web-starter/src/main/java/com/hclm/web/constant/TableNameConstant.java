@@ -19,4 +19,12 @@ public interface TableNameConstant {
      * 员工考勤
      */
     String EMPLOYEES_ATTENDANCE = "attendance";
+    /**
+     * 平面图
+     */
+    String FLOOR_PLANS = "floor_plans";
+    /**
+     * 餐桌,tables是mysql的关键字，所以用dining_tables代替
+     */
+    String TABLES = "dining_tables";
 }

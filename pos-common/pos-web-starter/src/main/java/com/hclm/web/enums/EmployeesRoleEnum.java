@@ -1,7 +1,11 @@
 package com.hclm.web.enums;
 
+import cn.dev33.satoken.annotation.SaCheckRole;
+
 /**
  * 员工角色枚举
+ * 这里的枚举值与数据库中的角色值对应，不要修改
+ * {@link SaCheckRole} 注解也会用到
  *
  * @author hanhua
  * @since 2025/10/09

@@ -1,6 +1,7 @@
 package com.hclm.web.entity;
 
 import com.hclm.web.constant.TableNameConstant;
+import com.hclm.web.enums.EmployeesRoleEnum;
 import com.hclm.web.enums.EmployeesSatusEnum;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -18,7 +19,7 @@ import org.hibernate.annotations.ColumnDefault;
 public class Employees {
 
     /**
-     * 用户ID（UUID格式）
+     * 员工（Square风格）
      */
     @Id
     @Column(name = "employees_id", nullable = false, columnDefinition = "CHAR(36)")
@@ -61,16 +62,20 @@ public class Employees {
     private String lastName;
 
     /**
+     * 电话号码
+     */
+    private String phoneNumber;
+    /**
      * 角色ID
      */
     @Column(name = "role_id")
-    private String roleId;
+    private EmployeesRoleEnum roleId;
 
     /**
      * 账号状态
      */
     @Column(name = "status")
-    private String status = EmployeesSatusEnum.ACTIVE.name();
+    private EmployeesSatusEnum status = EmployeesSatusEnum.ACTIVE;
 
     /**
      * 最后登录时间
