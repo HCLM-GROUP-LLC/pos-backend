@@ -1,8 +1,7 @@
--- ==============================
--- V1__create_pos_system.sql
--- POS系统完整数据库设计 - Monty风格
--- 包含所有表结构、初始数据、优化和性能调优
--- ==============================
+-- |删除所有的视图、存储过程、函数|业务逻辑应当由代码来定义，数据层应当只提供数据访问接口|
+-- |删除所有约束、外键|外键约束删除数据时，会删除关联的数据。但是数据不能被删除。业务逻辑应当由代码来定义|
+-- |删除复合索引|复合索引有最左匹配原则，如果索引字段有空值，会导致索引失效|
+-- |时间戳改为整形数据存储|时间戳本来就是整形的数据，也是为了便于国际化|
 
 -- 使用现有数据库
 USE pos_db;
@@ -11,29 +10,29 @@ USE pos_db;
 SET default_storage_engine = InnoDB;
 SET NAMES utf8mb4 COLLATE utf8mb4_0900_ai_ci;
 
--- =================================
--- 1. 商家与门店管理模块（Square风格）
--- =================================
-
--- 1.1 商家表 (merchants) - Square风格商家注册，使用UUID主键
-CREATE TABLE merchants (
-    id CHAR(36) NOT NULL PRIMARY KEY COMMENT '商家ID（UUID格式，如MRC-xxx）',
-    email VARCHAR(255) NOT NULL UNIQUE COMMENT '商家邮箱',
-    password_hash VARCHAR(255) NOT NULL COMMENT '密码哈希',
-    business_name VARCHAR(255) NOT NULL COMMENT '企业名称',
-    industry VARCHAR(100) NOT NULL COMMENT '行业类型',
-    currency CHAR(3) NOT NULL DEFAULT 'USD' COMMENT '币种',
-    country CHAR(2) NOT NULL DEFAULT 'US' COMMENT '国家代码',
-    status VARCHAR(50) DEFAULT 'ACTIVE' COMMENT '商家状态',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    created_by CHAR(36) COMMENT '创建人UUID',
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    updated_by CHAR(36) COMMENT '更新人UUID',
-    is_deleted BOOLEAN DEFAULT FALSE,
-
-    INDEX idx_merchants_email (email),
-    INDEX idx_merchants_status (status, is_deleted)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='商家表（Square风格，UUID主键）';
+-- 1.1 商家表 (merchants) - 使用UUID主键
+CREATE TABLE `merchants` (
+    `id`             CHAR(36)      NOT NULL COMMENT '商家ID（UUID格式，如MRC-xxx）',
+    `email`          VARCHAR(255)  NOT NULL COMMENT '商家邮箱',
+    `password_hash`  VARCHAR(255)  NOT NULL COMMENT '密码哈希',
+    `business_name`  VARCHAR(255)  NOT NULL COMMENT '企业名称',
+    `industry`       VARCHAR(100)  NOT NULL COMMENT '行业类型',
+    `currency`       CHAR(3)       NOT NULL DEFAULT 'USD' COMMENT '币种',
+    `country`        CHAR(2)       NOT NULL DEFAULT 'US' COMMENT '国家代码',
+    `status`         VARCHAR(50)   DEFAULT 'ACTIVE' COMMENT '商家状态',
+    `created_at`     TIMESTAMP     DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `created_by`     CHAR(36)               DEFAULT NULL COMMENT '创建人UUID',
+    `updated_at`     TIMESTAMP     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `updated_by`     CHAR(36)               DEFAULT NULL COMMENT '更新人UUID',
+    `is_deleted`     TINYINT(1)    DEFAULT '0' COMMENT '逻辑删除标志',
+    PRIMARY KEY (`id`),
+    KEY `email` (`email`),
+    KEY `status` (`status`),
+    KEY `is_deleted` (`is_deleted`)
+) ENGINE=InnoDB 
+  DEFAULT CHARSET=utf8mb4 
+  COLLATE=utf8mb4_0900_ai_ci 
+  COMMENT='商家表（简化索引版，无外键，Square风格UUID主键)';
 
 -- 1.2 商家银行账户表 (merchant_bank_accounts) - 独立管理银行账户
 CREATE TABLE merchant_bank_accounts (
@@ -57,68 +56,37 @@ CREATE TABLE merchant_bank_accounts (
     INDEX idx_bank_accounts_primary (merchant_id, is_primary, is_deleted),
     INDEX idx_bank_accounts_status (status, is_verified, is_deleted)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='商家银行账户表';
+-- =================================
+-- 1.3 商家门店表 (stores) - 门店管理
+-- =================================
+CREATE TABLE `stores` (
+    `id`             CHAR(36)      NOT NULL COMMENT '门店ID（UUID格式，如 LOC-xxx）',
+    `merchant_id`    CHAR(36)      NOT NULL COMMENT '所属商家ID（UUID）',
+    `store_name`     VARCHAR(255)  NOT NULL COMMENT '门店名称',
+    `address`        VARCHAR(255)           DEFAULT NULL COMMENT '门店地址',
+    `timezone`       VARCHAR(64)            DEFAULT 'UTC' COMMENT '时区',
+    `status`         VARCHAR(50)            DEFAULT 'ACTIVE' COMMENT '门店状态',
+    `tax_rate`       DECIMAL(5,4)           DEFAULT 0.0000 COMMENT '默认税率（如0.1000表示10%）',
+    `currency`       VARCHAR(3)             DEFAULT 'USD' COMMENT '币种',
+    `business_hours` JSON                   DEFAULT NULL COMMENT '营业时间配置（JSON格式，如{"mon":"09:00-18:00"}）',
 
--- 1.3 门店表 (stores) - 使用UUID主键
-CREATE TABLE stores (
-    id CHAR(36) NOT NULL PRIMARY KEY COMMENT '门店ID（UUID格式，如LOC-xxx）',
-    merchant_id CHAR(36) NOT NULL COMMENT '所属商家ID',
-    store_name VARCHAR(255) NOT NULL COMMENT '门店名称',
-    address VARCHAR(255) COMMENT '门店地址',
-    timezone VARCHAR(64) DEFAULT 'UTC' COMMENT '时区',
-    status VARCHAR(50) DEFAULT 'ACTIVE' COMMENT '门店状态',
-    tax_rate DECIMAL(5,4) DEFAULT 0.0000 COMMENT '默认税率',
-    currency VARCHAR(3) DEFAULT 'USD' COMMENT '币种',
-    business_hours JSON COMMENT '营业时间配置',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    created_by CHAR(36) COMMENT '创建人UUID',
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    updated_by CHAR(36) COMMENT '更新人UUID',
-    is_deleted BOOLEAN DEFAULT FALSE,
+    `created_at`     TIMESTAMP              DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `created_by`     CHAR(36)               DEFAULT NULL COMMENT '创建人UUID',
+    `updated_at`     TIMESTAMP              DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `updated_by`     CHAR(36)               DEFAULT NULL COMMENT '更新人UUID',
+    `is_deleted`     TINYINT(1)             DEFAULT 0 COMMENT '逻辑删除标志（0=正常，1=已删除）',
 
-    INDEX idx_stores_merchant (merchant_id, is_deleted),
-    INDEX idx_stores_status (status, is_deleted)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='门店表（UUID主键）';
+    PRIMARY KEY (`id`),
+    KEY `merchant_id` (`merchant_id`),
+    KEY `status` (`status`),
+    KEY `is_deleted` (`is_deleted`)
+) ENGINE=InnoDB 
+  DEFAULT CHARSET=utf8mb4 
+  COLLATE=utf8mb4_0900_ai_ci 
+  COMMENT='门店表（轻量化无外键版，UUID主键）';
 
--- 1.3 角色表 (roles) - 权限角色 [MOVED BEFORE employees]
-CREATE TABLE roles (
-    role_id CHAR(36) NOT NULL PRIMARY KEY COMMENT '角色主键（UUID）',
-    role_name VARCHAR(50) NOT NULL COMMENT '角色名称',
-    role_code VARCHAR(50) NOT NULL COMMENT '角色代码',
-    description TEXT COMMENT '角色描述',
-    is_active BOOLEAN DEFAULT TRUE COMMENT '是否启用',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    is_deleted BOOLEAN DEFAULT FALSE COMMENT '软删除标识',
+-- 1.6 员工表 (employees) - 门店员工 [MOVED AFTER ROLES]
 
-    UNIQUE KEY uk_roles_code (role_code)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='角色表';
-
--- 1.4 权限表 (permissions) - 细粒度权限 [MOVED BEFORE employees]
-CREATE TABLE permissions (
-    permission_id CHAR(36) NOT NULL PRIMARY KEY COMMENT '权限主键（UUID）',
-    permission_name VARCHAR(100) NOT NULL COMMENT '权限名称',
-    permission_code VARCHAR(50) NOT NULL COMMENT '权限代码',
-    resource VARCHAR(50) NOT NULL COMMENT '资源标识',
-    action VARCHAR(50) NOT NULL COMMENT '操作标识',
-    description TEXT COMMENT '权限描述',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    is_deleted BOOLEAN DEFAULT FALSE COMMENT '软删除标识',
-
-    UNIQUE KEY uk_permissions_code (permission_code),
-    UNIQUE KEY uk_permissions_resource_action (resource, action)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='权限表';
-
--- 1.5 角色权限关联表 (role_permissions) [MOVED BEFORE employees]
-CREATE TABLE role_permissions (
-    role_id CHAR(36) NOT NULL COMMENT '角色ID',
-    permission_id CHAR(36) NOT NULL COMMENT '权限ID',
-    granted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '授权时间',
-
-    PRIMARY KEY (role_id, permission_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='角色权限关联表';
-
--- 1.6 用户表 (employees) - 门店员工 [MOVED AFTER ROLES]
 CREATE TABLE `employees`
 (
     `employees_id`  char(36)     NOT NULL COMMENT '用户ID Square风格',
@@ -146,114 +114,82 @@ CREATE TABLE `employees`
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='员工表';
 
 -- =================================
--- 2. 商品与库存管理模块
--- =================================
-
--- 2.1 商品分类表 (categories)
-CREATE TABLE categories (
-    category_id CHAR(36) NOT NULL PRIMARY KEY COMMENT '分类主键（UUID）',
-    store_id CHAR(36) NOT NULL COMMENT '所属店铺',
-    category_name VARCHAR(100) NOT NULL COMMENT '分类名称',
-    description TEXT COMMENT '分类描述',
-    display_order INT DEFAULT 0 COMMENT '显示顺序',
-    is_active BOOLEAN DEFAULT TRUE COMMENT '是否启用',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    created_by CHAR(36) COMMENT '创建人UUID',
-    updated_by CHAR(36) COMMENT '更新人UUID',
-    is_deleted BOOLEAN DEFAULT FALSE COMMENT '软删除标识',
-
-    INDEX idx_categories_store (store_id, is_active, is_deleted),
-    INDEX idx_categories_order (display_order)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='商品分类表';
-
--- 2.2 商品表 (products)
-CREATE TABLE products (
-    product_id CHAR(36) NOT NULL PRIMARY KEY COMMENT '商品ID（UUID）',
-    merchant_id CHAR(36) NOT NULL COMMENT '商家ID',
-    store_id CHAR(36) NOT NULL,
-    category_id CHAR(36) COMMENT '商品分类',
-    product_name VARCHAR(200) NOT NULL COMMENT '商品名称',
-    description VARCHAR(255) DEFAULT NULL COMMENT '商品描述',
-    price DECIMAL(10,2) NOT NULL COMMENT '销售价格',
-    image_url VARCHAR(500) COMMENT '商品图片URL',
-    is_active BOOLEAN DEFAULT TRUE COMMENT '是否上架',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    created_by CHAR(36) DEFAULT NULL COMMENT '创建人UUID',
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    updated_by CHAR(36) DEFAULT NULL COMMENT '更新人UUID',
-    is_deleted BOOLEAN DEFAULT FALSE,
-
-    INDEX idx_products_store (merchant_id, store_id),
-    INDEX idx_products_pos_list (store_id, category_id, is_active, is_deleted, product_name, price),
-    INDEX idx_products_sync (store_id, updated_at, is_deleted),
-    FULLTEXT INDEX idx_products_search (product_name, description)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='商品表';
-
--- 2.3 库存表 (inventory)
-CREATE TABLE inventory (
-    inventory_id CHAR(36) NOT NULL PRIMARY KEY COMMENT '库存主键（UUID）',
-    product_id CHAR(36) NOT NULL COMMENT '商品ID',
-    current_stock INT NOT NULL DEFAULT 0 COMMENT '当前库存',
-    min_stock INT DEFAULT 0 COMMENT '最低库存阈值',
-    max_stock INT DEFAULT 0 COMMENT '最高库存阈值',
-    cost_price DECIMAL(10,2) COMMENT '成本价格',
-    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    created_by CHAR(36) COMMENT '创建人UUID',
-    updated_by CHAR(36) COMMENT '更新人UUID',
-    is_deleted BOOLEAN DEFAULT FALSE COMMENT '软删除标识',
-
-    UNIQUE KEY uk_inventory_product (product_id),
-    INDEX idx_inventory_stock_level (current_stock, min_stock),
-    INDEX idx_inventory_alert (current_stock, min_stock, product_id),
-    INDEX idx_inventory_cost (product_id, cost_price, current_stock)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='库存表';
-
--- =================================
 --  菜单与菜单管理模块
 -- =================================
+CREATE TABLE `items`
+(
+    `item_id`        bigint unsigned  NOT NULL AUTO_INCREMENT COMMENT '菜品ID（单品）',
+    `merchant_id`    char(36)         NOT NULL COMMENT '商家ID',
+    `store_id`       char(36)         NOT NULL COMMENT '门店ID',
+    `big_title`      varchar(100)     NOT NULL COMMENT '大标题（菜品主标题）',
+    `sub_title`      varchar(100)              DEFAULT NULL COMMENT '小标题（副标题/别名）',
+    `description`    text                       DEFAULT NULL COMMENT '说明/介绍',
+    `image_url`      varchar(255)               DEFAULT NULL COMMENT '主图URL',
+    `print_type`     varchar(50)      NOT NULL DEFAULT 'RECEIPT' COMMENT '打印类型，如 RECEIPT/KITCHEN/BAR',
+    `price`          decimal(10,2)    NOT NULL DEFAULT '0.00' COMMENT '价格',
+    `is_extra_charge` tinyint         NOT NULL DEFAULT '0' COMMENT '是否额外收费（0否，1是）',
+    `extra_charge_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '额外收费金额（可为负数，单位与 price 一致）',
+    `barcode`        varchar(100)              DEFAULT NULL COMMENT '条码',
+    `status`         varchar(50)      NOT NULL DEFAULT 'ACTIVE' COMMENT '上架状态（ACTIVE/INACTIVE/DISCONTINUED 等）',
+    `extra_fields`   json                        DEFAULT NULL COMMENT '额外词条（JSON），用于灵活扩展键值对',
+    `created_at`     bigint unsigned            DEFAULT NULL,
+    `updated_at`     bigint unsigned            DEFAULT NULL,
+    `is_deleted`     tinyint           NOT NULL DEFAULT '0' COMMENT '删除标记',
+    PRIMARY KEY (`item_id`) USING BTREE,
+    KEY `merchant_id` (`merchant_id`),
+    KEY `store_id` (`store_id`),
+    KEY `status` (`status`),
+    KEY `print_type` (`print_type`),
+    KEY `is_deleted` (`is_deleted`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='菜品表（单品）';
 
---  菜单分类表 (menu_categories)
-CREATE TABLE menu_categories (
-     id CHAR(36) NOT NULL PRIMARY KEY COMMENT '分类ID（UUID）',
-     org_id CHAR(36) NOT NULL COMMENT '组织ID（UUID）',
-     store_id CHAR(36) NOT NULL COMMENT '门店ID（UUID）',
-     name VARCHAR(255) NOT NULL COMMENT '分类名称',
-     sort_order INT DEFAULT 0 COMMENT '排序序号',
-     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-     created_by CHAR(36) COMMENT '创建人UUID',
-     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-     updated_by CHAR(36) COMMENT '更新人UUID',
-     is_deleted BOOLEAN DEFAULT FALSE COMMENT '是否删除标记',
+CREATE TABLE `categories`
+(
+    `category_id`   bigint unsigned   NOT NULL AUTO_INCREMENT COMMENT '类目ID',
+    `merchant_id`   char(36)          NOT NULL COMMENT '商家ID',
+    `store_id`      char(36)          NOT NULL COMMENT '门店ID',
+    `menu_id`       bigint unsigned   NOT NULL COMMENT '所属菜单ID',
+    `name`          varchar(100)      NOT NULL COMMENT '类目名称',
+    `created_at`    bigint unsigned            DEFAULT NULL,
+    `updated_at`    bigint unsigned            DEFAULT NULL,
+    PRIMARY KEY (`category_id`) USING BTREE,
+    KEY `merchant_id` (`merchant_id`),
+    KEY `store_id` (`store_id`),
+    KEY `menu_id` (`menu_id`),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='类目表';
 
-     INDEX idx_org_store (org_id, store_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='菜单分类表';
+CREATE TABLE `category_items`
+(
+    `id`            bigint unsigned   NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `merchant_id`   char(36)          NOT NULL COMMENT '商家ID',
+    `store_id`      char(36)          NOT NULL COMMENT '门店ID',
 
+    `category_id`   bigint unsigned   NOT NULL COMMENT '类目ID',
+    `item_id`       bigint unsigned   NOT NULL COMMENT '单品ID', 
+    `created_at`    bigint unsigned            DEFAULT NULL,
+    `updated_at`    bigint unsigned            DEFAULT NULL,
+    PRIMARY KEY (`id`) USING BTREE,
+    KEY `merchant_id` (`merchant_id`),
+    KEY `store_id` (`store_id`),
+    KEY `category_id` (`category_id`),
+    KEY `item_id` (`item_id`),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='类目-单品关联表（多对多）';
 
---  菜单项表 (menu_items)
-CREATE TABLE menu_items (
-    id CHAR(36) NOT NULL PRIMARY KEY COMMENT '菜品ID（UUID）',
-    org_id CHAR(36) NOT NULL COMMENT '组织ID（UUID）',
-    store_id CHAR(36) NOT NULL COMMENT '门店ID（UUID）',
-    category_id CHAR(36) NOT NULL COMMENT '分类ID（UUID）',
-    name VARCHAR(255) NOT NULL COMMENT '菜品名称',
-    description TEXT COMMENT '菜品描述',
-    price DECIMAL(12,2) NOT NULL COMMENT '价格',
-    currency CHAR(3) DEFAULT 'USD' COMMENT '货币代码',
-    image_url VARCHAR(500) COMMENT '图片URL',
-    sort_order INT DEFAULT 0 COMMENT '排序序号',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    created_by CHAR(36) COMMENT '创建人UUID',
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    updated_by CHAR(36) COMMENT '更新人UUID',
-    is_deleted BOOLEAN DEFAULT FALSE COMMENT '是否删除标记',
+CREATE TABLE `menus`
+(
+    `menu_id`       bigint unsigned   NOT NULL AUTO_INCREMENT COMMENT '菜单ID',
+    `merchant_id`   char(36)          NOT NULL COMMENT '商家ID',
+    `store_id`      char(36)          NOT NULL COMMENT '门店ID',
 
-    INDEX idx_org_store_cat (org_id, store_id, category_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='菜单项表';
-
-
+    `name`          varchar(100)      NOT NULL COMMENT '菜单名称',
+    `description`   text                       DEFAULT NULL COMMENT '菜单说明',
+    `created_at`    bigint unsigned            DEFAULT NULL,
+    `updated_at`    bigint unsigned            DEFAULT NULL,
+    PRIMARY KEY (`menu_id`) USING BTREE,
+    KEY `merchant_id` (`merchant_id`),
+    KEY `store_id` (`store_id`),
+    KEY `name` (`name`),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='菜单表';
 -- =================================
 -- 3. 订单与支付管理模块
 -- =================================
@@ -477,6 +413,36 @@ CREATE TABLE receipts (
     INDEX idx_receipts_status (status, sent_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='收据记录表';
 
+CREATE TABLE `floor_plans` (
+  `floor_plan_id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '平面图id',
+  `store_id` varchar(255) DEFAULT NULL COMMENT '所属门店id',
+  `floor_plan_name` bigint unsigned DEFAULT NULL COMMENT '平面图名称',
+  `width` int unsigned DEFAULT NULL COMMENT '宽度',
+  `height` int unsigned DEFAULT NULL COMMENT '高度',
+  `tables_number` int unsigned DEFAULT NULL COMMENT '桌子数量',
+  `capacity` int unsigned DEFAULT NULL COMMENT '容量',
+  PRIMARY KEY (`floor_plan_id`),
+  KEY `store_id` (`store_id`)
+) COMMENT='楼层平面图表';
+
+CREATE TABLE `dining_tables` (
+  `dining_table_id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '餐桌id',
+  `store_id` varchar(36) DEFAULT NULL COMMENT '所属门店id',
+  `floor_plan_id` bigint unsigned DEFAULT NULL COMMENT '所属楼层平面id',
+  `dining_table_name` varchar(255) DEFAULT NULL COMMENT '餐桌名称',
+  `capacity` int unsigned DEFAULT NULL COMMENT '容量',
+  `used_capacity` int unsigned DEFAULT NULL COMMENT '使用容量',
+  `shape` varchar(50) DEFAULT NULL COMMENT '形状',
+  `width` int unsigned DEFAULT NULL COMMENT '宽度',
+  `height` int unsigned DEFAULT NULL COMMENT '高度',
+  `position_x` int unsigned DEFAULT NULL COMMENT '坐标x',
+  `position_y` int unsigned DEFAULT NULL COMMENT '坐标y',
+  `status` varchar(50) DEFAULT NULL COMMENT '状态',
+  `opener` char(36) DEFAULT NULL COMMENT '开台服务员ID',
+  PRIMARY KEY (`dining_table_id`),
+  KEY `store_id` (`store_id`),
+  KEY `floor_plan_id` (`floor_plan_id`)
+) COMMENT='桌子表';
 -- =================================
 -- 5. 系统管理与配置模块
 -- =================================
