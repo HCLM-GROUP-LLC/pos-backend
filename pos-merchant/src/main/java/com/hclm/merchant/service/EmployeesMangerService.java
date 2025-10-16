@@ -9,6 +9,8 @@ import com.hclm.web.BusinessException;
 import com.hclm.web.entity.Employees;
 import com.hclm.web.enums.ResponseCode;
 import com.hclm.web.repository.EmployeesRepository;
+import com.hclm.web.repository.StoreRepository;
+
 import com.hclm.web.utils.RandomUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EmployeesMangerService {
     private final EmployeesRepository employeesRepository;
+    private final StoreRepository storeRepository;
 
     /**
      * 添加员工
@@ -42,11 +45,16 @@ public class EmployeesMangerService {
     /**
      * 获取员工列表
      *
-     * @param storeId 门店id
-     * @return {@link List }
+     * @param storeId 门店id     * @return {@link List }
      */
     public List<EmployeesResponse> getEmployeesList(String storeId) {
-        List<Employees> employeesList = employeesRepository.findByStoreIdAndNotDeleted(storeId);
+        String merchantId = MerchantLoginUtil.getMerchantId();
+        boolean hasPermission = storeRepository.existsByIdAndMerchantId(storeId, merchantId);
+        if (!hasPermission) {
+            throw new IllegalArgumentException("no permission access storeId:"+storeId);
+        }
+
+        List<Employees> employeesList = employeesRepository.findByStoreIdAndMerchantIdAndNotDeleted(storeId, merchantId);
         return EmployeesManagerMapper.INSTANCE.toResponseList(employeesList);
     }
 

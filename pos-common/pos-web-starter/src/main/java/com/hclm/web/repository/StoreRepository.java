@@ -65,4 +65,13 @@ public interface StoreRepository extends JpaRepository<Store, String>, JpaSpecif
     @Modifying
     @Query("UPDATE Store s SET s.isDeleted = true WHERE s.id = :id")
     int softDeleteById(@Param("id") String id);
+
+    /**
+     * 检查门店是否属于指定商家
+     *
+     * @param storeId    门店ID
+     * @param merchantId 商家ID
+     * @return 是否存在
+     */
+    boolean existsByIdAndMerchantId(String storeId, String merchantId);
 }
