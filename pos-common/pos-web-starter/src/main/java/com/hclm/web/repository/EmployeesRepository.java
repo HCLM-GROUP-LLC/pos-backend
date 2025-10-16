@@ -2,8 +2,12 @@ package com.hclm.web.repository;
 
 import com.hclm.web.entity.Employees;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -23,4 +27,23 @@ public interface EmployeesRepository extends JpaRepository<Employees, String> {
      * @return {@link Employees }
      */
     Optional<Employees> findByPassCodeAndStoreId(String passCode, String storeId);
+
+    /**
+     * 查找由门店id和不已删除
+     *
+     * @param storeId 门店id
+     * @return {@link List }<{@link Employees }>
+     */
+    @Query("SELECT e FROM Employees e WHERE e.isDeleted = false AND e.storeId = :storeId")
+    List<Employees> findByStoreIdAndNotDeleted(@Param("storeId") String storeId);
+
+    /**
+     * 软删除
+     *
+     * @param employeesId 员工id
+     * @return int
+     */
+    @Modifying
+    @Query("UPDATE Employees e SET e.isDeleted = true WHERE e.employeesId = :employeesId")
+    int softDelete(@Param("id") String employeesId);
 }
