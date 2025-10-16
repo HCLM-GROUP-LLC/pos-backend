@@ -3,6 +3,8 @@ package com.hclm.merchant.controller;
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.hclm.merchant.pojo.request.EmployeesAddRequest;
 import com.hclm.merchant.pojo.request.EmployeesUpdateRequest;
+import com.hclm.merchant.pojo.request.EmployeesCopyRequest;
+import com.hclm.merchant.pojo.response.EmployeesCopyResponse;
 import com.hclm.merchant.pojo.response.EmployeesResponse;
 import com.hclm.merchant.service.EmployeesMangerService;
 import com.hclm.web.ApiResponse;
@@ -60,5 +62,11 @@ public class EmployeesMangerController {
     @GetMapping("/{id}")
     public ApiResponse<EmployeesResponse> getEmployees(@Schema(description = "员工id") @PathVariable String id) {
         return ApiResponse.success(employeesMangerService.getEmployees(id));
+    }
+
+    @Operation(summary = "复制员工到其他店铺")
+    @PostMapping("/copy")
+    public ApiResponse<EmployeesCopyResponse> copyEmployees(@Valid @RequestBody EmployeesCopyRequest request) {
+        return ApiResponse.success(employeesMangerService.copyEmployees(request));
     }
 }

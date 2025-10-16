@@ -18,7 +18,7 @@ import java.util.List;
 @SaCheckLogin
 @RestController
 @Tag(name = "店铺管理控制器", description = "店铺的增删改查接口")
-@RequestMapping("/api/stores")
+@RequestMapping("/stores")
 @RequiredArgsConstructor
 public class StoreController {
 

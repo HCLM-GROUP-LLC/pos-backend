@@ -56,4 +56,13 @@ public interface EmployeesRepository extends JpaRepository<Employees, String> {
      */
     @Query("SELECT e FROM Employees e WHERE e.isDeleted = false AND e.storeId = :storeId AND e.merchantId = :merchantId")
     List<Employees> findByStoreIdAndMerchantIdAndNotDeleted(@Param("storeId") String storeId, @Param("merchantId") String merchantId);
+
+    /**
+     * 检查邮箱在指定店铺中是否已存在（未删除）
+     *
+     * @param email   邮箱
+     * @param storeId 店铺ID
+     * @return boolean
+     */
+    boolean existsByEmailAndStoreIdAndIsDeletedFalse(String email, String storeId);
 }
