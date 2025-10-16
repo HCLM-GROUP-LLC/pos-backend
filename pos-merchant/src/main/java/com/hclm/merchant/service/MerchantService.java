@@ -65,4 +65,11 @@ public class MerchantService {
         // 4. 返回token
         return new AuthResponse(StpUtil.getTokenName(), StpUtil.getTokenValue());
     }
+
+    public Merchant getMerchantInfo() {
+        String merchantId = MerchantLoginUtil.getMerchantId();
+        return merchantRepository.findById(merchantId)
+                .filter(m -> !m.getIsDeleted())
+                .orElseThrow(() -> new BusinessException(ResponseCode.NOT_FOUND));
+    }
 }
