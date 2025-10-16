@@ -5,6 +5,7 @@ import com.hclm.merchant.pojo.request.EmployeesAddRequest;
 import com.hclm.merchant.pojo.request.EmployeesUpdateRequest;
 import com.hclm.merchant.pojo.response.EmployeesResponse;
 import com.hclm.merchant.service.EmployeesMangerService;
+import com.hclm.tenant.Tenant;
 import com.hclm.web.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,6 +23,7 @@ import java.util.List;
  * @author hanhua
  * @since 2025/10/14
  */
+@Tenant // 开启租户功能
 @Validated
 @SaCheckLogin //检查登录
 @Tag(name = "员工管理")

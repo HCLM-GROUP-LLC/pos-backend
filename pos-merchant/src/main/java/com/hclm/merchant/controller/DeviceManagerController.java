@@ -4,6 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.hclm.merchant.pojo.request.DeviceIDGenRequest;
 import com.hclm.merchant.pojo.response.DeviceResponse;
 import com.hclm.merchant.service.DeviceManagerService;
+import com.hclm.tenant.Tenant;
 import com.hclm.web.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Set;
 
+@Tenant // 开启租户功能
 @Validated
 @SaCheckLogin //检查登录
 @Tag(name = "设备管理")

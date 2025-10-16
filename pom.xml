@@ -22,6 +22,7 @@
         <swagger.version>2.2.38</swagger.version>
         <redisson.version>3.45.0</redisson.version>
         <mapstruct.version>1.6.3</mapstruct.version>
+        <jsqlparser.version>5.3</jsqlparser.version>
         <!--插件版本-->
         <maven-compiler-plugin.version>3.9.0</maven-compiler-plugin.version>
         <spring-boot-maven-plugin.version>3.5.5</spring-boot-maven-plugin.version>
@@ -121,6 +122,11 @@
                 <groupId>org.mapstruct</groupId>
                 <artifactId>mapstruct-processor</artifactId>
                 <version>${mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.jsqlparser</groupId>
+                <artifactId>jsqlparser</artifactId>
+                <version>${jsqlparser.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
