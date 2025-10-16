@@ -12,16 +12,27 @@ import lombok.Data;
  */
 @Data
 public class MerchantRegisterRequest {
-    /**
-     * 邮箱
-     */
     @NotEmpty
     @Schema(description = "邮箱")
     private String email;
-    /**
-     * 密码
-     */
+    
+    @NotEmpty
+    @Schema(description = "手机号")
+    private String phoneNumber;
+    
     @NotEmpty
     @Schema(description = "密码")
     private String password;
+    
+    @NotEmpty
+    @Schema(description = "商户名称")
+    private String name;
+    
+    @NotEmpty
+    @Schema(description = "企业名称")
+    private String businessName;
+    
+    @NotEmpty
+    @Schema(description = "企业地址")
+    private String businessAddress;
 }
