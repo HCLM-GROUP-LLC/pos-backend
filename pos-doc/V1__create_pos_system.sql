@@ -15,26 +15,6 @@ SET NAMES utf8mb4 COLLATE utf8mb4_0900_ai_ci;
 -- 1. 商家与门店管理模块（Square风格）
 -- =================================
 
--- 1.1 商家表 (merchants) - Square风格商家注册，使用UUID主键
-CREATE TABLE merchants (
-    id CHAR(36) NOT NULL PRIMARY KEY COMMENT '商家ID（UUID格式，如MRC-xxx）',
-    email VARCHAR(255) NOT NULL UNIQUE COMMENT '商家邮箱',
-    password_hash VARCHAR(255) NOT NULL COMMENT '密码哈希',
-    business_name VARCHAR(255) NOT NULL COMMENT '企业名称',
-    industry VARCHAR(100) NOT NULL COMMENT '行业类型',
-    currency CHAR(3) NOT NULL DEFAULT 'USD' COMMENT '币种',
-    country CHAR(2) NOT NULL DEFAULT 'US' COMMENT '国家代码',
-    status VARCHAR(50) DEFAULT 'ACTIVE' COMMENT '商家状态',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    created_by CHAR(36) COMMENT '创建人UUID',
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    updated_by CHAR(36) COMMENT '更新人UUID',
-    is_deleted BOOLEAN DEFAULT FALSE,
-
-    INDEX idx_merchants_email (email),
-    INDEX idx_merchants_status (status, is_deleted)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='商家表（Square风格，UUID主键）';
-
 -- 1.2 商家银行账户表 (merchant_bank_accounts) - 独立管理银行账户
 CREATE TABLE merchant_bank_accounts (
     id CHAR(36) NOT NULL PRIMARY KEY COMMENT '银行账户ID（UUID格式）',
@@ -202,48 +182,6 @@ CREATE TABLE inventory (
     INDEX idx_inventory_alert (current_stock, min_stock, product_id),
     INDEX idx_inventory_cost (product_id, cost_price, current_stock)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='库存表';
-
--- =================================
---  菜单与菜单管理模块
--- =================================
-
---  菜单分类表 (menu_categories)
-CREATE TABLE menu_categories (
-     id CHAR(36) NOT NULL PRIMARY KEY COMMENT '分类ID（UUID）',
-     org_id CHAR(36) NOT NULL COMMENT '组织ID（UUID）',
-     store_id CHAR(36) NOT NULL COMMENT '门店ID（UUID）',
-     name VARCHAR(255) NOT NULL COMMENT '分类名称',
-     sort_order INT DEFAULT 0 COMMENT '排序序号',
-     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-     created_by CHAR(36) COMMENT '创建人UUID',
-     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-     updated_by CHAR(36) COMMENT '更新人UUID',
-     is_deleted BOOLEAN DEFAULT FALSE COMMENT '是否删除标记',
-
-     INDEX idx_org_store (org_id, store_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='菜单分类表';
-
-
---  菜单项表 (menu_items)
-CREATE TABLE menu_items (
-    id CHAR(36) NOT NULL PRIMARY KEY COMMENT '菜品ID（UUID）',
-    org_id CHAR(36) NOT NULL COMMENT '组织ID（UUID）',
-    store_id CHAR(36) NOT NULL COMMENT '门店ID（UUID）',
-    category_id CHAR(36) NOT NULL COMMENT '分类ID（UUID）',
-    name VARCHAR(255) NOT NULL COMMENT '菜品名称',
-    description TEXT COMMENT '菜品描述',
-    price DECIMAL(12,2) NOT NULL COMMENT '价格',
-    currency CHAR(3) DEFAULT 'USD' COMMENT '货币代码',
-    image_url VARCHAR(500) COMMENT '图片URL',
-    sort_order INT DEFAULT 0 COMMENT '排序序号',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    created_by CHAR(36) COMMENT '创建人UUID',
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    updated_by CHAR(36) COMMENT '更新人UUID',
-    is_deleted BOOLEAN DEFAULT FALSE COMMENT '是否删除标记',
-
-    INDEX idx_org_store_cat (org_id, store_id, category_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='菜单项表';
 
 
 -- =================================
@@ -637,10 +575,6 @@ CREATE TABLE system_alerts (
     INDEX idx_system_alerts_resolved (resolved, created_at)
 ) ENGINE=InnoDB COMMENT='系统告警记录表';
 
-
--- 示例商家数据（Square风格，UUID主键）
-INSERT INTO merchants (id, email, password_hash, business_name, industry, currency, country, status, created_by) VALUES
-('MRC-174000000001', 'owner@trip7cafe.com', '$2a$10$rMgr4YOhVNcXP7Qhp8jQHe7vKbQZ8tXkF2VyLjKrX3nP9sWqR1tGu', 'Trip7 Cafe Holdings', 'restaurant', 'USD', 'US', 'ACTIVE', 'MRC-174000000001');
 
 -- 示例银行账户数据
 INSERT INTO merchant_bank_accounts (id, merchant_id, account_number, routing_number, account_holder, account_type, bank_name, is_primary, is_verified, status, created_by) VALUES
