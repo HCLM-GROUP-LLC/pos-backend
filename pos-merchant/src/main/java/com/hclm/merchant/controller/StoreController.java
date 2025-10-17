@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +18,8 @@ import java.util.List;
 @Slf4j
 @SaCheckLogin
 @RestController
-@Tag(name = "店铺管理控制器", description = "店铺的增删改查接口")
+@Tag(name = "店铺管理")
+@Validated
 @RequestMapping("/stores")
 @RequiredArgsConstructor
 public class StoreController {
