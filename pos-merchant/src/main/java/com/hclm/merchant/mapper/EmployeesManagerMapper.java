@@ -2,6 +2,7 @@ package com.hclm.merchant.mapper;
 
 import com.hclm.merchant.pojo.request.EmployeesAddRequest;
 import com.hclm.merchant.pojo.request.EmployeesUpdateRequest;
+import com.hclm.merchant.pojo.response.EmployeesCopyResponse;
 import com.hclm.merchant.pojo.response.EmployeesResponse;
 import com.hclm.web.entity.Employees;
 import org.mapstruct.BeanMapping;
@@ -56,4 +57,13 @@ public interface EmployeesManagerMapper {
      * @return {@link List }<{@link EmployeesResponse }>
      */
     List<EmployeesResponse> toResponseList(List<Employees> employees);
+
+    /**
+     * 至复制响应
+     *
+     * @param employees 员工
+     * @return {@link EmployeesCopyResponse }
+     */
+    EmployeesCopyResponse toCopyResponse(Employees employees);
+
 }

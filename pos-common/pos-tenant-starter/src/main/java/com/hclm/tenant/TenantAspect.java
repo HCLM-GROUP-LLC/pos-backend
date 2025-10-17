@@ -15,5 +15,6 @@ public record TenantAspect(TenantSupplier tenantSupplier) {
         log.info("租户切面 执行 {}", tenantSupplier.getClass().getName());
         TenantContext.setCurrentTenant(tenantSupplier.tenantId());
         TenantContext.setFieldName(tenant.value());
+        TenantContext.enable();
     }
 }

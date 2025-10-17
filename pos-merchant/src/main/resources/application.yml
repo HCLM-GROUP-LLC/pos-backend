@@ -7,13 +7,14 @@ spring:
     datasource:
         host: @database.host@
         db-name: @database.name@
-        url: jdbc:mysql://${spring.datasource.host}:3306/${spring.datasource.db-name}?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+        url: jdbc:p6spy:mysql://${spring.datasource.host}:3306/${spring.datasource.db-name}?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
         username: @database.username@
         password: @database.password@
-        driver-class-name: com.mysql.cj.jdbc.Driver
+        driver-class-name: com.p6spy.engine.spy.P6SpyDriver
     jpa:
         hibernate:
             ddl-auto: none
+        #hibernate 打印的sql不是最终执行的 sql 需要借助 p6spy
         show-sql: true
         properties:
             hibernate:
@@ -33,6 +34,7 @@ spring:
 logging:
     level:
         root: info
+        p6spy: debug
     file:
         path: ./logs
     logback:

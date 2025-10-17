@@ -8,8 +8,6 @@ import jakarta.persistence.Table;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
-import java.time.Instant;
-
 
 @Builder
 @AllArgsConstructor
@@ -25,13 +23,13 @@ public class Merchant {
 
     @Column(name = "email", nullable = false, unique = true, columnDefinition = "VARCHAR(255)")
     private String email;
-
+    private String phoneNumber;
     @Column(name = "password_hash", nullable = false, columnDefinition = "VARCHAR(255)")
     private String passwordHash;
-
+    private String name;
     @Column(name = "business_name", nullable = false, columnDefinition = "VARCHAR(255)")
     private String businessName;
-
+    private String businessAddress;
     @Column(name = "industry", nullable = false, length = 100)
     private String industry;
 
@@ -47,16 +45,12 @@ public class Merchant {
     @Column(name = "status", length = 50)
     private String status;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private Instant createdAt;
+    private Long createdAt;
 
     @Column(name = "created_by", columnDefinition = "CHAR(36)")
     private String createdBy;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "updated_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-    private Instant updatedAt;
+    private Long updatedAt;
 
     @Column(name = "updated_by", columnDefinition = "CHAR(36)")
     private String updatedBy;

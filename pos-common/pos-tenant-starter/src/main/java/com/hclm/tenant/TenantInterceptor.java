@@ -18,9 +18,13 @@ import org.hibernate.resource.jdbc.spi.StatementInspector;
 
 @Slf4j
 public class TenantInterceptor implements StatementInspector {
+    private String tenantId = "";
+    private String tenantFieldName = "";
+
     @Override
     public String inspect(String sql) {
-        String tenantId = TenantContext.getCurrentTenant();
+        tenantId = TenantContext.getCurrentTenant();
+        tenantFieldName = TenantContext.getFieldName();
         if (tenantId == null || tenantId.isEmpty()) {
             return sql;
         }
@@ -35,28 +39,27 @@ public class TenantInterceptor implements StatementInspector {
             return sql;
         }
         if (statement instanceof Select select) {
-            return handleSelect(select, tenantId);
+            return handleSelect(select);
         }
         if (statement instanceof Update update) {
-            return handleUpdate(update, tenantId);
+            return handleUpdate(update);
         }
         if (statement instanceof Delete delete) {
-            return handleDelete(delete, tenantId);
+            return handleDelete(delete);
         }
         return sql;
     }
 
-    private String handleSelect(Select select, String tenantId) {
-
+    private String handleSelect(Select select) {
         if (select instanceof PlainSelect plainSelect) {
-            plainSelect.setWhere(addTenantCondition(plainSelect.getWhere(), tenantId));
+            plainSelect.setWhere(addTenantCondition(plainSelect.getWhere()));
             return plainSelect.toString();
         }
         if (select instanceof SetOperationList setOperationList) {
             // 处理UNION等集合操作
             setOperationList.getSelects().forEach(selectBodyItem -> {
                 if (selectBodyItem instanceof PlainSelect plainSelect) {
-                    plainSelect.setWhere(addTenantCondition(plainSelect.getWhere(), tenantId));
+                    plainSelect.setWhere(addTenantCondition(plainSelect.getWhere()));
                 }
             });
         }
@@ -64,22 +67,61 @@ public class TenantInterceptor implements StatementInspector {
         return select.toString();
     }
 
-    private String handleUpdate(Update update, String tenantId) {
-        update.setWhere(addTenantCondition(update.getWhere(), tenantId));
+//TODO 处理插入 目前无法 处理 因为 hibernate 只给了sql解析前的，不能动态修改参数
+//    @SuppressWarnings("unchecked")
+//    private String handleInsert(Insert insert) {
+//        ExpressionList<Column> columns = insert.getColumns();
+//        ExpressionList<Expression> values = (ExpressionList<Expression>) insert.getValues().getExpressions();
+//        boolean hasTenantField = false;// 判断当前字段是否已经设置过租户字段
+//        for (int i = 0; i < columns.size(); i++) {
+//            Column column = columns.get(i);
+//            if (tenantFieldName.equals(column.getColumnName())) {
+//                values.set(i, new StringValue(tenantId));
+//                hasTenantField = true;
+//            }
+//        }
+//        // 如果不存在租户字段，则添加
+//        if (!hasTenantField) {
+//            columns.add(new Column(tenantFieldName));
+//            values.add(new StringValue(tenantId));
+//        }
+//        return insert.toString();
+//    }
+
+    /**
+     * 处理更新
+     *
+     * @param update 更新
+     * @return {@link String }
+     */
+    private String handleUpdate(Update update) {
+        update.setWhere(addTenantCondition(update.getWhere()));
         return update.toString();
     }
 
-    private String handleDelete(Delete delete, String tenantId) {
-        delete.setWhere(addTenantCondition(delete.getWhere(), tenantId));
+    /**
+     * 处理删除
+     *
+     * @param delete 删除
+     * @return {@link String }
+     */
+    private String handleDelete(Delete delete) {
+        delete.setWhere(addTenantCondition(delete.getWhere()));
         return delete.toString();
     }
 
-    private Expression addTenantCondition(Expression existingWhere, String tenantId) {
+    /**
+     * 添加租户条件
+     *
+     * @param existingWhere 现有地方
+     * @return {@link Expression }
+     */
+    private Expression addTenantCondition(Expression existingWhere) {
         if (existingWhere == null) {
             return null;
         }
         EqualsTo tenantCondition = new EqualsTo();
-        tenantCondition.setLeftExpression(new Column(TenantContext.getFieldName()));
+        tenantCondition.setLeftExpression(new Column(tenantFieldName));
         tenantCondition.setRightExpression(new StringValue(tenantId));
 
         return new AndExpression(existingWhere, tenantCondition);

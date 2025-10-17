@@ -46,4 +46,13 @@ public interface EmployeesRepository extends JpaRepository<Employees, String> {
     @Modifying
     @Query("UPDATE Employees e SET e.isDeleted = true WHERE e.employeesId = :employeesId")
     int softDelete(@Param("id") String employeesId);
+
+    /**
+     * 检查邮箱在指定店铺中是否已存在（未删除）
+     *
+     * @param email   邮箱
+     * @param storeId 店铺ID
+     * @return boolean
+     */
+    boolean existsByEmailAndStoreIdAndIsDeletedFalse(String email, String storeId);
 }
