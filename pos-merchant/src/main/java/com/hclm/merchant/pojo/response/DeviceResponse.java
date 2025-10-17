@@ -1,5 +1,6 @@
 package com.hclm.merchant.pojo.response;
 
+import com.hclm.web.enums.DeviceStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -20,7 +21,7 @@ public class DeviceResponse {
     @Schema(description = "最后上线时间")
     private Long lastOnline;
     @Schema(description = "设备状态")
-    private String status;
+    private DeviceStatusEnum status;
     @Schema(description = "注册时间")
     private Long registeredAt;
     @Schema(description = "最后登录时间")

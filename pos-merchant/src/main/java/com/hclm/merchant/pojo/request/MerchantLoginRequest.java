@@ -15,6 +15,7 @@ public class MerchantLoginRequest {
     /**
      * 邮箱
      */
+    //@Email(message = "邮箱格式不正确") 这里的验证方式改为这个是否更好
     @NotEmpty
     @Schema(description = "邮箱")
     private String email;

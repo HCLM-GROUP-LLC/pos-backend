@@ -1,5 +1,7 @@
 package com.hclm.terminal.pojo.response;
 
+import com.hclm.web.enums.EmployeesRoleEnum;
+import com.hclm.web.enums.EmployeesSatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -61,13 +63,13 @@ public class EmployeesLoginResponse {
      * 角色ID
      */
     @Schema(description = "角色ID")
-    private String roleId;
+    private EmployeesRoleEnum roleId;
 
     /**
      * 账号状态
      */
     @Schema(description = "账号状态")
-    private String status;
+    private EmployeesSatusEnum status;
     /**
      * 最后登录时间
      */

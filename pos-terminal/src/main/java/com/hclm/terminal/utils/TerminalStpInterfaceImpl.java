@@ -36,6 +36,6 @@ public class TerminalStpInterfaceImpl implements StpInterface {
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
         EmployeesLoginCache cache = EmployeesLoginUtil.loginCache();
-        return List.of(cache.getRoleId());
+        return List.of(cache.getRole().name());
     }
 }

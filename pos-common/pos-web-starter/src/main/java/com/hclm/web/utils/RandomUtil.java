@@ -103,14 +103,22 @@ public class RandomUtil {
     /**
      * 生成门店ID - Square风格
      */
-    public static String generateLocationId() {
-        return RandomUtil.squareStyle(IdPrefixConstant.LOCATION);
+    public static String generateStoreId() {
+        return RandomUtil.squareStyle(IdPrefixConstant.STORE);
     }
 
     /**
      * 获取设备ID - Square风格
+     *
      */
     public static String generateDeviceId() {
         return RandomUtil.squareStyle(IdPrefixConstant.DEVICE);
+    }
+
+    /**
+     * 获取员工ID - Square风格
+     */
+    public static String generateEmployeesId() {
+        return RandomUtil.squareStyle(IdPrefixConstant.EMPLOYEES);
     }
 }
