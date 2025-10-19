@@ -1,7 +1,7 @@
 package com.hclm.terminal.utils;
 
 import cn.dev33.satoken.stp.StpUtil;
-import com.hclm.terminal.mapper.EmployeesMapper;
+import com.hclm.terminal.converter.EmployeesConverter;
 import com.hclm.terminal.pojo.cache.EmployeesLoginCache;
 import com.hclm.terminal.pojo.response.EmployeesLoginResponse;
 import com.hclm.web.entity.Employees;
@@ -60,6 +60,9 @@ public class EmployeesLoginUtil {
      * @return {@link EmployeesLoginCache }
      */
     public static EmployeesLoginCache loginCache() {
+        if (!StpUtil.isLogin()) {
+            return null;
+        }
         Object data = StpUtil.getSession().get(DATA_KEY);
         return JsonUtil.convertObject(data, EmployeesLoginCache.class);
     }
@@ -72,7 +75,7 @@ public class EmployeesLoginUtil {
      */
     public static EmployeesLoginResponse toLoginResponse(Employees employees) {
         //转换为登录响应
-        EmployeesLoginResponse response = EmployeesMapper.INSTANCE.toLoginResponse(employees);
+        EmployeesLoginResponse response = EmployeesConverter.INSTANCE.toLoginResponse(employees);
         response.setTokenName(StpUtil.getTokenName());
         response.setTokenValue(StpUtil.getTokenValue());
         return response;

@@ -11,18 +11,6 @@ spring:
         username: @database.username@
         password: @database.password@
         driver-class-name: com.p6spy.engine.spy.P6SpyDriver
-    jpa:
-        hibernate:
-            ddl-auto: none
-        #hibernate 打印的sql不是最终执行的 sql 需要借助 p6spy
-        show-sql: true
-        properties:
-            hibernate:
-                format_sql: true
-                dialect: org.hibernate.dialect.MySQL8Dialect
-                time-zone: UTC
-                hbm2ddl:
-                    auto: none
     jackson:
         time-zone: UTC
         date-format: yyyy-MM-dd'T'HH:mm:ss.SSS'Z'

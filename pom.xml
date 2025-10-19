@@ -22,8 +22,8 @@
         <swagger.version>2.2.38</swagger.version>
         <redisson.version>3.45.0</redisson.version>
         <mapstruct.version>1.6.3</mapstruct.version>
-        <jsqlparser.version>5.3</jsqlparser.version>
         <p6spy.version>3.9.1</p6spy.version>
+        <mybatis-plus.version>3.5.14</mybatis-plus.version>
         <!--插件版本-->
         <maven-compiler-plugin.version>3.9.0</maven-compiler-plugin.version>
         <spring-boot-maven-plugin.version>3.5.5</spring-boot-maven-plugin.version>
@@ -124,16 +124,19 @@
                 <artifactId>mapstruct-processor</artifactId>
                 <version>${mapstruct.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.github.jsqlparser</groupId>
-                <artifactId>jsqlparser</artifactId>
-                <version>${jsqlparser.version}</version>
-            </dependency>
             <!--  p6spy 用于sql分析 打印最终执行的sql      -->
             <dependency>
                 <groupId>p6spy</groupId>
                 <artifactId>p6spy</artifactId>
                 <version>${p6spy.version}</version>
+            </dependency>
+            <!-- mybatis 增强工具-->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-bom</artifactId>
+                <version>${mybatis-plus.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

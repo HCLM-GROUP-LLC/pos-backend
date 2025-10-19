@@ -1,19 +1,18 @@
 package com.hclm.web.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.hclm.web.constant.TableNameConstant;
-import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
-@Entity
-@Table(name = TableNameConstant.FLOOR_PLANS)
+@TableName(TableNameConstant.FLOOR_PLANS)
 public class FloorPlans {
     /**
      * 平面图id
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "floor_plan_id")
+    @TableId(type = IdType.AUTO)
     private Long floorPlanId;
     /**
      * 所属门店id

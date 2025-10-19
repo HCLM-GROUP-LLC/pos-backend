@@ -11,7 +11,7 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSocket
-public class WebSocketConfig implements WebSocketConfigurer {
+public class TerminalConfiguration implements WebSocketConfigurer {
     private final DeviceService deviceService;
 
     @Override
@@ -20,4 +20,6 @@ public class WebSocketConfig implements WebSocketConfigurer {
         registry.addHandler(new DeviceOnlineHandler(deviceService), "/devices/online/*")
                 .setAllowedOrigins("*"); // 根据需要设置允许的来源
     }
+
+
 }

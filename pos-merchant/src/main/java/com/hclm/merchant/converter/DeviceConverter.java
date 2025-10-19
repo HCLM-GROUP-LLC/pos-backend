@@ -1,4 +1,4 @@
-package com.hclm.merchant.mapper;
+package com.hclm.merchant.converter;
 
 import com.hclm.merchant.pojo.response.DeviceResponse;
 import com.hclm.web.entity.Device;
@@ -9,8 +9,8 @@ import org.springframework.lang.NonNull;
 import java.util.List;
 
 @Mapper
-public interface DeviceManagerMapper {
-    DeviceManagerMapper INSTANCE = Mappers.getMapper(DeviceManagerMapper.class);
+public interface DeviceConverter {
+    DeviceConverter INSTANCE = Mappers.getMapper(DeviceConverter.class);
 
     /**
      * 响应

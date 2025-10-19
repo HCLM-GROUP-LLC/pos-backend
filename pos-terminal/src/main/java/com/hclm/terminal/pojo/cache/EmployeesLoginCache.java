@@ -12,10 +12,25 @@ import lombok.Data;
  */
 @Data
 public class EmployeesLoginCache {
+    /**
+     * 员工id
+     */
     private String employeesId;
+    /**
+     * 商户id
+     */
     private String merchantId;
+    /**
+     * 商店id
+     */
     private String storeId;
+    /**
+     * 角色
+     */
     private EmployeesRoleEnum role;
+    /**
+     * 上次登录于
+     */
     private Long lastLoginAt;
     /**
      * 出勤id

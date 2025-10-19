@@ -1,4 +1,4 @@
-package com.hclm.merchant.mapper;
+package com.hclm.merchant.converter;
 
 import com.hclm.merchant.pojo.request.EmployeesAddRequest;
 import com.hclm.merchant.pojo.request.EmployeesUpdateRequest;
@@ -14,8 +14,8 @@ import org.mapstruct.factory.Mappers;
 import java.util.List;
 
 @Mapper
-public interface EmployeesManagerMapper {
-    EmployeesManagerMapper INSTANCE = Mappers.getMapper(EmployeesManagerMapper.class);
+public interface EmployeesConverter {
+    EmployeesConverter INSTANCE = Mappers.getMapper(EmployeesConverter.class);
 
     /**
      * 至实体
@@ -34,13 +34,13 @@ public interface EmployeesManagerMapper {
     Employees toEntity(EmployeesUpdateRequest request);
 
     /**
-     * 将 EmployeesUpdateRequest 中的非null值复制到 Employees 实体中
+     * 复制实体
      *
-     * @param employees 员工实体
-     * @param request   更新请求
+     * @param target 目标
+     * @param source 来源
      */
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateEntityFromRequest(@MappingTarget Employees employees, EmployeesUpdateRequest request);
+    void copyEntity(@MappingTarget Employees target, Employees source);
 
     /**
      * 至响应

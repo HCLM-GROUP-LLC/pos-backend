@@ -1,6 +1,7 @@
 package com.hclm.merchant.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
+import com.hclm.merchant.converter.DeviceConverter;
 import com.hclm.merchant.pojo.request.DeviceIDGenRequest;
 import com.hclm.merchant.pojo.response.DeviceResponse;
 import com.hclm.merchant.service.DeviceManagerService;
@@ -47,13 +48,13 @@ public class DeviceManagerController {
     @Operation(summary = "解除设备绑定")
     @DeleteMapping("/{deviceId}")
     public ApiResponse<Void> delete(@PathVariable String deviceId) {
-        deviceManagerService.deleteDevice(deviceId);
+        deviceManagerService.removeById(deviceId);
         return ApiResponse.success();
     }
 
     @Operation(summary = "设备列表")
     @GetMapping
     public ApiResponse<List<DeviceResponse>> list() {
-        return ApiResponse.success(deviceManagerService.list());
+        return ApiResponse.success(DeviceConverter.INSTANCE.toResponses(deviceManagerService.list()));
     }
 }

@@ -1,4 +1,4 @@
-package com.hclm.terminal.mapper;
+package com.hclm.terminal.converter;
 
 import com.hclm.terminal.pojo.cache.EmployeesLoginCache;
 import com.hclm.terminal.pojo.response.EmployeesLoginResponse;
@@ -13,8 +13,8 @@ import org.mapstruct.factory.Mappers;
  * @since 2025/10/09
  */
 @Mapper
-public interface EmployeesMapper {
-    EmployeesMapper INSTANCE = Mappers.getMapper(EmployeesMapper.class);
+public interface EmployeesConverter {
+    EmployeesConverter INSTANCE = Mappers.getMapper(EmployeesConverter.class);
 
     /**
      * 登录响应

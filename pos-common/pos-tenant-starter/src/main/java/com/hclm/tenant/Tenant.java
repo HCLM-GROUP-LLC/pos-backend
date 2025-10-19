@@ -14,10 +14,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 public @interface Tenant {
-    /**
-     * 值 租户id字段名
-     *
-     * @return {@link String }
-     */
-    String value() default "merchant_id";
+
 }

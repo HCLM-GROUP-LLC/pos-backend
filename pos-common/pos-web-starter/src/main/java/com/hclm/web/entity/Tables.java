@@ -1,9 +1,11 @@
 package com.hclm.web.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.hclm.web.constant.TableNameConstant;
 import com.hclm.web.enums.DiningTableShapeEnum;
 import com.hclm.web.enums.DiningTableStatusEnum;
-import jakarta.persistence.*;
 import lombok.Data;
 
 /**
@@ -13,16 +15,14 @@ import lombok.Data;
  * @since 2025/10/13
  */
 @Data
-@Entity
-@Table(name = TableNameConstant.TABLES)
+@TableName(TableNameConstant.TABLES)
 public class Tables {
     /**
      * 餐桌id
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "dining_table_id")
+    @TableId(type = IdType.AUTO)
     private Long diningTableId;
+    private String merchantId;
     /**
      * 所属门店id
      */
@@ -46,7 +46,6 @@ public class Tables {
     /**
      * 形状
      */
-    @Enumerated(EnumType.STRING) // 枚举类型，使用name 存储
     private DiningTableShapeEnum shape;
     /**
      * 宽度
@@ -67,7 +66,6 @@ public class Tables {
     /**
      * 状态
      */
-    @Enumerated(EnumType.STRING) // 枚举类型，使用name 存储
     private DiningTableStatusEnum status;
     /**
      * 开台服务员ID（员工表ID），即桌子对应的服务员

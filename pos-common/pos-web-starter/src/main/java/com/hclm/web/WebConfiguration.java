@@ -1,14 +1,21 @@
 package com.hclm.web;
 
+import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.hclm.web.utils.MessageUtil;
 import com.hclm.web.utils.PwdUtil;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
+import lombok.extern.slf4j.Slf4j;
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.List;
 
 /**
  * web配置
@@ -16,12 +23,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * @author hanhua
  * @since 2025/10/06
  */
-@EnableJpaRepositories(basePackages = {
-        "com.hclm.web.repository"  // 扫描common-service中的repository
-})
-@EntityScan(basePackages = {
-        "com.hclm.web.entity"      // 扫描common-service中的entity
-})
+@Slf4j
+@MapperScan("com.hclm.**.mapper")
 @Configuration
 public class WebConfiguration {
 
@@ -59,4 +62,41 @@ public class WebConfiguration {
         return new PwdUtil(passwordEncoder);
     }
 
+    /**
+     * mybatis元对象处理程序 自动注入 创建时间 修改时间
+     *
+     * @return {@link MybatisMetaObjectHandler }
+     */
+    @ConditionalOnMissingBean(MetaObjectHandler.class)
+    @Bean
+    public MybatisMetaObjectHandler mybatisMetaObjectHandler() {
+        log.info("mybatis元对象处理程序开启");
+        return new MybatisMetaObjectHandler();
+    }
+
+    /**
+     * 分页内部拦截器
+     *
+     * @return {@link PaginationInnerInterceptor }
+     */
+    @Bean
+    public PaginationInnerInterceptor paginationInnerInterceptor() {
+        log.info("分页内部拦截器开启");
+        return new PaginationInnerInterceptor();
+    }
+
+    /**
+     * mybatis plus拦截器
+     *
+     * @param innerInterceptors 内部拦截器
+     * @return {@link MybatisPlusInterceptor }
+     */
+    @Bean
+    public MybatisPlusInterceptor mybatisPlusInterceptor(List<InnerInterceptor> innerInterceptors) {
+        List<String> interceptorNames = innerInterceptors.stream().map(InnerInterceptor::getClass).map(Class::getSimpleName).toList();
+        log.info("mybatis plus拦截器开启 {}", interceptorNames);
+        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+        interceptor.setInterceptors(innerInterceptors);
+        return interceptor;
+    }
 }

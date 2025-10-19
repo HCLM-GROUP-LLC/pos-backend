@@ -1,4 +1,4 @@
-package com.hclm.terminal.mapper;
+package com.hclm.terminal.converter;
 
 
 import com.hclm.terminal.pojo.request.DeviceAddRequest;
@@ -14,8 +14,8 @@ import org.mapstruct.factory.Mappers;
  * @since 2025/10/05
  */
 @Mapper
-public interface DeviceMapper {
-    DeviceMapper INSTANCE = Mappers.getMapper(DeviceMapper.class);
+public interface DeviceConverter {
+    DeviceConverter INSTANCE = Mappers.getMapper(DeviceConverter.class);
 
     /**
      * 请求转实体

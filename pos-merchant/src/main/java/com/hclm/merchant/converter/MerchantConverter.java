@@ -1,13 +1,13 @@
-package com.hclm.merchant.mapper;
+package com.hclm.merchant.converter;
 
-import com.hclm.web.entity.Merchant;
 import com.hclm.merchant.pojo.response.MerchantInfoResponse;
+import com.hclm.web.entity.Merchant;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
-public interface MerchantMapper {
-    MerchantMapper INSTANCE = Mappers.getMapper(MerchantMapper.class);
+public interface MerchantConverter {
+    MerchantConverter INSTANCE = Mappers.getMapper(MerchantConverter.class);
 
     MerchantInfoResponse toInfoResponse(Merchant merchant);
 }

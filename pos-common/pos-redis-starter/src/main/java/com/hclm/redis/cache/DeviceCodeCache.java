@@ -1,13 +1,15 @@
 package com.hclm.redis.cache;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class DeviceCodeCache {
+    /**
+     * 商户id
+     */
+    private String merchantId;
     /**
      * 门店id
      */

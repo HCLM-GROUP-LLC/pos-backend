@@ -7,21 +7,10 @@ spring:
     datasource:
         host: @database.host@
         db-name: @database.name@
-        url: jdbc:mysql://${spring.datasource.host}:3306/${spring.datasource.db-name}?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+        url: jdbc:p6spy:mysql://${spring.datasource.host}:3306/${spring.datasource.db-name}?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
         username: @database.username@
         password: @database.password@
-        driver-class-name: com.mysql.cj.jdbc.Driver
-    jpa:
-        hibernate:
-            ddl-auto: none
-        show-sql: true
-        properties:
-            hibernate:
-                format_sql: true
-                dialect: org.hibernate.dialect.MySQL8Dialect
-                time-zone: UTC
-                hbm2ddl:
-                    auto: none
+        driver-class-name: com.p6spy.engine.spy.P6SpyDriver
     jackson:
         time-zone: UTC
         date-format: yyyy-MM-dd'T'HH:mm:ss.SSS'Z'

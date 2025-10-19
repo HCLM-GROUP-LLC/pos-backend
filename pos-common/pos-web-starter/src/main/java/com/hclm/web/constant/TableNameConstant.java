@@ -8,6 +8,14 @@ package com.hclm.web.constant;
  */
 public interface TableNameConstant {
     /**
+     * 商家
+     */
+    String MERCHANT = "merchants";
+    /**
+     * 门店
+     */
+    String STORE = "stores";
+    /**
      * 设备
      */
     String DEVICES = "devices";

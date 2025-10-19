@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 
 @Data
 @Schema(description = "店铺信息返回对象")
@@ -18,6 +17,6 @@ public class StoreResponse {
     private BigDecimal taxRate;
     private String currency;
     private String businessHours;
-    private Instant createdAt;
-    private Instant updatedAt;
+    private Long createdAt;
+    private Long updatedAt;
 }
