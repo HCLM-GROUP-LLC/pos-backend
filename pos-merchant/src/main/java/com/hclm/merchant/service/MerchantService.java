@@ -12,7 +12,6 @@ import com.hclm.web.enums.ResponseCode;
 import com.hclm.web.repository.MerchantRepository;
 import com.hclm.web.utils.PwdUtil;
 import com.hclm.web.utils.RandomUtil;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +31,7 @@ public class MerchantService {
         if (!MerchantStatusEnum.ACTIVE.name().equals(merchant.getStatus())) {
             throw new BusinessException(ResponseCode.MERCHANT_DISABLED);
         }
-        MerchantLoginUtil.login(merchant.getMerchantId());
+        MerchantLoginUtil.login(merchant.getId());
 
         return new AuthResponse(StpUtil.getTokenName(), StpUtil.getTokenValue());
     }
@@ -47,7 +46,7 @@ public class MerchantService {
         // 2. 创建新商户
         long currentTime = System.currentTimeMillis();
         Merchant merchant = Merchant.builder()
-                .merchantId(RandomUtil.generateMerchantId())
+                .id(RandomUtil.generateMerchantId())
                 .email(email)
                 .phoneNumber(request.getPhoneNumber())
                 .passwordHash((request.getPassword()))
@@ -61,7 +60,7 @@ public class MerchantService {
                 .build();
         merchantRepository.save(merchant);
         // 3. 登录
-        MerchantLoginUtil.login(merchant.getMerchantId());
+        MerchantLoginUtil.login(merchant.getId());
         // 4. 返回token
         return new AuthResponse(StpUtil.getTokenName(), StpUtil.getTokenValue());
     }

@@ -39,36 +39,31 @@ public interface StoreRepository extends JpaRepository<Store, String>, JpaSpecif
      *
      * @param id     店铺ID
      * @param status 状态
+     * @return 更新条数
      */
     @Modifying
     @Query("UPDATE Store s SET s.status = :status WHERE s.id = :id")
-    void updateStatus(@Param("id") String id, @Param("status") String status);
+    int updateStatus(@Param("id") String id, @Param("status") String status);
 
     /**
      * 更新营业时间
      *
      * @param id            店铺ID
      * @param businessHours 营业时间(JSON)
+     * @return 更新条数
      */
     @Modifying
     @Query("UPDATE Store s SET s.businessHours = :businessHours WHERE s.id = :id")
-    void updateBusinessHours(@Param("id") String id, @Param("businessHours") String businessHours);
+    int updateBusinessHours(@Param("id") String id, @Param("businessHours") String businessHours);
 
     /**
      * 按ID进行软删除
      *
      * @param id 店铺ID
+     * @return 更新条数
      */
     @Modifying
     @Query("UPDATE Store s SET s.isDeleted = true WHERE s.id = :id")
-    void softDeleteById(@Param("id") String id);
-
-    /**
-     * 检查门店是否属于指定商家
-     *
-     * @param storeId    门店ID
-     * @param merchantId 商家ID
-     * @return 是否存在
-     */
-    boolean existsByIdAndMerchantId(String storeId, String merchantId);
+    int softDeleteById(@Param("id") String id);
+    
 }

@@ -17,6 +17,10 @@ public class Device {
     @Column(name = "device_id", nullable = false, columnDefinition = "CHAR(36)")
     private String deviceId;
 
+    /**
+     * 商户id
+     */
+    private String merchantId;
     @Column(name = "store_id", nullable = false, columnDefinition = "CHAR(36)")
     private String storeId;
 

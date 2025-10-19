@@ -8,8 +8,6 @@ import jakarta.persistence.Table;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
-import java.time.Instant;
-
 
 @Builder
 @AllArgsConstructor
@@ -20,41 +18,45 @@ import java.time.Instant;
 @Table(name = "merchants", schema = "pos_db")
 public class Merchant {
     @Id
-    @Column(name = "merchant_id", nullable = false, columnDefinition = "CHAR(36)")
-    private String merchantId;
+    @Column(name = "id", nullable = false, columnDefinition = "CHAR(36)")
+    private String id;
 
     @Column(name = "email", nullable = false, unique = true, columnDefinition = "VARCHAR(255)")
     private String email;
-
-    @Column(name = "phone_number", nullable = false, columnDefinition = "VARCHAR(20)")
     private String phoneNumber;
-
     @Column(name = "password_hash", nullable = false, columnDefinition = "VARCHAR(255)")
     private String passwordHash;
-
-    @Column(name = "name", nullable = false, columnDefinition = "VARCHAR(255)")
     private String name;
-
     @Column(name = "business_name", nullable = false, columnDefinition = "VARCHAR(255)")
     private String businessName;
-
-    @Column(name = "business_address", nullable = false, columnDefinition = "VARCHAR(255)")
     private String businessAddress;
+    @Column(name = "industry", nullable = false, length = 100)
+    private String industry;
+
+    @ColumnDefault("'USD'")
+    @Column(name = "currency", nullable = false, columnDefinition = "CHAR(3)")
+    private String currency;
+
+    @ColumnDefault("'US'")
+    @Column(name = "country", nullable = false, columnDefinition = "CHAR(2)")
+    private String country;
 
     @ColumnDefault("'ACTIVE'")
-    @Column(name = "status", nullable = false, columnDefinition = "VARCHAR(50)")
+    @Column(name = "status", length = 50)
     private String status;
 
-    @Column(name = "last_login_at", columnDefinition = "BIGINT UNSIGNED")
-    private Long lastLoginAt;
-
-    @Column(name = "created_at", columnDefinition = "BIGINT UNSIGNED")
     private Long createdAt;
 
-    @Column(name = "updated_at", columnDefinition = "BIGINT UNSIGNED")
+    @Column(name = "created_by", columnDefinition = "CHAR(36)")
+    private String createdBy;
+
     private Long updatedAt;
 
+    @Column(name = "updated_by", columnDefinition = "CHAR(36)")
+    private String updatedBy;
+
     @ColumnDefault("0")
-    @Column(name = "is_deleted", nullable = false, columnDefinition = "TINYINT")
+    @Column(name = "is_deleted", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private Boolean isDeleted;
+
 }

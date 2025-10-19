@@ -17,5 +17,6 @@
         <!--satoken-->
         <module>pos-satoken-starter</module>
         <module>pos-redis-starter</module>
+        <module>pos-tenant-starter</module>
     </modules>
 </project>

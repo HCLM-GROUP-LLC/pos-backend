@@ -48,16 +48,6 @@ public interface EmployeesRepository extends JpaRepository<Employees, String> {
     int softDelete(@Param("id") String employeesId);
 
     /**
-     * 查找由门店id和商户id和未删除
-     *
-     * @param storeId    门店id
-     * @param merchantId 商户id
-     * @return {@link List }<{@link Employees }>
-     */
-    @Query("SELECT e FROM Employees e WHERE e.isDeleted = false AND e.storeId = :storeId AND e.merchantId = :merchantId")
-    List<Employees> findByStoreIdAndMerchantIdAndNotDeleted(@Param("storeId") String storeId, @Param("merchantId") String merchantId);
-
-    /**
      * 检查邮箱在指定店铺中是否已存在（未删除）
      *
      * @param email   邮箱

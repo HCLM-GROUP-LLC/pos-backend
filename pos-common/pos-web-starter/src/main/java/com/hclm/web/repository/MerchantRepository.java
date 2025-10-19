@@ -89,8 +89,8 @@ public interface MerchantRepository extends JpaRepository<Merchant, String>, Jpa
     /**
      * 检查邮箱是否已存在（排除指定商家ID）
      */
-    @Query("SELECT COUNT(m) > 0 FROM Merchant m WHERE m.email = :email AND m.merchantId != :merchantId AND m.isDeleted = false")
-    boolean existsByEmailAndIdNot(@Param("email") String email, @Param("merchantId") String merchantId);
+//    @Query("SELECT COUNT(m) > 0 FROM Merchant m WHERE m.email = :email AND m.id != :merchantId AND m.isDeleted = false")
+//    boolean existsByEmailAndIdNot(@Param("email") String email, @Param("merchantId") String merchantId);
 
     /**
      * 检查邮箱是否已存在
