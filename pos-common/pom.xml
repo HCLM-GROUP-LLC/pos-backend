@@ -18,5 +18,6 @@
         <module>pos-satoken-starter</module>
         <module>pos-redis-starter</module>
         <module>pos-tenant-starter</module>
+        <module>pos-twilio-starter</module>
     </modules>
 </project>

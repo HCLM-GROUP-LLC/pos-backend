@@ -36,3 +36,8 @@ sa-token:
     token-name: pos-merchant-token # Token 名称 会自动添加到响应头中 存入cookie中
     timeout: 2592000 # Token 超时时间（秒）- 30天
     is-log: true
+# Twilio 配置 支持从环境变量中获取
+twilio:
+    account-sid: ${TWILIO_ACCOUNT_SID:1111}
+    auth-token: ${TWILIO_AUTH_TOKEN:1111}
+    from-phone-number: ${TWILIO_FROM:1111}

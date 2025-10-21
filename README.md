@@ -2,9 +2,10 @@
 
 ## java技术选型
 
-| 名称       | 官网                   |
-|----------|----------------------|
-| Sa-Token | https://sa-token.cc/ |
+| 名称           | 官网                    |
+|--------------|-----------------------|
+| Sa-Token     | https://sa-token.cc/  |
+| MyBatis-Plus | https://baomidou.com/ |
 
 ## [ER图](./pos-doc/POS系统E-R图设计.md)
 
@@ -16,9 +17,10 @@
 
 ## 模块说明
 
-| 名称                  | 说明                                                   |
-|---------------------|------------------------------------------------------|
-| pos-common          | 公共模块                                                 |
-| pos-satoken-starter | [安全验证模块](./pos-common/pos-satoken-starter/README.md) |
-| pos-merchant        | 商户web端，给商户使用,不需要权限控制                                 |
-| pos-terminal        | 门店ios端，给门店员工使用，按角色权限控制                               |
+| 名称                  | 说明                                                            |
+|---------------------|---------------------------------------------------------------|
+| pos-common          | 公共模块                                                          |
+| pos-satoken-starter | [安全验证模块](./pos-common/pos-satoken-starter/README.md)          |
+| pos-twilio-starter  | [对接 twilio 短信服务模块](./pos-common/pos-twilio-starter/README.md) |
+| pos-merchant        | 商户web端，给商户使用,不需要权限控制                                          |
+| pos-terminal        | 门店ios端，给门店员工使用，按角色权限控制                                        |
