@@ -19,5 +19,6 @@
         <module>pos-redis-starter</module>
         <module>pos-tenant-starter</module>
         <module>pos-twilio-starter</module>
+        <module>pos-resource-starter</module>
     </modules>
 </project>

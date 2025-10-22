@@ -35,4 +35,16 @@ public interface TableNameConstant {
      * 餐桌,tables是mysql的关键字，所以用dining_tables代替
      */
     String TABLES = "dining_tables";
+    /**
+     * 菜单
+     */
+    String MENUS = "menus";
+    /**
+     * 菜单类别
+     */
+    String MENU_CATEGORYS = "menu_categorys";
+    /**
+     * 菜单项（菜品）
+     */
+    String MENU_ITEMS = "items";
 }

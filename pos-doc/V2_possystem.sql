@@ -117,21 +117,12 @@ CREATE TABLE `attendance`
 
 CREATE TABLE `menus`
 (
-    `menu_id`     char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci     NOT NULL COMMENT '菜单ID UUID',
-    `merchant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci     NOT NULL COMMENT '商家ID',
-    `name`        varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '菜单名称',
-    `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci COMMENT '菜单描述',
-    `start_time`  time                                                                   DEFAULT NULL COMMENT '适用开始时间',
-    `end_time`    time                                                                   DEFAULT NULL COMMENT '适用结束时间',
-    `is_active`   tinyint                                                       NOT NULL DEFAULT '1' COMMENT '启用状态（1启用，0停用）',
-    `created_at`  bigint unsigned                                                        DEFAULT NULL COMMENT '创建时间',
-    `updated_at`  bigint unsigned                                                        DEFAULT NULL COMMENT '更新时间',
-    `is_deleted`  tinyint                                                       NOT NULL DEFAULT '0' COMMENT '删除标记',
-    PRIMARY KEY (`menu_id`) USING BTREE,
-    KEY `merchant_id` (`merchant_id`),
-    KEY `is_active` (`is_active`),
-    KEY `is_deleted` (`is_deleted`)
-) ENGINE = InnoDB COMMENT ='菜单表';
+    `menu_id`     BIGINT NOT NULL AUTO_INCREMENT COMMENT '菜单id',
+    `merchant_id` char(36) COMMENT '商户id',
+    `store_id`    char(36) COMMENT '所属门店id',
+    `menu_name`   VARCHAR(255) COMMENT '菜单名称',
+    PRIMARY KEY (`menu_id`)
+) COMMENT ='菜单';
 
 CREATE TABLE `menu_categories`
 (

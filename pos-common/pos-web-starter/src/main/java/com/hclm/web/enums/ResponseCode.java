@@ -45,7 +45,12 @@ public enum ResponseCode {
     /**
      * 员工重复登录
      */
-    EMPLOYEES_DUPLICATE_LOGINS(10007, "employees.duplicateLogins");
+    EMPLOYEES_DUPLICATE_LOGINS(10007, "employees.duplicateLogins"),
+    /**
+     * 未找到菜单
+     */
+    MENU_NOT_FOUND(10009, "menu.notFound"),
+    MENU_NAME_ALREADY_EXISTS(10010, "menu.name.already.exists");
     /**
      * 代码
      */
