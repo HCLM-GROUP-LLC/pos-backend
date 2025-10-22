@@ -42,7 +42,7 @@ public interface TableNameConstant {
     /**
      * 菜单类别
      */
-    String MENU_CATEGORYS = "menu_categorys";
+    String MENU_CATEGORIES = "menu_categories";
     /**
      * 菜单项（菜品）
      */

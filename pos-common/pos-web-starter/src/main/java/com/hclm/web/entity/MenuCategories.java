@@ -13,8 +13,8 @@ import lombok.Data;
  * @since 2025/10/22
  */
 @Data
-@TableName(TableNameConstant.MENU_CATEGORYS)
-public class MenuCategorys {
+@TableName(TableNameConstant.MENU_CATEGORIES)
+public class MenuCategories {
     /**
      * 类别id
      */
@@ -23,7 +23,7 @@ public class MenuCategorys {
     /**
      * 所属菜单id
      */
-    private String menuId;
+    private Long menuId;
     /**
      * 商户id
      */

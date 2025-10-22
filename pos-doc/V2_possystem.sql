@@ -126,20 +126,16 @@ CREATE TABLE `menus`
 
 CREATE TABLE `menu_categories`
 (
-    `category_id`   char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci     NOT NULL COMMENT '类目ID UUID',
-    `merchant_id`   char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci     NOT NULL COMMENT '商家ID',
-    `name`          varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '类目名称',
-    `description`   varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci          DEFAULT NULL COMMENT '类目描述',
-    `display_order` int                                                                    DEFAULT '0' COMMENT '显示顺序',
-    `is_active`     tinyint                                                       NOT NULL DEFAULT '1' COMMENT '启用状态（1启用，0停用）',
-    `created_at`    bigint unsigned                                                        DEFAULT NULL COMMENT '创建时间',
-    `updated_at`    bigint unsigned                                                        DEFAULT NULL COMMENT '更新时间',
-    `is_deleted`    tinyint                                                       NOT NULL DEFAULT '0' COMMENT '删除标记',
-    PRIMARY KEY (`category_id`) USING BTREE,
+    `category_id`   BIGINT NOT NULL AUTO_INCREMENT COMMENT '类别id',
+    `menu_id`       BIGINT NOT NULL COMMENT '所属菜单id',
+    `merchant_id`   CHAR(36) COMMENT '商户id',
+    `store_id`      CHAR(36) COMMENT '所属门店id',
+    `category_name` VARCHAR(255) COMMENT '类别名称',
+    PRIMARY KEY (`category_id`),
+    KEY `menu_id` (`menu_id`),
     KEY `merchant_id` (`merchant_id`),
-    KEY `is_active` (`is_active`),
-    KEY `is_deleted` (`is_deleted`)
-) ENGINE = InnoDB COMMENT ='菜单类目表';
+    KEY `store_id` (`store_id`)
+) COMMENT ='菜单类别';
 
 CREATE TABLE `items`
 (

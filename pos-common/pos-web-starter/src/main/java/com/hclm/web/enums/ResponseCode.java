@@ -50,7 +50,13 @@ public enum ResponseCode {
      * 未找到菜单
      */
     MENU_NOT_FOUND(10009, "menu.notFound"),
-    MENU_NAME_ALREADY_EXISTS(10010, "menu.name.already.exists");
+    MENU_NAME_ALREADY_EXISTS(10010, "menu.name.already.exists"),
+    /**
+     * 菜单类别名称重复
+     */
+    MENU_CATEGORY_NAME_ALREADY_EXISTS(10011, "menu.category.name.already.exists"),
+    MENU_CATEGORY_NOT_FOUND(10012, "menu.category.notFound"),
+    ;
     /**
      * 代码
      */
