@@ -56,7 +56,8 @@ public enum ResponseCode {
      */
     MENU_CATEGORY_NAME_ALREADY_EXISTS(10011, "menu.category.name.already.exists"),
     MENU_CATEGORY_NOT_FOUND(10012, "menu.category.notFound"),
-    ;
+    MENU_ITEM_NAME_ALREADY_EXISTS(10013, "menu.item.name.already.exists"),
+    CAT_ITEMS_REPEAT(10014, "menu.cat.items.repeat");
     /**
      * 代码
      */

@@ -18,8 +18,8 @@ import java.util.List;
  * @since 2025/10/22
  */
 @Data
-@TableName(TableNameConstant.MENU_ITEMS)
-public class Items {
+@TableName(value = TableNameConstant.MENU_ITEMS, autoResultMap = true) // 自动映射 autoResultMap 配合 Fastjson2TypeHandler
+public class MenuItems {
     /**
      * 单品id
      */

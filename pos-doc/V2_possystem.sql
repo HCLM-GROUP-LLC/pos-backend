@@ -137,42 +137,34 @@ CREATE TABLE `menu_categories`
     KEY `store_id` (`store_id`)
 ) COMMENT ='菜单类别';
 
-CREATE TABLE `items`
+-- 菜品菜单项目表
+CREATE TABLE `menu_items`
 (
-    `item_id`     char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci     NOT NULL COMMENT '菜品ID UUID',
-    `merchant_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci     NOT NULL COMMENT '商家ID',
-    `name`        varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '菜品名称',
-    `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci COMMENT '菜品描述',
-    `price`       decimal(10, 2)                                                NOT NULL DEFAULT '0.00' COMMENT '基础价格',
-    `image_url`   varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci          DEFAULT NULL COMMENT '图片地址',
-    `is_combo`    tinyint                                                       NOT NULL DEFAULT '0' COMMENT '是否为套餐（1是，0否）',
-    `combo_items` json                                                                   DEFAULT NULL COMMENT '套餐组成（JSON格式，[{item_id, quantity}]）',
-    `status`      varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NOT NULL DEFAULT 'AVAILABLE' COMMENT '菜品状态',
-    `is_active`   tinyint                                                       NOT NULL DEFAULT '1' COMMENT '上架状态（1上架，0下架）',
-    `created_at`  bigint unsigned                                                        DEFAULT NULL COMMENT '创建时间',
-    `updated_at`  bigint unsigned                                                        DEFAULT NULL COMMENT '更新时间',
-    `is_deleted`  tinyint                                                       NOT NULL DEFAULT '0' COMMENT '删除标记',
-    PRIMARY KEY (`item_id`) USING BTREE,
-    KEY `merchant_id` (`merchant_id`),
-    KEY `status` (`status`),
-    KEY `is_active` (`is_active`),
-    KEY `is_deleted` (`is_deleted`)
-) ENGINE = InnoDB COMMENT ='菜品表（支持套餐）';
+    `item_id`          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '单品id',
+    `merchant_id`      VARCHAR(255)   DEFAULT NULL COMMENT '商户id',
+    `store_id`         VARCHAR(255)   DEFAULT NULL COMMENT '所属门店id',
+    `item_name`        VARCHAR(255)   DEFAULT NULL COMMENT '单品名称',
+    `item_description` TEXT           DEFAULT NULL COMMENT '菜品简介',
+    `item_price`       DECIMAL(10, 2) DEFAULT NULL COMMENT '单价',
+    `note_tags`        JSON           DEFAULT NULL COMMENT '注释标记',
+    PRIMARY KEY (`item_id`),
+    INDEX `idx_merchant_id` (`merchant_id`) COMMENT '商户ID索引',
+    INDEX `idx_store_id` (`store_id`) COMMENT '门店ID索引'
+) COMMENT ='菜品菜单项目表';
 
+-- 菜单类别与单品关联表
 CREATE TABLE `menu_category_items`
 (
-    `id`            bigint unsigned                                           NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-    `menu_id`       char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '菜单ID',
-    `category_id`   char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '类目ID',
-    `item_id`       char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '菜品ID',
-    `display_order` int             DEFAULT '0' COMMENT '显示顺序',
-    `created_at`    bigint unsigned DEFAULT NULL COMMENT '创建时间',
-    `updated_at`    bigint unsigned DEFAULT NULL COMMENT '更新时间',
-    PRIMARY KEY (`id`) USING BTREE,
-    KEY `menu_id` (`menu_id`),
-    KEY `category_id` (`category_id`),
-    KEY `item_id` (`item_id`)
-) ENGINE = InnoDB COMMENT ='菜单-类目-菜品关联表';
+    `cat_item_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '中间表 id',
+    `merchant_id` VARCHAR(255)    DEFAULT NULL COMMENT '商家ID',
+    `category_id` BIGINT UNSIGNED DEFAULT NULL COMMENT '菜单类别id',
+    `item_id`     BIGINT UNSIGNED DEFAULT NULL COMMENT '单品id',
+    PRIMARY KEY (`cat_item_id`),
+    INDEX `idx_merchant_id` (`merchant_id`) COMMENT '商家ID索引',
+    INDEX `idx_category_id` (`category_id`) COMMENT '菜单类别索引',
+    INDEX `idx_item_id` (`item_id`) COMMENT '单品索引'
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT ='菜单类别与单品关联表';
 
 CREATE TABLE floor_plans
 (

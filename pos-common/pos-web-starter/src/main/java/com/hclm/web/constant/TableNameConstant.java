@@ -46,5 +46,9 @@ public interface TableNameConstant {
     /**
      * 菜单项（菜品）
      */
-    String MENU_ITEMS = "items";
+    String MENU_ITEMS = "menu_items";
+    /**
+     * 菜单分类和菜单项关系表，中间表，用于关联菜单类别和菜单项
+     */
+    String CAT_ITEMS = "menu_category_items";
 }
