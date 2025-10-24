@@ -41,3 +41,14 @@ twilio:
     account-sid: ${TWILIO_ACCOUNT_SID:1111}
     auth-token: ${TWILIO_AUTH_TOKEN:1111}
     from-phone-number: ${TWILIO_FROM:1111}
+
+file:
+    tenant-quota: 104857600
+    minio-default-bucket: public
+    preview-host: ${MINIO_HOST_URL:http://127.0.0.1:9000}
+    minio:
+        host: ${MINIO_HOST:127.0.0.1:9000}
+        port: ${MINIO_PORT:9000}
+        secure: ${MINIO_SECURE:false}
+        access-key: ${MINIO_ACCESS_KEY:1111}
+        secret-key: ${MINIO_SECRET_KEY:1111}

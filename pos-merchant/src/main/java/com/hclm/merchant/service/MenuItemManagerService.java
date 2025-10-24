@@ -5,6 +5,7 @@ import com.hclm.merchant.pojo.request.MenuItemAddRequest;
 import com.hclm.merchant.pojo.request.MenuItemUpdateRequest;
 import com.hclm.merchant.pojo.response.MenuItemResponse;
 import com.hclm.mybatis.entity.MenuItemEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public interface MenuItemManagerService extends IService<MenuItemEntity> {
      * @param request 请求
      * @return {@link MenuItemResponse }
      */
-    MenuItemResponse create(MenuItemAddRequest request);
+    MenuItemResponse create(MenuItemAddRequest request, MultipartFile itemImage);
 
     /**
      * 更新

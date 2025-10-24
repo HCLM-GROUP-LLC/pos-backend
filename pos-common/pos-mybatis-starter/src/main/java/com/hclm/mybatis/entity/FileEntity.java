@@ -16,7 +16,7 @@ public class FileEntity {
     /**
      * 所有者
      */
-    private String owner;
+    private String ownerId;
     /**
      * 所有者类型
      */

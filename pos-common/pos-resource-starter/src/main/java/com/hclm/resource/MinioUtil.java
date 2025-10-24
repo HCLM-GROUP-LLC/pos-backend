@@ -26,19 +26,7 @@ public class MinioUtil {
      */
     private String defaultBucket;
     private String previewHost;
-
-    /**
-     * 创建客户端
-     *
-     * @param minioProperties minio属性
-     * @return {@link MinioClient }
-     */
-    public static MinioClient createClient(MinioProperties minioProperties) {
-        return MinioClient.builder()
-                .endpoint(minioProperties.getEndpoint(), minioProperties.getPort(), minioProperties.isSecure())
-                .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
-                .build();
-    }
+    
 
     /**
      * put文件

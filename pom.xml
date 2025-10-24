@@ -24,7 +24,7 @@
         <mapstruct.version>1.6.3</mapstruct.version>
         <p6spy.version>3.9.1</p6spy.version>
         <mybatis-plus.version>3.5.14</mybatis-plus.version>
-        <minio.version>8.6.0</minio.version>
+        <minio.version>8.5.17</minio.version>
         <!--插件版本-->
         <maven-compiler-plugin.version>3.9.0</maven-compiler-plugin.version>
         <spring-boot-maven-plugin.version>3.5.5</spring-boot-maven-plugin.version>

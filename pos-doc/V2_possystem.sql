@@ -140,16 +140,18 @@ CREATE TABLE `menu_categories`
 -- 菜品菜单项目表
 CREATE TABLE `menu_items`
 (
-    `item_id`          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '单品id',
-    `merchant_id`      VARCHAR(255)   DEFAULT NULL COMMENT '商户id',
-    `store_id`         VARCHAR(255)   DEFAULT NULL COMMENT '所属门店id',
-    `item_name`        VARCHAR(255)   DEFAULT NULL COMMENT '单品名称',
-    `item_description` TEXT           DEFAULT NULL COMMENT '菜品简介',
-    `item_price`       DECIMAL(10, 2) DEFAULT NULL COMMENT '单价',
-    `note_tags`        JSON           DEFAULT NULL COMMENT '注释标记',
+    `item_id`          bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '单品id',
+    `merchant_id`      varchar(255)             DEFAULT NULL COMMENT '商户id',
+    `store_id`         varchar(255)             DEFAULT NULL COMMENT '所属门店id',
+    `item_name`        varchar(255)             DEFAULT NULL COMMENT '单品名称',
+    `item_description` text COMMENT '菜品简介',
+    `item_price`       decimal(10, 2)           DEFAULT NULL COMMENT '单价',
+    `note_tags`        json                     DEFAULT NULL COMMENT '注释标记',
+    `item_type`        varchar(255)    NOT NULL DEFAULT 'Item' COMMENT '菜单项类型',
+    `item_image`       text COMMENT '图片URL',
     PRIMARY KEY (`item_id`),
-    INDEX `idx_merchant_id` (`merchant_id`) COMMENT '商户ID索引',
-    INDEX `idx_store_id` (`store_id`) COMMENT '门店ID索引'
+    KEY `idx_merchant_id` (`merchant_id`) COMMENT '商户ID索引',
+    KEY `idx_store_id` (`store_id`) COMMENT '门店ID索引'
 ) COMMENT ='菜品菜单项目表';
 
 -- 菜单类别与单品关联表
@@ -271,3 +273,20 @@ CREATE TABLE `merchant_bank_cards`
     PRIMARY KEY (`id`) USING BTREE,
     KEY `merchant_id` (`merchant_id`)
 ) ENGINE = InnoDB COMMENT ='商家银行卡表';
+
+-- 文件表
+CREATE TABLE `files`
+(
+    `file_id`      bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '文件ID',
+    `owner_id`     varchar(255)    DEFAULT NULL COMMENT '所有者',
+    `owner_type`   varchar(50)     DEFAULT NULL COMMENT '所有者类型',
+    `merchant_id`  varchar(255)    DEFAULT NULL COMMENT '商户id',
+    `content_type` varchar(255)    DEFAULT NULL COMMENT '文件类型',
+    `file_name`    varchar(255)    DEFAULT NULL COMMENT '文件名',
+    `object_name`  varchar(255)    DEFAULT NULL COMMENT 'minio对象名',
+    `file_size`    bigint unsigned DEFAULT NULL COMMENT '文件大小',
+    `preview_url`  varchar(500)    DEFAULT NULL COMMENT '预览地址URL',
+    `create_at`    bigint unsigned DEFAULT NULL COMMENT '创建时间',
+    `update_at`    bigint unsigned DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (`file_id`)
+) COMMENT ='文件表';

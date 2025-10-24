@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,6 +59,19 @@ public class MenuItemManagerController {
     public ApiResponse<List<MenuItemResponse>> findByCategoryId(@NotNull @Schema(description = "类别id") Long categoryId) {
         return ApiResponse.success(menuItemManagerService.findByCategoryId(categoryId));
     }
+    /*
+     * 文档没有识别出来这里是 multipart/form-data 可以使用curl命令 以下是 示例
+     * curl -X POST \
+     * http://localhost:8080/menu-items \
+     * -H "Content-Type: multipart/form-data" \
+     * -H "pos-merchant-token: 48341aa1-7791-4f55-a9a4-d5b1fd4ab39f" \
+     * -F "storeId=LOC-174000000001" \
+     * -F "itemName=测试菜品" \
+     * -F "itemDescription=这是一道测试菜品" \
+     * -F "itemPrice=29.99" \
+     * -F "itemType=Item" \
+     * -F "itemImage=@/mnt/d/Users/hanhua/Downloads/1.png"
+     * */
 
     /**
      * 创建菜品 在 Item Design 创建菜品时调用
@@ -66,9 +80,9 @@ public class MenuItemManagerController {
      * @return {@link ApiResponse }<{@link MenuItemResponse }>
      */
     @Operation(summary = "创建菜品")
-    @PostMapping("")
-    public ApiResponse<MenuItemResponse> create(@Valid @RequestBody MenuItemAddRequest request) {
-        return ApiResponse.success(menuItemManagerService.create(request));
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ApiResponse<MenuItemResponse> create(@Valid @ModelAttribute MenuItemAddRequest request) {
+        return ApiResponse.success(menuItemManagerService.create(request, request.getItemImage()));
     }
 
     /**

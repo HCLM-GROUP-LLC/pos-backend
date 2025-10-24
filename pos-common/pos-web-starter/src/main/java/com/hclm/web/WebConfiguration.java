@@ -3,7 +3,6 @@ package com.hclm.web;
 import com.hclm.web.utils.MessageUtil;
 import com.hclm.web.utils.PwdUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * @since 2025/10/06
  */
 @Slf4j
-@MapperScan("com.hclm.**.mapper")
 @Configuration
 public class WebConfiguration {
 

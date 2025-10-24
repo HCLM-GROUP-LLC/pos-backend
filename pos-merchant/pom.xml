@@ -23,6 +23,11 @@
         </dependency>
         <dependency>
             <groupId>com.hclm</groupId>
+            <artifactId>pos-resource-starter</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hclm</groupId>
             <artifactId>pos-satoken-starter</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>

@@ -2,19 +2,29 @@ package com.hclm.merchant.pojo.response;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hclm.merchant.converter.MenuItemConverter;
+import com.hclm.merchant.pojo.dto.MenuItemFileDto;
 import com.hclm.merchant.pojo.request.MenuItemAddRequest;
 import com.hclm.merchant.pojo.request.MenuItemUpdateRequest;
 import com.hclm.merchant.service.MenuItemManagerService;
+import com.hclm.merchant.utils.MerchantLoginUtil;
+import com.hclm.mybatis.entity.FileEntity;
 import com.hclm.mybatis.entity.MenuItemEntity;
 import com.hclm.mybatis.mapper.MenuItemMapper;
+import com.hclm.resource.service.FileService;
 import com.hclm.web.BusinessException;
 import com.hclm.web.enums.ResponseCode;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class MenuItemManagerServiceImpl extends ServiceImpl<MenuItemMapper, MenuItemEntity> implements MenuItemManagerService {
+    private final FileService fileService;
+
     private void checkNameUnique(MenuItemEntity menuItemEntity) {
         if (lambdaQuery()
                 .eq(MenuItemEntity::getStoreId, menuItemEntity.getStoreId())
@@ -54,11 +64,18 @@ public class MenuItemManagerServiceImpl extends ServiceImpl<MenuItemMapper, Menu
         );
     }
 
+    @Transactional
     @Override
-    public MenuItemResponse create(MenuItemAddRequest request) {
+    public MenuItemResponse create(MenuItemAddRequest request, MultipartFile itemImage) {
         MenuItemEntity menuItemEntity = MenuItemConverter.INSTANCE.toEntity(request);
         checkNameUnique(menuItemEntity);
         save(menuItemEntity);
+        //上传文件
+        FileEntity fileEntity = fileService.uploadFIle(MerchantLoginUtil.getMerchantId(), itemImage, new MenuItemFileDto(menuItemEntity.getItemId()));
+        lambdaUpdate()
+                .eq(MenuItemEntity::getItemId, menuItemEntity.getItemId())
+                .set(MenuItemEntity::getItemImage, fileEntity.getPreviewUrl())
+                .update();
         return MenuItemConverter.INSTANCE.toResponse(menuItemEntity);
     }
 

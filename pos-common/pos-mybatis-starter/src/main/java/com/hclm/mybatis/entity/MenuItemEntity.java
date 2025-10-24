@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.Fastjson2TypeHandler;
 import com.hclm.mybatis.TableNameConstant;
+import com.hclm.mybatis.enums.MenuItemTypeEnum;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -50,5 +51,13 @@ public class MenuItemEntity {
      */
     @TableField(typeHandler = Fastjson2TypeHandler.class)
     private List<String> noteTags;
+    /**
+     * 单品类型
+     */
+    private MenuItemTypeEnum itemType;
+    /**
+     * 单品图片
+     */
+    private String itemImage;
     //TODO 还缺一个 打印机端口
 }
