@@ -5,32 +5,33 @@ import com.hclm.merchant.converter.StoreConverter;
 import com.hclm.merchant.pojo.request.StoreRequest;
 import com.hclm.merchant.pojo.response.StoreResponse;
 import com.hclm.merchant.service.StoreService;
-import com.hclm.web.entity.Store;
+import com.hclm.mybatis.entity.StoreEntity;
+import com.hclm.mybatis.mapper.StoreMapper;
 import com.hclm.web.utils.RandomUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class StoreServiceImpl extends ServiceImpl<com.hclm.web.mapper.StoreMapper, Store> implements StoreService {
+public class StoreServiceImpl extends ServiceImpl<StoreMapper, StoreEntity> implements StoreService {
 
     @Override
     public StoreResponse createStore(StoreRequest requestDTO) {
-        Store store = StoreConverter.INSTANCE.toEntity(requestDTO);
-        store.setId(RandomUtil.generateStoreId());
-        save(store);
-        return StoreConverter.INSTANCE.toResponse(store);
+        StoreEntity storeEntity = StoreConverter.INSTANCE.toEntity(requestDTO);
+        storeEntity.setId(RandomUtil.generateStoreId());
+        save(storeEntity);
+        return StoreConverter.INSTANCE.toResponse(storeEntity);
     }
 
     @Override
     public StoreResponse updateStore(String id, StoreRequest requestDTO) {
-        Store store = getOptById(id)
-                .orElseThrow(() -> new RuntimeException("Store not found"));
+        StoreEntity storeEntity = getOptById(id)
+                .orElseThrow(() -> new RuntimeException("StoreEntity not found"));
         // 使用 MapStruct 更新实体字段
-        Store updated = StoreConverter.INSTANCE.toEntity(requestDTO);
-        updated.setId(store.getId()); // 保留原ID
-        updated.setCreatedAt(store.getCreatedAt());
-        updated.setCreatedBy(store.getCreatedBy());
+        StoreEntity updated = StoreConverter.INSTANCE.toEntity(requestDTO);
+        updated.setId(storeEntity.getId()); // 保留原ID
+        updated.setCreatedAt(storeEntity.getCreatedAt());
+        updated.setCreatedBy(storeEntity.getCreatedBy());
         updateById(updated);
         return StoreConverter.INSTANCE.toResponse(updated);
     }
@@ -42,39 +43,39 @@ public class StoreServiceImpl extends ServiceImpl<com.hclm.web.mapper.StoreMappe
 
     @Override
     public StoreResponse getStoreById(String id) {
-        Store store = getOptById(id)
-                .orElseThrow(() -> new RuntimeException("Store not found"));
-        return StoreConverter.INSTANCE.toResponse(store);
+        StoreEntity storeEntity = getOptById(id)
+                .orElseThrow(() -> new RuntimeException("StoreEntity not found"));
+        return StoreConverter.INSTANCE.toResponse(storeEntity);
     }
 
     @Override
     public List<StoreResponse> getStoresByMerchantId(String merchantId) {
-        List<Store> stores = lambdaQuery()
-                .eq(Store::getMerchantId, merchantId)
+        List<StoreEntity> storeEntities = lambdaQuery()
+                .eq(StoreEntity::getMerchantId, merchantId)
                 .list();
-        return StoreConverter.INSTANCE.toResponse(stores);
+        return StoreConverter.INSTANCE.toResponse(storeEntities);
     }
 
     public List<StoreResponse> getAllStores() {
-        List<Store> stores = list();
-        return StoreConverter.INSTANCE.toResponse(stores);
+        List<StoreEntity> storeEntities = list();
+        return StoreConverter.INSTANCE.toResponse(storeEntities);
     }
 
     @Override
     public StoreResponse updateStatus(String id, String status) {
-        Store store = getOptById(id)
-                .orElseThrow(() -> new RuntimeException("Store not found"));
-        store.setStatus(status);
-        updateById(store);
-        return StoreConverter.INSTANCE.toResponse(store);
+        StoreEntity storeEntity = getOptById(id)
+                .orElseThrow(() -> new RuntimeException("StoreEntity not found"));
+        storeEntity.setStatus(status);
+        updateById(storeEntity);
+        return StoreConverter.INSTANCE.toResponse(storeEntity);
     }
 
     @Override
     public StoreResponse updateBusinessHours(String id, String businessHours) {
-        Store store = getOptById(id)
-                .orElseThrow(() -> new RuntimeException("Store not found"));
-        store.setBusinessHours(businessHours);
-        updateById(store);
-        return StoreConverter.INSTANCE.toResponse(store);
+        StoreEntity storeEntity = getOptById(id)
+                .orElseThrow(() -> new RuntimeException("StoreEntity not found"));
+        storeEntity.setBusinessHours(businessHours);
+        updateById(storeEntity);
+        return StoreConverter.INSTANCE.toResponse(storeEntity);
     }
 }

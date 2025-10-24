@@ -1,9 +1,9 @@
 package com.hclm.terminal.converter;
 
 
+import com.hclm.mybatis.entity.DeviceEntity;
 import com.hclm.terminal.pojo.request.DeviceAddRequest;
 import com.hclm.terminal.pojo.response.DeviceAddResponse;
-import com.hclm.web.entity.Device;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -21,15 +21,15 @@ public interface DeviceConverter {
      * 请求转实体
      *
      * @param request 请求
-     * @return {@link Device }
+     * @return {@link DeviceEntity }
      */
-    Device toEntity(DeviceAddRequest request);
+    DeviceEntity toEntity(DeviceAddRequest request);
 
     /**
      * 响应
      *
-     * @param device 设备
+     * @param deviceEntity 设备
      * @return {@link DeviceAddResponse }
      */
-    DeviceAddResponse toAddResponse(Device device);
+    DeviceAddResponse toAddResponse(DeviceEntity deviceEntity);
 }

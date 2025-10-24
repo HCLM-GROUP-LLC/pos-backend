@@ -2,7 +2,7 @@ package com.hclm.merchant.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hclm.merchant.pojo.request.DeviceIDGenRequest;
-import com.hclm.web.entity.Device;
+import com.hclm.mybatis.entity.DeviceEntity;
 
 import java.util.Set;
 
@@ -11,7 +11,7 @@ import java.util.Set;
  *
  * @author hanhua
  */
-public interface DeviceManagerService extends IService<Device> {
+public interface DeviceManagerService extends IService<DeviceEntity> {
     /**
      * gen代码
      *

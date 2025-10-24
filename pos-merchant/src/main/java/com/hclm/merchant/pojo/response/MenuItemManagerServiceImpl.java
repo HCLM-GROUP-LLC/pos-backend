@@ -5,21 +5,21 @@ import com.hclm.merchant.converter.MenuItemConverter;
 import com.hclm.merchant.pojo.request.MenuItemAddRequest;
 import com.hclm.merchant.pojo.request.MenuItemUpdateRequest;
 import com.hclm.merchant.service.MenuItemManagerService;
+import com.hclm.mybatis.entity.MenuItemEntity;
+import com.hclm.mybatis.mapper.MenuItemMapper;
 import com.hclm.web.BusinessException;
-import com.hclm.web.entity.MenuItems;
 import com.hclm.web.enums.ResponseCode;
-import com.hclm.web.mapper.MenuItemsMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class MenuItemManagerServiceImpl extends ServiceImpl<MenuItemsMapper, MenuItems> implements MenuItemManagerService {
-    private void checkNameUnique(MenuItems menuItems) {
+public class MenuItemManagerServiceImpl extends ServiceImpl<MenuItemMapper, MenuItemEntity> implements MenuItemManagerService {
+    private void checkNameUnique(MenuItemEntity menuItemEntity) {
         if (lambdaQuery()
-                .eq(MenuItems::getStoreId, menuItems.getStoreId())
-                .eq(MenuItems::getItemName, menuItems.getItemName())
-                .ne(menuItems.getItemId() != null, MenuItems::getItemId, menuItems.getItemId()) // 排除自身
+                .eq(MenuItemEntity::getStoreId, menuItemEntity.getStoreId())
+                .eq(MenuItemEntity::getItemName, menuItemEntity.getItemName())
+                .ne(menuItemEntity.getItemId() != null, MenuItemEntity::getItemId, menuItemEntity.getItemId()) // 排除自身
                 .exists()
         ) {
             throw new BusinessException(ResponseCode.MENU_ITEM_NAME_ALREADY_EXISTS);
@@ -36,7 +36,7 @@ public class MenuItemManagerServiceImpl extends ServiceImpl<MenuItemsMapper, Men
     public List<MenuItemResponse> findByStoreId(String storeId) {
         return MenuItemConverter.INSTANCE.toResponse(
                 lambdaQuery()
-                        .eq(MenuItems::getStoreId, storeId)
+                        .eq(MenuItemEntity::getStoreId, storeId)
                         .list()
         );
     }
@@ -56,10 +56,10 @@ public class MenuItemManagerServiceImpl extends ServiceImpl<MenuItemsMapper, Men
 
     @Override
     public MenuItemResponse create(MenuItemAddRequest request) {
-        MenuItems menuItems = MenuItemConverter.INSTANCE.toEntity(request);
-        checkNameUnique(menuItems);
-        save(menuItems);
-        return MenuItemConverter.INSTANCE.toResponse(menuItems);
+        MenuItemEntity menuItemEntity = MenuItemConverter.INSTANCE.toEntity(request);
+        checkNameUnique(menuItemEntity);
+        save(menuItemEntity);
+        return MenuItemConverter.INSTANCE.toResponse(menuItemEntity);
     }
 
     @Override
@@ -67,10 +67,10 @@ public class MenuItemManagerServiceImpl extends ServiceImpl<MenuItemsMapper, Men
         if (request.isEmpty()) {// 没有修改
             return MenuItemConverter.INSTANCE.toResponse(getById(menuItemId));
         }
-        MenuItems menuItems = MenuItemConverter.INSTANCE.toEntity(request);
-        menuItems.setItemId(menuItemId);
-        checkNameUnique(menuItems);
-        updateById(menuItems);
-        return MenuItemConverter.INSTANCE.toResponse(menuItems);
+        MenuItemEntity menuItemEntity = MenuItemConverter.INSTANCE.toEntity(request);
+        menuItemEntity.setItemId(menuItemId);
+        checkNameUnique(menuItemEntity);
+        updateById(menuItemEntity);
+        return MenuItemConverter.INSTANCE.toResponse(menuItemEntity);
     }
 }

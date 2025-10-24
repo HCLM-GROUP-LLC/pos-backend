@@ -1,7 +1,7 @@
 package com.hclm.merchant.pojo.response;
 
-import com.hclm.web.enums.EmployeesRoleEnum;
-import com.hclm.web.enums.EmployeesSatusEnum;
+import com.hclm.mybatis.enums.EmployeesRoleEnum;
+import com.hclm.mybatis.enums.EmployeesSatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 

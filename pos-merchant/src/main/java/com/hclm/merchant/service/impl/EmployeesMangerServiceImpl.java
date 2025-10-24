@@ -8,12 +8,12 @@ import com.hclm.merchant.pojo.request.EmployeesUpdateRequest;
 import com.hclm.merchant.pojo.response.EmployeesCopyResponse;
 import com.hclm.merchant.pojo.response.EmployeesResponse;
 import com.hclm.merchant.service.EmployeesMangerService;
+import com.hclm.mybatis.entity.EmployeeEntity;
+import com.hclm.mybatis.enums.EmployeesRoleEnum;
+import com.hclm.mybatis.enums.EmployeesSatusEnum;
+import com.hclm.mybatis.mapper.EmployeeMapper;
 import com.hclm.web.BusinessException;
-import com.hclm.web.entity.Employees;
-import com.hclm.web.enums.EmployeesRoleEnum;
-import com.hclm.web.enums.EmployeesSatusEnum;
 import com.hclm.web.enums.ResponseCode;
-import com.hclm.web.mapper.EmployeesMapper;
 import com.hclm.web.utils.RandomUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class EmployeesMangerServiceImpl extends ServiceImpl<EmployeesMapper, Employees> implements EmployeesMangerService {
+public class EmployeesMangerServiceImpl extends ServiceImpl<EmployeeMapper, EmployeeEntity> implements EmployeesMangerService {
     /**
      * 添加员工
      *
@@ -31,10 +31,10 @@ public class EmployeesMangerServiceImpl extends ServiceImpl<EmployeesMapper, Emp
      */
     @Override
     public EmployeesResponse addEmployees(EmployeesAddRequest request) {
-        Employees employees = EmployeesConverter.INSTANCE.toEntity(request);
-        employees.setEmployeesId(RandomUtil.generateEmployeesId());
-        save(employees);//保存员工
-        return EmployeesConverter.INSTANCE.toResponse(employees);
+        EmployeeEntity employeeEntity = EmployeesConverter.INSTANCE.toEntity(request);
+        employeeEntity.setEmployeesId(RandomUtil.generateEmployeesId());
+        save(employeeEntity);//保存员工
+        return EmployeesConverter.INSTANCE.toResponse(employeeEntity);
     }
 
     /**
@@ -43,7 +43,7 @@ public class EmployeesMangerServiceImpl extends ServiceImpl<EmployeesMapper, Emp
      * @param storeId 门店id     * @return {@link List }
      */
     public List<EmployeesResponse> getEmployeesList(String storeId) {
-        return EmployeesConverter.INSTANCE.toResponseList(lambdaQuery().eq(Employees::getStoreId, storeId).list());
+        return EmployeesConverter.INSTANCE.toResponseList(lambdaQuery().eq(EmployeeEntity::getStoreId, storeId).list());
     }
 
     /**
@@ -64,15 +64,15 @@ public class EmployeesMangerServiceImpl extends ServiceImpl<EmployeesMapper, Emp
      * @return {@link EmployeesResponse }
      */
     public EmployeesResponse updateEmployees(String employeesId, EmployeesUpdateRequest request) {
-        Employees employees = getOptById(employeesId)
+        EmployeeEntity employeeEntity = getOptById(employeesId)
                 .orElseThrow(() -> new BusinessException(ResponseCode.EMPLOYEES_NOT_FOUND));
         //转换,赋值,跳过null字段
-        Employees newEmployees = EmployeesConverter.INSTANCE.toEntity(request);
-        newEmployees.setEmployeesId(employeesId);
-        updateById(newEmployees);//更新员工,会自动跳过null字段
+        EmployeeEntity newEmployeeEntity = EmployeesConverter.INSTANCE.toEntity(request);
+        newEmployeeEntity.setEmployeesId(employeesId);
+        updateById(newEmployeeEntity);//更新员工,会自动跳过null字段
         //赋值给老员工,并响应
-        EmployeesConverter.INSTANCE.copyEntity(employees, newEmployees);
-        return EmployeesConverter.INSTANCE.toResponse(employees);
+        EmployeesConverter.INSTANCE.copyEntity(employeeEntity, newEmployeeEntity);
+        return EmployeesConverter.INSTANCE.toResponse(employeeEntity);
     }
 
     /**
@@ -82,9 +82,9 @@ public class EmployeesMangerServiceImpl extends ServiceImpl<EmployeesMapper, Emp
      * @return {@link EmployeesResponse }
      */
     public EmployeesResponse getEmployees(String employeesId) {
-        Employees employees = getOptById(employeesId)
+        EmployeeEntity employeeEntity = getOptById(employeesId)
                 .orElseThrow(() -> new BusinessException(ResponseCode.EMPLOYEES_NOT_FOUND));
-        return EmployeesConverter.INSTANCE.toResponse(employees);
+        return EmployeesConverter.INSTANCE.toResponse(employeeEntity);
     }
 
     /**
@@ -124,7 +124,7 @@ public class EmployeesMangerServiceImpl extends ServiceImpl<EmployeesMapper, Emp
      */
     public EmployeesResponse copyEmployeeToStore(String employeeId, EmployeesCopyRequest request) {
         // 1. 查找源员工
-        Employees sourceEmployee = getOptById(employeeId)
+        EmployeeEntity sourceEmployee = getOptById(employeeId)
                 .orElseThrow(() -> new BusinessException(ResponseCode.EMPLOYEES_NOT_FOUND));
 
         // 2. 验证员工属于源店铺和当前商家
@@ -134,8 +134,8 @@ public class EmployeesMangerServiceImpl extends ServiceImpl<EmployeesMapper, Emp
 
         // 3. 检查目标店铺是否已存在相同邮箱的员工
         if (sourceEmployee.getEmail() != null) {
-            boolean emailExists = lambdaQuery().eq(Employees::getEmail, sourceEmployee.getEmail())
-                    .eq(Employees::getStoreId, request.getTargetStoreId())
+            boolean emailExists = lambdaQuery().eq(EmployeeEntity::getEmail, sourceEmployee.getEmail())
+                    .eq(EmployeeEntity::getStoreId, request.getTargetStoreId())
                     .exists();
             if (emailExists) {
                 throw new IllegalArgumentException("目标店铺已存在相同邮箱的员工");
@@ -143,7 +143,7 @@ public class EmployeesMangerServiceImpl extends ServiceImpl<EmployeesMapper, Emp
         }
 
         // 4. 创建新员工实体
-        Employees newEmployee = new Employees();
+        EmployeeEntity newEmployee = new EmployeeEntity();
         newEmployee.setEmployeesId(RandomUtil.generateEmployeesId());
         newEmployee.setStoreId(request.getTargetStoreId());
         newEmployee.setEmail(sourceEmployee.getEmail());

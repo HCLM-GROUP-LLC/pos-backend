@@ -1,6 +1,6 @@
 package com.hclm.terminal.pojo.cache;
 
-import com.hclm.web.enums.EmployeesRoleEnum;
+import com.hclm.mybatis.enums.EmployeesRoleEnum;
 import lombok.Data;
 
 /**

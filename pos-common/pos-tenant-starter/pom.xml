@@ -17,8 +17,9 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+            <groupId>com.hclm</groupId>
+            <artifactId>pos-mybatis-starter</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
         <!-- jdk 11+ 引入可选模块 租户插件 、 分页插件等 -->
         <dependency>

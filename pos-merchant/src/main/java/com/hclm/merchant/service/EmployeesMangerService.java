@@ -6,12 +6,12 @@ import com.hclm.merchant.pojo.request.EmployeesCopyRequest;
 import com.hclm.merchant.pojo.request.EmployeesUpdateRequest;
 import com.hclm.merchant.pojo.response.EmployeesCopyResponse;
 import com.hclm.merchant.pojo.response.EmployeesResponse;
-import com.hclm.web.entity.Employees;
+import com.hclm.mybatis.entity.EmployeeEntity;
 
 import java.util.List;
 
 
-public interface EmployeesMangerService extends IService<Employees> {
+public interface EmployeesMangerService extends IService<EmployeeEntity> {
 
     /**
      * 添加员工

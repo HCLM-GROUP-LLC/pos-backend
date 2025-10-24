@@ -2,7 +2,7 @@ package com.hclm.merchant.converter;
 
 import com.hclm.merchant.pojo.request.StoreRequest;
 import com.hclm.merchant.pojo.response.StoreResponse;
-import com.hclm.web.entity.Store;
+import com.hclm.mybatis.entity.StoreEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -12,9 +12,9 @@ import java.util.List;
 public interface StoreConverter {
     StoreConverter INSTANCE = Mappers.getMapper(StoreConverter.class);
 
-    Store toEntity(StoreRequest request);
+    StoreEntity toEntity(StoreRequest request);
 
-    StoreResponse toResponse(Store store);
+    StoreResponse toResponse(StoreEntity storeEntity);
 
-    List<StoreResponse> toResponse(List<Store> stores);
+    List<StoreResponse> toResponse(List<StoreEntity> storeEntities);
 }

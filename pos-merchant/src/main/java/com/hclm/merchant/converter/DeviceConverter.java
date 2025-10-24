@@ -1,7 +1,7 @@
 package com.hclm.merchant.converter;
 
 import com.hclm.merchant.pojo.response.DeviceResponse;
-import com.hclm.web.entity.Device;
+import com.hclm.mybatis.entity.DeviceEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.lang.NonNull;
@@ -15,12 +15,12 @@ public interface DeviceConverter {
     /**
      * 响应
      *
-     * @param device 设备
+     * @param deviceEntity 设备
      * @return {@link DeviceResponse }
      */
-    DeviceResponse toResponse(Device device);
+    DeviceResponse toResponse(DeviceEntity deviceEntity);
 
-    default List<DeviceResponse> toResponses(@NonNull List<Device> devices) {
-        return devices.stream().map(this::toResponse).toList();
+    default List<DeviceResponse> toResponses(@NonNull List<DeviceEntity> deviceEntities) {
+        return deviceEntities.stream().map(this::toResponse).toList();
     }
 }

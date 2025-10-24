@@ -1,12 +1,12 @@
 package com.hclm.terminal.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.hclm.mybatis.entity.EmployeeEntity;
 import com.hclm.terminal.pojo.request.EmployeesLoginRequest;
 import com.hclm.terminal.pojo.response.EmployeesLoginResponse;
-import com.hclm.web.entity.Employees;
 
 
-public interface EmployeesService extends IService<Employees> {
+public interface EmployeesService extends IService<EmployeeEntity> {
 
     /**
      * 登录

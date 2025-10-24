@@ -1,7 +1,7 @@
 package com.hclm.merchant.converter;
 
 import com.hclm.merchant.pojo.response.MerchantInfoResponse;
-import com.hclm.web.entity.Merchant;
+import com.hclm.mybatis.entity.MerchantEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -9,5 +9,5 @@ import org.mapstruct.factory.Mappers;
 public interface MerchantConverter {
     MerchantConverter INSTANCE = Mappers.getMapper(MerchantConverter.class);
 
-    MerchantInfoResponse toInfoResponse(Merchant merchant);
+    MerchantInfoResponse toInfoResponse(MerchantEntity merchantEntity);
 }

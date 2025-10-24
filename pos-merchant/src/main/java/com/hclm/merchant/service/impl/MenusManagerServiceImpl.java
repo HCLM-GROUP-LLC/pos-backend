@@ -6,10 +6,10 @@ import com.hclm.merchant.pojo.request.MenusAddRequest;
 import com.hclm.merchant.pojo.request.MenusUpdateRequest;
 import com.hclm.merchant.pojo.response.MenusResponse;
 import com.hclm.merchant.service.MenusManagerService;
+import com.hclm.mybatis.entity.MenuEntity;
+import com.hclm.mybatis.mapper.MenuMapper;
 import com.hclm.web.BusinessException;
-import com.hclm.web.entity.Menus;
 import com.hclm.web.enums.ResponseCode;
-import com.hclm.web.mapper.MenusMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,12 +21,12 @@ import java.util.List;
  * @since 2025/10/22
  */
 @Service
-public class MenusManagerServiceImpl extends ServiceImpl<MenusMapper, Menus> implements MenusManagerService {
-    private void checkNameUnique(Menus menus) {
+public class MenusManagerServiceImpl extends ServiceImpl<MenuMapper, MenuEntity> implements MenusManagerService {
+    private void checkNameUnique(MenuEntity menuEntity) {
         if (lambdaQuery()
-                .eq(Menus::getStoreId, menus.getStoreId())
-                .eq(Menus::getMenuName, menus.getMenuName())
-                .ne(menus.getMenuId() != null, Menus::getMenuId, menus.getMenuId()) // 排除自身
+                .eq(MenuEntity::getStoreId, menuEntity.getStoreId())
+                .eq(MenuEntity::getMenuName, menuEntity.getMenuName())
+                .ne(menuEntity.getMenuId() != null, MenuEntity::getMenuId, menuEntity.getMenuId()) // 排除自身
                 .exists()) {
             throw new BusinessException(ResponseCode.MENU_NAME_ALREADY_EXISTS);
         }
@@ -40,25 +40,25 @@ public class MenusManagerServiceImpl extends ServiceImpl<MenusMapper, Menus> imp
      */
     @Override
     public MenusResponse addMenus(MenusAddRequest request) {
-        Menus menus = MenusConverter.INSTANCE.toEntity(request);
-        checkNameUnique(menus);
-        save(menus);//保存
-        return MenusConverter.INSTANCE.toResponse(menus);
+        MenuEntity menuEntity = MenusConverter.INSTANCE.toEntity(request);
+        checkNameUnique(menuEntity);
+        save(menuEntity);//保存
+        return MenusConverter.INSTANCE.toResponse(menuEntity);
     }
 
     @Override
     public MenusResponse updateMenus(Long menuId, MenusUpdateRequest request) {
-        Menus oldMenus = getOptById(menuId)
+        MenuEntity oldMenuEntity = getOptById(menuId)
                 .orElseThrow(() -> new BusinessException(ResponseCode.MENU_NOT_FOUND));
         //新的值复制到旧的值
-        MenusConverter.INSTANCE.copy(request, oldMenus);
-        checkNameUnique(oldMenus); // 检查名称唯一性
+        MenusConverter.INSTANCE.copy(request, oldMenuEntity);
+        checkNameUnique(oldMenuEntity); // 检查名称唯一性
 
-        Menus menus = MenusConverter.INSTANCE.toEntity(request);
-        menus.setMenuId(menuId);
-        updateById(menus);//会跳过null字段
+        MenuEntity menuEntity = MenusConverter.INSTANCE.toEntity(request);
+        menuEntity.setMenuId(menuId);
+        updateById(menuEntity);//会跳过null字段
 
-        return MenusConverter.INSTANCE.toResponse(oldMenus);
+        return MenusConverter.INSTANCE.toResponse(oldMenuEntity);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class MenusManagerServiceImpl extends ServiceImpl<MenusMapper, Menus> imp
 
         return MenusConverter.INSTANCE.toResponse(
                 lambdaQuery()
-                        .eq(Menus::getStoreId, storeId)
+                        .eq(MenuEntity::getStoreId, storeId)
                         .list()
         );
     }

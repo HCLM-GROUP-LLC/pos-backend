@@ -3,7 +3,7 @@ package com.hclm.merchant.converter;
 import com.hclm.merchant.pojo.request.MenusAddRequest;
 import com.hclm.merchant.pojo.request.MenusUpdateRequest;
 import com.hclm.merchant.pojo.response.MenusResponse;
-import com.hclm.web.entity.Menus;
+import com.hclm.mybatis.entity.MenuEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
@@ -18,19 +18,19 @@ public interface MenusConverter {
      * 至实体
      *
      * @param request 请求
-     * @return {@link Menus }
+     * @return {@link MenuEntity }
      */
-    Menus toEntity(MenusAddRequest request);
+    MenuEntity toEntity(MenusAddRequest request);
 
     /**
      * 至实体
      *
      * @param request 请求
-     * @return {@link Menus }
+     * @return {@link MenuEntity }
      */
-    Menus toEntity(MenusUpdateRequest request);
+    MenuEntity toEntity(MenusUpdateRequest request);
 
-    void copy(MenusUpdateRequest request, @MappingTarget Menus entity);
+    void copy(MenusUpdateRequest request, @MappingTarget MenuEntity entity);
 
     /**
      * 响应
@@ -38,7 +38,7 @@ public interface MenusConverter {
      * @param entity 实体
      * @return {@link MenusResponse }
      */
-    MenusResponse toResponse(Menus entity);
+    MenusResponse toResponse(MenuEntity entity);
 
     /**
      * 响应
@@ -46,5 +46,5 @@ public interface MenusConverter {
      * @param entity 菜单
      * @return {@link MenusResponse }
      */
-    List<MenusResponse> toResponse(List<Menus> entity);
+    List<MenusResponse> toResponse(List<MenuEntity> entity);
 }

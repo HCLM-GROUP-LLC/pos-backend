@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hclm.mybatis.mapper.MenuItemMapper">
+    <select id="findByCategoryId">
+        SELECT *
+        FROM menu_items
+        WHERE item_id IN (SELECT item_id FROM menu_category_items WHERE category_id = #{categoryId})
+    </select>
+</mapper>

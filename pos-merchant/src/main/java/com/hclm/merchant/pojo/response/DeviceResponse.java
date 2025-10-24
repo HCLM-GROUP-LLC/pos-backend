@@ -1,6 +1,6 @@
 package com.hclm.merchant.pojo.response;
 
-import com.hclm.web.enums.DeviceStatusEnum;
+import com.hclm.mybatis.enums.DeviceStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 

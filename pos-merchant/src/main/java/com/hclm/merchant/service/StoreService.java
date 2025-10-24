@@ -3,7 +3,7 @@ package com.hclm.merchant.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hclm.merchant.pojo.request.StoreRequest;
 import com.hclm.merchant.pojo.response.StoreResponse;
-import com.hclm.web.entity.Store;
+import com.hclm.mybatis.entity.StoreEntity;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
  * @author hanhua
  * @since 2025/10/19
  */
-public interface StoreService extends IService<Store> {
+public interface StoreService extends IService<StoreEntity> {
 
     StoreResponse createStore(StoreRequest requestDTO);
 

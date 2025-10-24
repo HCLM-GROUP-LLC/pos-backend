@@ -1,22 +1,22 @@
 package com.hclm.terminal.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.hclm.mybatis.entity.DeviceEntity;
 import com.hclm.terminal.pojo.request.DeviceAddRequest;
 import com.hclm.terminal.pojo.response.DeviceAddResponse;
-import com.hclm.web.entity.Device;
 import org.springframework.lang.NonNull;
 
-public interface DeviceService extends IService<Device> {
+public interface DeviceService extends IService<DeviceEntity> {
 
 
     /**
      * 按设备id查找 找不到抛出异常
      *
      * @param deviceId 设备id
-     * @return {@link Device }
+     * @return {@link DeviceEntity }
      */
     @NonNull
-    Device findByDeviceId(String deviceId);
+    DeviceEntity findByDeviceId(String deviceId);
 
     /**
      * 添加设备

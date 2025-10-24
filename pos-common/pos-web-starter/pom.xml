@@ -43,16 +43,11 @@
         </dependency>
         <!--   使用mybatis-plus操作数据库     -->
         <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+            <groupId>com.hclm</groupId>
+            <artifactId>pos-mybatis-starter</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
-        <!--    数据库连接    -->
-        <dependency>
-            <groupId>com.mysql</groupId>
-            <artifactId>mysql-connector-j</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <!--    密码加密    -->
+        <!-- 密码加密    -->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-crypto</artifactId>
@@ -65,11 +60,8 @@
             <groupId>com.alibaba.fastjson2</groupId>
             <artifactId>fastjson2</artifactId>
         </dependency>
-        <dependency>
-            <groupId>p6spy</groupId>
-            <artifactId>p6spy</artifactId>
-        </dependency>
         
+
     </dependencies>
     <profiles>
         <profile>

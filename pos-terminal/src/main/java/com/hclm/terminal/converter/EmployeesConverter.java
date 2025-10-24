@@ -1,8 +1,8 @@
 package com.hclm.terminal.converter;
 
+import com.hclm.mybatis.entity.EmployeeEntity;
 import com.hclm.terminal.pojo.cache.EmployeesLoginCache;
 import com.hclm.terminal.pojo.response.EmployeesLoginResponse;
-import com.hclm.web.entity.Employees;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -19,16 +19,16 @@ public interface EmployeesConverter {
     /**
      * 登录响应
      *
-     * @param employees 员工
+     * @param employeeEntity 员工
      * @return {@link EmployeesLoginResponse }
      */
-    EmployeesLoginResponse toLoginResponse(Employees employees);
+    EmployeesLoginResponse toLoginResponse(EmployeeEntity employeeEntity);
 
     /**
      * 登录缓存
      *
-     * @param employees 员工
+     * @param employeeEntity 员工
      * @return {@link EmployeesLoginCache }
      */
-    EmployeesLoginCache toLoginCache(Employees employees);
+    EmployeesLoginCache toLoginCache(EmployeeEntity employeeEntity);
 }

@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.hclm.merchant.pojo.request.MenusAddRequest;
 import com.hclm.merchant.pojo.request.MenusUpdateRequest;
 import com.hclm.merchant.pojo.response.MenusResponse;
-import com.hclm.web.entity.Menus;
+import com.hclm.mybatis.entity.MenuEntity;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
  * @author hanhua
  * @since 2025/10/22
  */
-public interface MenusManagerService extends IService<Menus> {
+public interface MenusManagerService extends IService<MenuEntity> {
     /**
      * 添加菜单
      *

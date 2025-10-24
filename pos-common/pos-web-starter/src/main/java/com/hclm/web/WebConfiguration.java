@@ -1,20 +1,14 @@
 package com.hclm.web;
 
-import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import com.hclm.web.utils.MessageUtil;
 import com.hclm.web.utils.PwdUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.List;
 
 /**
  * web配置
@@ -61,31 +55,5 @@ public class WebConfiguration {
         return new PwdUtil(passwordEncoder);
     }
 
-    /**
-     * mybatis元对象处理程序 自动注入 创建时间 修改时间
-     *
-     * @return {@link MybatisMetaObjectHandler }
-     */
-    @ConditionalOnMissingBean(MetaObjectHandler.class)
-    @Bean
-    public MybatisMetaObjectHandler mybatisMetaObjectHandler() {
-        log.info("mybatis元对象处理程序开启");
-        return new MybatisMetaObjectHandler();
-    }
 
-
-    /**
-     * mybatis plus拦截器
-     *
-     * @param innerInterceptors 内部拦截器
-     * @return {@link MybatisPlusInterceptor }
-     */
-    @Bean
-    public MybatisPlusInterceptor mybatisPlusInterceptor(List<InnerInterceptor> innerInterceptors) {
-        List<String> interceptorNames = innerInterceptors.stream().map(InnerInterceptor::getClass).map(Class::getSimpleName).toList();
-        log.info("mybatis plus拦截器开启 {}", interceptorNames);
-        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-        interceptor.setInterceptors(innerInterceptors);
-        return interceptor;
-    }
 }

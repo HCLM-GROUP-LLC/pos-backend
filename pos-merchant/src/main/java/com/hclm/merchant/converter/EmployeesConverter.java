@@ -4,7 +4,7 @@ import com.hclm.merchant.pojo.request.EmployeesAddRequest;
 import com.hclm.merchant.pojo.request.EmployeesUpdateRequest;
 import com.hclm.merchant.pojo.response.EmployeesCopyResponse;
 import com.hclm.merchant.pojo.response.EmployeesResponse;
-import com.hclm.web.entity.Employees;
+import com.hclm.mybatis.entity.EmployeeEntity;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -21,17 +21,17 @@ public interface EmployeesConverter {
      * 至实体
      *
      * @param request 请求
-     * @return {@link Employees }
+     * @return {@link EmployeeEntity }
      */
-    Employees toEntity(EmployeesAddRequest request);
+    EmployeeEntity toEntity(EmployeesAddRequest request);
 
     /**
      * 至实体
      *
      * @param request 请求
-     * @return {@link Employees }
+     * @return {@link EmployeeEntity }
      */
-    Employees toEntity(EmployeesUpdateRequest request);
+    EmployeeEntity toEntity(EmployeesUpdateRequest request);
 
     /**
      * 复制实体
@@ -40,15 +40,15 @@ public interface EmployeesConverter {
      * @param source 来源
      */
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void copyEntity(@MappingTarget Employees target, Employees source);
+    void copyEntity(@MappingTarget EmployeeEntity target, EmployeeEntity source);
 
     /**
      * 至响应
      *
-     * @param employees 员工
+     * @param employeeEntity 员工
      * @return {@link EmployeesResponse }
      */
-    EmployeesResponse toResponse(Employees employees);
+    EmployeesResponse toResponse(EmployeeEntity employeeEntity);
 
     /**
      * 至响应列表
@@ -56,14 +56,14 @@ public interface EmployeesConverter {
      * @param employees 员工
      * @return {@link List }<{@link EmployeesResponse }>
      */
-    List<EmployeesResponse> toResponseList(List<Employees> employees);
+    List<EmployeesResponse> toResponseList(List<EmployeeEntity> employees);
 
     /**
      * 至复制响应
      *
-     * @param employees 员工
+     * @param employeeEntity 员工
      * @return {@link EmployeesCopyResponse }
      */
-    EmployeesCopyResponse toCopyResponse(Employees employees);
+    EmployeesCopyResponse toCopyResponse(EmployeeEntity employeeEntity);
 
 }

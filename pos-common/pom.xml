@@ -12,13 +12,14 @@
     <artifactId>pos-common</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <!--web启动 公共的业务代码 主要是针对数据库的增删改查-->
-        <module>pos-web-starter</module>
         <!--satoken-->
         <module>pos-satoken-starter</module>
         <module>pos-redis-starter</module>
         <module>pos-tenant-starter</module>
         <module>pos-twilio-starter</module>
         <module>pos-resource-starter</module>
+        <module>pos-mybatis-starter</module>
+        <!--web启动 公共的业务代码 主要是针对数据库的增删改查-->
+        <module>pos-web-starter</module>
     </modules>
 </project>

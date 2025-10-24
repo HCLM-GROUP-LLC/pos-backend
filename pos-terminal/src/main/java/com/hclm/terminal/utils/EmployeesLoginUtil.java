@@ -1,10 +1,10 @@
 package com.hclm.terminal.utils;
 
 import cn.dev33.satoken.stp.StpUtil;
+import com.hclm.mybatis.entity.EmployeeEntity;
 import com.hclm.terminal.converter.EmployeesConverter;
 import com.hclm.terminal.pojo.cache.EmployeesLoginCache;
 import com.hclm.terminal.pojo.response.EmployeesLoginResponse;
-import com.hclm.web.entity.Employees;
 import com.hclm.web.utils.JsonUtil;
 
 public class EmployeesLoginUtil {
@@ -70,12 +70,12 @@ public class EmployeesLoginUtil {
     /**
      * 登录响应
      *
-     * @param employees 员工
+     * @param employeeEntity 员工
      * @return {@link EmployeesLoginResponse }
      */
-    public static EmployeesLoginResponse toLoginResponse(Employees employees) {
+    public static EmployeesLoginResponse toLoginResponse(EmployeeEntity employeeEntity) {
         //转换为登录响应
-        EmployeesLoginResponse response = EmployeesConverter.INSTANCE.toLoginResponse(employees);
+        EmployeesLoginResponse response = EmployeesConverter.INSTANCE.toLoginResponse(employeeEntity);
         response.setTokenName(StpUtil.getTokenName());
         response.setTokenValue(StpUtil.getTokenValue());
         return response;

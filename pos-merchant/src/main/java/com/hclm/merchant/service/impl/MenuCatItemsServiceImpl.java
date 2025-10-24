@@ -3,10 +3,10 @@ package com.hclm.merchant.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hclm.merchant.pojo.request.CatItemsAddRequest;
 import com.hclm.merchant.service.MenuCatItemsService;
+import com.hclm.mybatis.entity.CatItemEntity;
+import com.hclm.mybatis.mapper.CatItemMapper;
 import com.hclm.web.BusinessException;
-import com.hclm.web.entity.CatItems;
 import com.hclm.web.enums.ResponseCode;
-import com.hclm.web.mapper.CatItemsMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,21 +14,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class MenuCatItemsServiceImpl extends ServiceImpl<CatItemsMapper, CatItems> implements MenuCatItemsService {
+public class MenuCatItemsServiceImpl extends ServiceImpl<CatItemMapper, CatItemEntity> implements MenuCatItemsService {
     @Transactional
     @Override
     public void add(CatItemsAddRequest request) {
         if (getBaseMapper().coutByCatId(request.getCategoryId(), request.getItemIds()) > 0) {
             throw new BusinessException(ResponseCode.CAT_ITEMS_REPEAT);
         }
-        List<CatItems> catItemsList = new ArrayList<>(request.getItemIds().size());
+        List<CatItemEntity> catItemEntityList = new ArrayList<>(request.getItemIds().size());
         for (Long itemId : request.getItemIds()) {
-            CatItems catItems = new CatItems();
-            catItems.setCategoryId(request.getCategoryId());
-            catItems.setItemId(itemId);
-            catItemsList.add(catItems);
+            CatItemEntity catItemEntity = new CatItemEntity();
+            catItemEntity.setCategoryId(request.getCategoryId());
+            catItemEntity.setItemId(itemId);
+            catItemEntityList.add(catItemEntity);
         }
-        saveBatch(catItemsList);
+        saveBatch(catItemEntityList);
     }
 
     @Override

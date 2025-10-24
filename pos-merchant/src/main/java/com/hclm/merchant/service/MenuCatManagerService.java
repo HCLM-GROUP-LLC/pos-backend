@@ -4,11 +4,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.hclm.merchant.pojo.request.MenuCatAddRequest;
 import com.hclm.merchant.pojo.request.MenuCatUpdateRequest;
 import com.hclm.merchant.pojo.response.MenuCatResponse;
-import com.hclm.web.entity.MenuCategories;
+import com.hclm.mybatis.entity.MenuCategorieEntity;
 
 import java.util.List;
 
-public interface MenuCatManagerService extends IService<MenuCategories> {
+public interface MenuCatManagerService extends IService<MenuCategorieEntity> {
     /**
      * 添加
      *

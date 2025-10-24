@@ -4,10 +4,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hclm.merchant.pojo.request.DeviceIDGenRequest;
 import com.hclm.merchant.service.DeviceManagerService;
 import com.hclm.merchant.utils.MerchantLoginUtil;
+import com.hclm.mybatis.entity.DeviceEntity;
+import com.hclm.mybatis.mapper.DeviceMapper;
 import com.hclm.redis.DeviceRedisUtil;
 import com.hclm.redis.cache.DeviceCodeCache;
-import com.hclm.web.entity.Device;
-import com.hclm.web.mapper.DeviceMapper;
 import com.hclm.web.utils.RandomUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ import java.util.Set;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class DeviceManagerServiceImpl extends ServiceImpl<DeviceMapper, Device> implements DeviceManagerService {
+public class DeviceManagerServiceImpl extends ServiceImpl<DeviceMapper, DeviceEntity> implements DeviceManagerService {
 
     /**
      * 生成代码

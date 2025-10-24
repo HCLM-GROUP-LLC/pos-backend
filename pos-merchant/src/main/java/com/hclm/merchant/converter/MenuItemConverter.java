@@ -3,7 +3,7 @@ package com.hclm.merchant.converter;
 import com.hclm.merchant.pojo.request.MenuItemAddRequest;
 import com.hclm.merchant.pojo.request.MenuItemUpdateRequest;
 import com.hclm.merchant.pojo.response.MenuItemResponse;
-import com.hclm.web.entity.MenuItems;
+import com.hclm.mybatis.entity.MenuItemEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -19,7 +19,7 @@ public interface MenuItemConverter {
      * @param menuItem 菜单项
      * @return {@link MenuItemResponse }
      */
-    MenuItemResponse toResponse(MenuItems menuItem);
+    MenuItemResponse toResponse(MenuItemEntity menuItem);
 
     /**
      * 响应
@@ -27,9 +27,9 @@ public interface MenuItemConverter {
      * @param menuItems 菜单项
      * @return {@link List }<{@link MenuItemResponse }>
      */
-    List<MenuItemResponse> toResponse(List<MenuItems> menuItems);
+    List<MenuItemResponse> toResponse(List<MenuItemEntity> menuItems);
 
-    MenuItems toEntity(MenuItemAddRequest request);
+    MenuItemEntity toEntity(MenuItemAddRequest request);
 
-    MenuItems toEntity(MenuItemUpdateRequest request);
+    MenuItemEntity toEntity(MenuItemUpdateRequest request);
 }
