@@ -3,7 +3,6 @@ package com.hclm.web;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.hclm.web.utils.MessageUtil;
 import com.hclm.web.utils.PwdUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -74,16 +73,6 @@ public class WebConfiguration {
         return new MybatisMetaObjectHandler();
     }
 
-    /**
-     * 分页内部拦截器
-     *
-     * @return {@link PaginationInnerInterceptor }
-     */
-    @Bean
-    public PaginationInnerInterceptor paginationInnerInterceptor() {
-        log.info("分页内部拦截器开启");
-        return new PaginationInnerInterceptor();
-    }
 
     /**
      * mybatis plus拦截器

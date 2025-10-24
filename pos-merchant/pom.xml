@@ -13,6 +13,11 @@
     <dependencies>
         <dependency>
             <groupId>com.hclm</groupId>
+            <artifactId>pos-web-starter</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hclm</groupId>
             <artifactId>pos-tenant-starter</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>

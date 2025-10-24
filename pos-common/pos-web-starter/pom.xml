@@ -69,11 +69,7 @@
             <groupId>p6spy</groupId>
             <artifactId>p6spy</artifactId>
         </dependency>
-        <!-- jdk 11+ 引入可选模块 租户插件 、 分页插件等 -->
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-jsqlparser</artifactId>
-        </dependency>
+        
     </dependencies>
     <profiles>
         <profile>

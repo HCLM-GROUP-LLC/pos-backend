@@ -20,6 +20,7 @@
 | 名称                  | 说明                                                            |
 |---------------------|---------------------------------------------------------------|
 | pos-common          | 公共模块                                                          |
+| pos-web-starter     | [web模块](./pos-common/pos-web-starter/README.md)               |
 | pos-satoken-starter | [安全验证模块](./pos-common/pos-satoken-starter/README.md)          |
 | pos-twilio-starter  | [对接 twilio 短信服务模块](./pos-common/pos-twilio-starter/README.md) |
 | pos-merchant        | 商户web端，给商户使用,不需要权限控制                                          |
