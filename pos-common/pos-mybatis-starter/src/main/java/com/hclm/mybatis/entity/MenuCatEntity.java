@@ -14,7 +14,7 @@ import lombok.Data;
  */
 @Data
 @TableName(TableNameConstant.MENU_CATEGORIES)
-public class MenuCategorieEntity {
+public class MenuCatEntity {
     /**
      * 类别id
      */

@@ -7,8 +7,8 @@ import com.hclm.merchant.pojo.request.MenuCatUpdateRequest;
 import com.hclm.merchant.pojo.response.MenuCatResponse;
 import com.hclm.merchant.service.MenuCatManagerService;
 import com.hclm.merchant.service.MenusManagerService;
-import com.hclm.mybatis.entity.MenuCategorieEntity;
-import com.hclm.mybatis.mapper.MenuCategorieMapper;
+import com.hclm.mybatis.entity.MenuCatEntity;
+import com.hclm.mybatis.mapper.MenuCatMapper;
 import com.hclm.web.BusinessException;
 import com.hclm.web.enums.ResponseCode;
 import lombok.RequiredArgsConstructor;
@@ -24,14 +24,14 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 @Service
-public class MenuCatManagerServiceImpl extends ServiceImpl<MenuCategorieMapper, MenuCategorieEntity> implements MenuCatManagerService {
+public class MenuCatManagerServiceImpl extends ServiceImpl<MenuCatMapper, MenuCatEntity> implements MenuCatManagerService {
     private final MenusManagerService menuManagerServce;
 
-    private void checkNameUnique(MenuCategorieEntity categories) {
+    private void checkNameUnique(MenuCatEntity categories) {
         if (lambdaQuery()
-                .eq(MenuCategorieEntity::getMenuId, categories.getMenuId())
-                .eq(MenuCategorieEntity::getCategoryName, categories.getCategoryName())
-                .ne(categories.getCategoryId() != null, MenuCategorieEntity::getCategoryId, categories.getCategoryId()) // 排除自身
+                .eq(MenuCatEntity::getMenuId, categories.getMenuId())
+                .eq(MenuCatEntity::getCategoryName, categories.getCategoryName())
+                .ne(categories.getCategoryId() != null, MenuCatEntity::getCategoryId, categories.getCategoryId()) // 排除自身
                 .exists()) {
             throw new BusinessException(ResponseCode.MENU_CATEGORY_NAME_ALREADY_EXISTS);
         }
@@ -42,7 +42,7 @@ public class MenuCatManagerServiceImpl extends ServiceImpl<MenuCategorieMapper, 
         var menu = menuManagerServce.getOptById(request.getMenuId())
                 .orElseThrow(() -> new BusinessException(ResponseCode.MENU_NOT_FOUND));// 检查菜单id
 
-        MenuCategorieEntity categories = MenuCatConverter.INSTANCE.toEntity(request);
+        MenuCatEntity categories = MenuCatConverter.INSTANCE.toEntity(request);
         categories.setStoreId(menu.getStoreId());// 设置门店id,跟菜单一致
         checkNameUnique(categories);// 检查名称唯一性
         save(categories);//保存
@@ -51,13 +51,13 @@ public class MenuCatManagerServiceImpl extends ServiceImpl<MenuCategorieMapper, 
 
     @Override
     public MenuCatResponse update(Long categoryId, MenuCatUpdateRequest request) {
-        MenuCategorieEntity oldCategory = getOptById(categoryId)
+        MenuCatEntity oldCategory = getOptById(categoryId)
                 .orElseThrow(() -> new BusinessException(ResponseCode.MENU_CATEGORY_NOT_FOUND));
         //新的值复制到旧的值
         MenuCatConverter.INSTANCE.copy(request, oldCategory);
         checkNameUnique(oldCategory); // 检查名称唯一性
 
-        MenuCategorieEntity category = MenuCatConverter.INSTANCE.toEntity(request);
+        MenuCatEntity category = MenuCatConverter.INSTANCE.toEntity(request);
         category.setCategoryId(categoryId);
         updateById(category);//会跳过null字段
 
@@ -68,7 +68,7 @@ public class MenuCatManagerServiceImpl extends ServiceImpl<MenuCategorieMapper, 
     public List<MenuCatResponse> list(String menuId) {
         return MenuCatConverter.INSTANCE.toResponse(
                 lambdaQuery()
-                        .eq(MenuCategorieEntity::getMenuId, menuId)
+                        .eq(MenuCatEntity::getMenuId, menuId)
                         .list()
         );
     }

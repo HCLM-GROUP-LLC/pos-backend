@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @SaIgnore //不检查登录
 @Tag(name = "员工")
 @RequiredArgsConstructor
-@RequestMapping("/employees")
+@RequestMapping("/employees-auth")
 @RestController
 public class EmployeesAuthController {
     private final EmployeesService employeesService;

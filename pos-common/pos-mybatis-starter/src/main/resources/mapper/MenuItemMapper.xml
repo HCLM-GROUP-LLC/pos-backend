@@ -2,7 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.hclm.mybatis.mapper.MenuItemMapper">
-    <select id="findByCategoryId">
+    <resultMap id="MenuItemEntity" type="com.hclm.mybatis.entity.MenuItemEntity" autoMapping="true">
+        <id property="noteTags" column="note_tags"
+            typeHandler="com.baomidou.mybatisplus.extension.handlers.Fastjson2TypeHandler"/>
+    </resultMap>
+    <select id="findByCategoryId" resultMap="MenuItemEntity">
         SELECT *
         FROM menu_items
         WHERE item_id IN (SELECT item_id FROM menu_category_items WHERE category_id = #{categoryId})

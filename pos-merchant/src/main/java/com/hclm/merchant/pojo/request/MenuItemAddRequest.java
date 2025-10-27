@@ -57,5 +57,5 @@ public class MenuItemAddRequest {
     private MenuItemTypeEnum itemType;
     @NotNull
     @Schema(description = "单品图片")
-    private MultipartFile itemImage;
+    private MultipartFile itemImageFile;
 }

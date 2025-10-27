@@ -13,6 +13,7 @@ import com.hclm.terminal.service.DeviceService;
 import com.hclm.terminal.service.EmployeesAttendanceService;
 import com.hclm.terminal.service.EmployeesService;
 import com.hclm.terminal.utils.EmployeesLoginUtil;
+import com.hclm.terminal.utils.StoreContext;
 import com.hclm.web.BusinessException;
 import com.hclm.web.constant.BusinessConstant;
 import com.hclm.web.enums.ResponseCode;
@@ -35,7 +36,7 @@ public class EmployeesServiceImpl extends ServiceImpl<EmployeeMapper, EmployeeEn
      */
     @Override
     public EmployeesLoginResponse login(EmployeesLoginRequest request) {
-        DeviceEntity deviceEntity = deviceService.getById(request.getDeviceId());
+        DeviceEntity deviceEntity = deviceService.getById(StoreContext.getDeviceId());
         //查找员工信息
         EmployeeEntity employeeEntity = lambdaQuery()
                 .eq(EmployeeEntity::getStoreId, deviceEntity.getStoreId())

@@ -70,7 +70,7 @@ public class MenuItemManagerController {
      * -F "itemDescription=这是一道测试菜品" \
      * -F "itemPrice=29.99" \
      * -F "itemType=Item" \
-     * -F "itemImage=@/mnt/d/Users/hanhua/Downloads/1.png"
+     * -F "itemImageFile=@/mnt/d/Users/hanhua/Downloads/1.png"
      * */
 
     /**
@@ -82,7 +82,7 @@ public class MenuItemManagerController {
     @Operation(summary = "创建菜品")
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ApiResponse<MenuItemResponse> create(@Valid @ModelAttribute MenuItemAddRequest request) {
-        return ApiResponse.success(menuItemManagerService.create(request, request.getItemImage()));
+        return ApiResponse.success(menuItemManagerService.create(request, request.getItemImageFile()));
     }
 
     /**

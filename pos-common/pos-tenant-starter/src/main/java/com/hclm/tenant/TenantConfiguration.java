@@ -2,7 +2,6 @@ package com.hclm.tenant;
 
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -11,7 +10,6 @@ import java.util.List;
 
 @EnableAspectJAutoProxy
 @Slf4j
-@ConditionalOnBean(TenantSupplier.class)
 @Configuration
 public class TenantConfiguration {
 

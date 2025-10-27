@@ -30,10 +30,12 @@ public class MybatisConfiguration {
 
     /**
      * mybatis plus拦截器
+     * {@see MybatisPlusInnerInterceptorAutoConfiguration}
      *
      * @param innerInterceptors 内部拦截器
      * @return {@link MybatisPlusInterceptor }
      */
+    @ConditionalOnMissingBean(MybatisPlusInterceptor.class) // 如果容器中没有这个bean
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor(List<InnerInterceptor> innerInterceptors) {
         List<String> interceptorNames = innerInterceptors.stream().map(InnerInterceptor::getClass).map(Class::getSimpleName).toList();

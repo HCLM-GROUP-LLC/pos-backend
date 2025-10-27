@@ -29,7 +29,19 @@ public interface MenuItemConverter {
      */
     List<MenuItemResponse> toResponse(List<MenuItemEntity> menuItems);
 
+    /**
+     * 至实体
+     *
+     * @param request 请求
+     * @return {@link MenuItemEntity }
+     */
     MenuItemEntity toEntity(MenuItemAddRequest request);
 
+    /**
+     * 至实体
+     *
+     * @param request 请求
+     * @return {@link MenuItemEntity }
+     */
     MenuItemEntity toEntity(MenuItemUpdateRequest request);
 }

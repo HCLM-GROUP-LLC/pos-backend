@@ -28,6 +28,15 @@ public class EmployeesLoginUtil {
     }
 
     /**
+     * 是登录
+     *
+     * @return boolean
+     */
+    public static boolean isLogin() {
+        return StpUtil.isLogin();
+    }
+
+    /**
      * 是否已经登录
      */
     public static boolean isLogin(String id) {
@@ -60,9 +69,6 @@ public class EmployeesLoginUtil {
      * @return {@link EmployeesLoginCache }
      */
     public static EmployeesLoginCache loginCache() {
-        if (!StpUtil.isLogin()) {
-            return null;
-        }
         Object data = StpUtil.getSession().get(DATA_KEY);
         return JsonUtil.convertObject(data, EmployeesLoginCache.class);
     }

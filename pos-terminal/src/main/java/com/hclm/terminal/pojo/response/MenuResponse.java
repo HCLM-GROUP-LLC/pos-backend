@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class MenusResponse {
+public class MenuResponse {
     @Schema(description = "菜单id")
     private Long menuId;
     @Schema(description = "菜单名称")
