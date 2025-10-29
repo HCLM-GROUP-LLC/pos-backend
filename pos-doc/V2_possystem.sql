@@ -247,20 +247,33 @@ CREATE TABLE `print_templates`
 ) ENGINE = InnoDB COMMENT ='打印模板表';
 
 -- 订单表
-CREATE TABLE `orders`
+CREATE TABLE orders
 (
-    `id`           bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-    `merchant_id`  char(36)        NOT NULL COMMENT '商家ID',
-    `order_no`     varchar(255)    NOT NULL COMMENT '订单号',
-    `order_type`   varchar(50)     NOT NULL COMMENT '订单类型,堂食/外带/扫码订单',
-    `order_status` varchar(50)     NOT NULL COMMENT '订单状态',
-    `total_amount` decimal(10, 2)  NOT NULL COMMENT '总金额',
-    `created_at`   bigint unsigned DEFAULT NULL COMMENT '创建时间',
-    `updated_at`   bigint unsigned DEFAULT NULL COMMENT '更新时间',
-    PRIMARY KEY (`id`) USING BTREE,
-    KEY `merchant_id` (`merchant_id`)
-) ENGINE = InnoDB COMMENT ='订单表';
-
+    order_id        BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT COMMENT '订单id',
+    merchant_id     VARCHAR(255) NOT NULL COMMENT '商户id',
+    store_id        VARCHAR(255) NOT NULL COMMENT '门店ID',
+    dining_table_id BIGINT UNSIGNED COMMENT '餐桌id 可以是null',
+    total_amount    DECIMAL(10, 2) COMMENT '订单总价',
+    order_status    VARCHAR(50) COMMENT '订单状态',
+    order_type      VARCHAR(50) COMMENT '订单类型',
+    created_at      BIGINT COMMENT '创建时间'
+) COMMENT '订单表';
+-- 订单详细信息表
+CREATE TABLE order_items
+(
+    order_detail_id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT COMMENT '订单详细信息ID',
+    order_id        BIGINT UNSIGNED NOT NULL COMMENT '订单id',
+    merchant_id     VARCHAR(255)    NOT NULL COMMENT '商户id',
+    store_id        VARCHAR(255)    NOT NULL COMMENT '门店ID',
+    reference_id    BIGINT COMMENT '关联ID 可以是菜品ID或优惠券ID等',
+    subtotal        DECIMAL(10, 2) COMMENT '小计金额',
+    extras          JSON COMMENT '额外的收费项',
+    detail_name     VARCHAR(255) COMMENT '订单详细信息名称 可以是：菜品名称 、折扣名称、税费名称等，作为冗余字段',
+    detail_desc     TEXT COMMENT '订单详细说明 可以是：菜品备注 、折扣说明、税费说明等',
+    detail_type     VARCHAR(50) COMMENT '详细信息类型',
+    quantity        DECIMAL(10, 2) COMMENT '数量',
+    unit_price      DECIMAL(10, 2) COMMENT '单价 配合数量使用 明细是菜品的时候有用'
+) COMMENT '订单详细信息表';
 -- 商家银行卡表
 CREATE TABLE `merchant_bank_cards`
 (

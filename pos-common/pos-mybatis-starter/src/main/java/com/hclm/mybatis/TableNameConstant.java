@@ -55,4 +55,12 @@ public interface TableNameConstant {
      * 文件
      */
     String FILES = "files";
+    /**
+     * 订单
+     */
+    String ORDERS = "orders";
+    /**
+     * 订单详情
+     */
+    String ORDER_ITEMS = "order_items";
 }

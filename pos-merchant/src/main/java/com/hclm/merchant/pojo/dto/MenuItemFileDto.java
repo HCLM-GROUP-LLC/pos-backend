@@ -1,13 +1,13 @@
 package com.hclm.merchant.pojo.dto;
 
-import com.hclm.mybatis.enums.OwnerTypeEnum;
+import com.hclm.mybatis.enums.FileOwnerEnum;
 import com.hclm.resource.FileOwner;
 
 public record MenuItemFileDto(Long menuItemId) implements FileOwner {
 
     @Override
-    public OwnerTypeEnum getOwnerType() {
-        return OwnerTypeEnum.Menu_Item;
+    public FileOwnerEnum getOwnerType() {
+        return FileOwnerEnum.Menu_Item;
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.hclm.resource;
 
-import com.hclm.mybatis.enums.OwnerTypeEnum;
+import com.hclm.mybatis.enums.FileOwnerEnum;
 
 /**
  * 文件所有者 用于反向关联
@@ -12,9 +12,9 @@ public interface FileOwner {
     /**
      * 获取所有者类型
      *
-     * @return {@link OwnerTypeEnum }
+     * @return {@link FileOwnerEnum }
      */
-    OwnerTypeEnum getOwnerType();
+    FileOwnerEnum getOwnerType();
 
     /**
      * 获取所有者id

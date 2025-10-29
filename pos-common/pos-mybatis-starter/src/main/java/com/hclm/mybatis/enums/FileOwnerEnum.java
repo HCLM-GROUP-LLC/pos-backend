@@ -1,6 +1,6 @@
 package com.hclm.mybatis.enums;
 
-public enum OwnerTypeEnum {
+public enum FileOwnerEnum {
     /**
      * 菜单项 菜品 单品
      */

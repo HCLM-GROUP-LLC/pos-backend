@@ -2,7 +2,7 @@ package com.hclm.mybatis.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.hclm.mybatis.TableNameConstant;
-import com.hclm.mybatis.enums.OwnerTypeEnum;
+import com.hclm.mybatis.enums.FileOwnerEnum;
 import lombok.Data;
 
 @TableName(TableNameConstant.FILES)
@@ -20,7 +20,7 @@ public class FileEntity {
     /**
      * 所有者类型
      */
-    private OwnerTypeEnum ownerType;
+    private FileOwnerEnum ownerType;
     /**
      * 商户id
      */
