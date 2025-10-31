@@ -15,4 +15,12 @@ public interface RedisPrefixConstant {
      * 门店设备编号
      */
     String STORE_DEVICE_NUMBER = "store:device:number:";
+    /**
+     * 上次短信代码的时间 一分钟有效期
+     */
+    String LAST_SMS_CODE = "sms:code:last:";
+    /**
+     * 短信代码 5分钟有效期
+     */
+    String SMS_CODE = "sms:code:";
 }

@@ -55,9 +55,35 @@ public enum ResponseCode {
      * 菜单类别名称重复
      */
     MENU_CATEGORY_NAME_ALREADY_EXISTS(10011, "menu.category.name.already.exists"),
+    /**
+     * 未找到菜单类别
+     */
     MENU_CATEGORY_NOT_FOUND(10012, "menu.category.notFound"),
+    /**
+     * 菜单项名称已存在
+     */
     MENU_ITEM_NAME_ALREADY_EXISTS(10013, "menu.item.name.already.exists"),
-    CAT_ITEMS_REPEAT(10014, "menu.cat.items.repeat");
+    /**
+     * 分类项目重复
+     */
+    CAT_ITEMS_REPEAT(10014, "menu.cat.items.repeat"),
+    /**
+     * 电话号码不存在
+     */
+    PHONE_NUMBER_NOT_EXIST(10015, "phone.number.not.exist"),
+    /**
+     * 短信发送过于频繁
+     */
+    SMS_SEND_TOO_FREQUENT(10016, "sms.send.too.frequent"),
+    /**
+     * 短信代码过期
+     */
+    SMS_CODE_EXPIRE(10017, "sms.code.expire"),
+    /**
+     * 电话号码不匹配
+     */
+    PHONE_NUMBER_NOT_MATCH(10018, "phone.number.not.match"),
+    MERCHANT_NOT_FOUND(10019, "merchant.not.found");
     /**
      * 代码
      */

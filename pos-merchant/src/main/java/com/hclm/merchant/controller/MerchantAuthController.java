@@ -3,12 +3,14 @@ package com.hclm.merchant.controller;
 import cn.dev33.satoken.annotation.SaIgnore;
 import com.hclm.merchant.pojo.request.MerchantLoginRequest;
 import com.hclm.merchant.pojo.request.MerchantRegisterRequest;
+import com.hclm.merchant.pojo.request.MrcSmsLoginRequest;
 import com.hclm.merchant.pojo.response.AuthResponse;
 import com.hclm.merchant.service.MerchantService;
 import com.hclm.web.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,5 +55,30 @@ public class MerchantAuthController {
     @PostMapping("/register")
     public ApiResponse<AuthResponse> register(@RequestBody @Valid MerchantRegisterRequest request) {
         return ApiResponse.success(merchantService.register(request));
+    }
+
+    /**
+     * 发送短信代码
+     *
+     * @param phone 电话
+     * @return {@link ApiResponse }<{@link Void }>
+     */
+    @Operation(summary = "发送短信验证码")
+    @PostMapping("/sms-code")
+    public ApiResponse<Void> sendSmsCode(@RequestBody @NotEmpty String phone) {
+        merchantService.sendSmsCode(phone);
+        return ApiResponse.success();
+    }
+
+    /**
+     * 短信登录
+     *
+     * @param request 请求
+     * @return {@link ApiResponse }<{@link AuthResponse }>
+     */
+    @Operation(summary = "短信验证码登录")
+    @PostMapping("/sms-login")
+    public ApiResponse<AuthResponse> smsLogin(@RequestBody @Valid MrcSmsLoginRequest request) {
+        return ApiResponse.success(merchantService.login(request));
     }
 }

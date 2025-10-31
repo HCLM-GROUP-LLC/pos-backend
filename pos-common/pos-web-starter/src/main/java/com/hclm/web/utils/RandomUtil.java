@@ -55,6 +55,16 @@ public class RandomUtil {
     }
 
     /**
+     * 数字编号
+     *
+     * @param length 长度
+     * @return {@link String }
+     */
+    public static String numbers(int length) {
+        return getRandomString(length, NUMBERS);
+    }
+
+    /**
      * 大写字母和数字组成的随机字符串
      *
      * @param length 长度
